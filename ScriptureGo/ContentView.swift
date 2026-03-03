@@ -10,10 +10,11 @@ import SwiftUI
 struct ContentView: View {
     
     @EnvironmentObject var themeManager: ThemeManager
+    @Environment(\.colorScheme) private var colorScheme
+
     
     var body: some View {
             
-        
         TabView {
             
             SelectorView()
@@ -27,8 +28,14 @@ struct ContentView: View {
                 }
         }
         .tint(themeManager.current.primary)
+        .onChange(of: colorScheme) {
+            print("Scheme changed:", colorScheme)
+            themeManager.apply(systemScheme: colorScheme)
+        }
         
     }
+
+    
 }
 
 #Preview {

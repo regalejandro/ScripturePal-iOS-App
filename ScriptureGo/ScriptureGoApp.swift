@@ -23,10 +23,7 @@ struct ScriptureGoApp: App {
                 .onAppear {
                     themeManager.apply(systemScheme: colorScheme)
                 }
-                .onChange(of: colorScheme) {
-                    print("Scheme changed:", colorScheme)
-                    themeManager.apply(systemScheme: colorScheme)
-                }
+
 
         }
     }
