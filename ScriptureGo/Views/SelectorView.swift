@@ -24,6 +24,9 @@ struct SelectorView: View {
     @State private var showingGroupSelector = false
     @State var selectedGroupsBackup: [String] = []
     
+    @State private var showingReveal = false
+    @State private var revealedChapter: ChapterPointer?
+    
     var selectedGroupsBinding: Binding<[String]> {
         Binding(
             get: {
@@ -96,16 +99,21 @@ struct SelectorView: View {
                     HStack(spacing: 12) {
                         // Main Button
                         Button {
-                            translationAtLastSelected = selectedTranslation
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                translationAtLastSelected = selectedTranslation
+                            }
                             
                             if let result = bible.randomChapter(
                                 for: selectedTranslation,
                                 selectedGroups: selectedGroupsBinding.wrappedValue,
                                 groupMode: groupMode
                             ) {
-                                lastSelected = result
+                                DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                    lastSelected = result
+                                }
+                                revealedChapter = result
+                                showingReveal = true
                             }
-                            
                         } label: {
                             Label("Choose Chapter", systemImage: "book")
                                 .font(.title2.bold())
@@ -162,6 +170,15 @@ struct SelectorView: View {
                     SettingsView()
                 }
                 .padding(.top, 50)
+            }
+        }
+        .fullScreenCover(isPresented: $showingReveal) {
+            if let chapter = revealedChapter {
+                ChapterRevealView(
+                    chapter: chapter,
+                    translation: translationAtLastSelected
+                )
+                .environmentObject(themeManager)
             }
         }
         
