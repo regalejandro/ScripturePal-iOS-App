@@ -23,6 +23,9 @@ struct ChapterRevealView: View {
             themeManager.current.background
                 .ignoresSafeArea()
             
+            Color.black.opacity(0.001)
+                .ignoresSafeArea()
+            
             VStack(spacing: 24) {
 
                 
@@ -69,6 +72,7 @@ struct ChapterRevealView: View {
             }
             .padding()
         }
+        .presentationBackground(.clear)
         .onAppear {
             runRevealSequence()
         }

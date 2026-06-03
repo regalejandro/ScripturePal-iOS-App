@@ -11,20 +11,13 @@ import SwiftUI
 struct ScriptureGoApp: App {
     @StateObject private var themeManager = ThemeManager()
     
-    @Environment(\.colorScheme) private var colorScheme
-    
     @AppStorage("themePreference")
     private var themePreference: ThemePreference = .system
-    
+
     var body: some Scene {
         WindowGroup {
             ContentView()
                 .environmentObject(themeManager)
-                .onAppear {
-                    themeManager.apply(systemScheme: colorScheme)
-                }
-
-
         }
     }
 }

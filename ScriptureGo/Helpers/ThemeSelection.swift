@@ -8,6 +8,7 @@
 import Foundation
 import SwiftUI
 import Combine
+import UIKit
 
 final class ThemeManager: ObservableObject {
 
@@ -21,7 +22,8 @@ final class ThemeManager: ObservableObject {
             ?? AppTheme.parchment.rawValue
 
         let baseTheme = AppTheme(rawValue: raw) ?? .parchment
-        self.current = baseTheme.light.theme
+        let isDark = UITraitCollection.current.userInterfaceStyle == .dark
+        self.current = isDark ? baseTheme.dark.theme : baseTheme.light.theme
     }
 
     // Apply the correct variant based on system appearance
