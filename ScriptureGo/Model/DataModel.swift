@@ -22,10 +22,12 @@ struct Book: Codable, Identifiable {
     let chapters: Int
     let groups: [String]
     let section: String
+    let canonicalKey: String
 }
 
 struct ChapterPointer {
     let bookID: Int
     let bookName: String
     let chapter: Int
+    let canonicalKey: String
 }

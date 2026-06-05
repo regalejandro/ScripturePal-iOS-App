@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct ScriptureGoApp: App {
@@ -19,6 +20,7 @@ struct ScriptureGoApp: App {
             ContentView()
                 .environmentObject(themeManager)
         }
+        .modelContainer(for: ReadingRecord.self)
     }
 }
 

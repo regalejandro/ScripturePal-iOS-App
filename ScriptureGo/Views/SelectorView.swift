@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SelectorView: View {
 
@@ -14,13 +15,15 @@ struct SelectorView: View {
     @AppStorage("selectedGroupsData") private var selectedGroupsData: Data = Data("[]".utf8)
     @AppStorage("groupMode") var groupMode: String = "all"
     
+    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var themeManager: ThemeManager
     
     @StateObject var bible = BibleManager()
     
     @State var translationAtLastSelected = "   "
     @State private var showSettings = false
-    @State var lastSelected: ChapterPointer = .init(bookID: 0, bookName: "None Chosen", chapter: 0)
+    @State var lastSelected: ChapterPointer = .init(bookID: 0, bookName: "None Chosen", chapter: 0, canonicalKey: "None")
+    @State private var markedAsRead = false
     @State private var showingGroupSelector = false
     @State var selectedGroupsBackup: [String] = []
     
@@ -79,7 +82,28 @@ struct SelectorView: View {
                         .padding(.top, 22)
                         .padding(.horizontal)
                         .foregroundColor(themeManager.current.textPrimary)
-                        
+
+                        if lastSelected.bookID != 0 {
+                            Button {
+                                let record = ReadingRecord(
+                                    canonicalKey: lastSelected.canonicalKey,
+                                    chapter: lastSelected.chapter
+                                )
+                                modelContext.insert(record)
+                                markedAsRead = true
+                            } label: {
+                                Label(
+                                    markedAsRead ? "Marked as Read" : "Mark as Read",
+                                    systemImage: markedAsRead ? "checkmark.circle.fill" : "book.pages"
+                                )
+                                .font(.subheadline.weight(.medium))
+                                .foregroundColor(markedAsRead ? themeManager.current.accent.opacity(0.5) : themeManager.current.accent)
+                            }
+                            .disabled(markedAsRead)
+                            .padding(.top, 6)
+                            .animation(.easeInOut(duration: 0.2), value: markedAsRead)
+                        }
+
                         Spacer()
                     }
                     .frame(maxWidth: .infinity)
@@ -110,6 +134,7 @@ struct SelectorView: View {
                             ) {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                     lastSelected = result
+                                    markedAsRead = false
                                 }
                                 revealedChapter = result
                                 showingReveal = true

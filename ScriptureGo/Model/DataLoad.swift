@@ -63,7 +63,8 @@ class BibleManager: ObservableObject {
                 return ChapterPointer(
                     bookID: book.id,
                     bookName: book.name,
-                    chapter: chapterNumber
+                    chapter: chapterNumber,
+                    canonicalKey: book.canonicalKey
                 )
             }
             runningTotal = nextTotal
