@@ -26,6 +26,11 @@ struct ContentView: View {
                 .tabItem {
                     Label("Books", systemImage: "books.vertical.fill")
                 }
+
+            StatsView()
+                .tabItem {
+                    Label("Stats", systemImage: "chart.bar.fill")
+                }
         }
         .tint(themeManager.current.primary)
         .onAppear {
