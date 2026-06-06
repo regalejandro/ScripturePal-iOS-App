@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct SettingsView: View {
     @AppStorage("selectedTradition") var selectedTradition = "Catholic"
@@ -14,7 +15,10 @@ struct SettingsView: View {
     @StateObject var bible = BibleManager()
 
     @Environment(\.colorScheme) private var colorScheme
+    @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var themeManager: ThemeManager
+
+    @State private var showingClearAlert = false
     
     var availableTranslations: [String] {
         bible.data?.translations.keys.sorted() ?? []
@@ -102,10 +106,29 @@ struct SettingsView: View {
                     }
                     .foregroundColor(themeManager.current.textPrimary)
 
-                    
-                 
-    
-                    
+                    /* Danger Zone */
+                    Section (header: Text("Reading History")){
+                        Button {
+                            showingClearAlert = true
+                        } label: {
+                            HStack {
+                                Spacer()
+                                Text("Clear Reading History")
+                                    .foregroundColor(themeManager.current.warning)
+                                Spacer()
+                            }
+                        }
+                    }
+                    .foregroundColor(themeManager.current.textPrimary)
+                    .alert("Clear Reading History?", isPresented: $showingClearAlert) {
+                        Button("Clear", role: .destructive) {
+                            try? modelContext.delete(model: ReadingRecord.self)
+                        }
+                        Button("Cancel", role: .cancel) { }
+                    } message: {
+                        Text("This will permanently delete all of your reading history and cannot be undone.")
+                    }
+
                 }
                 .navigationTitle("Settings")
             }
