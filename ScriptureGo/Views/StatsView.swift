@@ -56,6 +56,44 @@ struct StatsView: View {
         return (Calendar.current.monthSymbols[top.key - 1], top.value)
     }
 
+    // MARK: - Last 40 days
+
+    private var last40Days: (counts: [Int], totalReads: Int, activeDays: Int, bestDay: Int, currentStreak: Int) {
+        let cal = Calendar.current
+        let today = cal.startOfDay(for: .now)
+
+        // Map each record's date to its start-of-day bucket
+        var dayCount: [Date: Int] = [:]
+        for record in records {
+            let day = cal.startOfDay(for: record.date)
+            dayCount[day, default: 0] += 1
+        }
+
+        // Build ordered array: index 0 = 39 days ago, index 39 = today
+        let counts: [Int] = (0..<40).reversed().map { offset in
+            let day = cal.date(byAdding: .day, value: -offset, to: today)!
+            return dayCount[day] ?? 0
+        }
+
+        let totalReads  = counts.reduce(0, +)
+        let activeDays  = counts.filter { $0 > 0 }.count
+        let bestDay     = counts.max() ?? 0
+
+        // Streak: walk backwards from today through ALL records, not just 40 days
+        var streak = 0
+        var checkDay = today
+        while true {
+            if dayCount[checkDay, default: 0] > 0 {
+                streak += 1
+                checkDay = cal.date(byAdding: .day, value: -1, to: checkDay)!
+            } else {
+                break
+            }
+        }
+
+        return (counts, totalReads, activeDays, bestDay, streak)
+    }
+
     // MARK: - Grid lookup
 
     private var readCounts: [String: [Int: Int]] {
@@ -80,6 +118,17 @@ struct StatsView: View {
 
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 16) {
+
+                            // ── Recent activity card ─────────────────────────
+                            let d = last40Days
+                            RecentActivityCard(
+                                dailyCounts: d.counts,
+                                totalReads: d.totalReads,
+                                activeDays: d.activeDays,
+                                bestDay: d.bestDay,
+                                currentStreak: d.currentStreak,
+                                theme: themeManager.current
+                            )
 
                             // ── This year's card ─────────────────────────────
                             YearStatsCard(

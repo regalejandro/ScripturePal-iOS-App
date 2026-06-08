@@ -320,6 +320,135 @@ struct BookGridRow: View {
     }
 }
 
+// MARK: - RecentActivityCard
+
+struct RecentActivityCard: View {
+
+    /// 40 read counts, index 0 = oldest day, index 39 = today
+    let dailyCounts: [Int]
+    let totalReads: Int
+    let activeDays: Int
+    let bestDay: Int
+    let currentStreak: Int
+    let theme: Theme
+
+    private let columns = 8
+    private let squareSize: CGFloat = 13
+    private let gap: CGFloat = 2
+
+    private var maxCount: Int { dailyCounts.max() ?? 1 }
+
+    private func color(for count: Int) -> Color {
+        guard count > 0, maxCount > 0 else { return theme.secondary.opacity(0.2) }
+        let intensity = 0.25 + 0.75 * (CGFloat(count) / CGFloat(maxCount))
+        return theme.accent.opacity(intensity)
+    }
+
+    /// dailyCounts split into rows of `columns`
+    private var rows: [[Int]] {
+        stride(from: 0, to: dailyCounts.count, by: columns).map {
+            Array(dailyCounts[$0 ..< min($0 + columns, dailyCounts.count)])
+        }
+    }
+
+    var body: some View {
+        
+        VStack(alignment: .leading, spacing: 4) {
+            Text("Last 40 Days")
+                .font(.title3.weight(.semibold))
+                .foregroundColor(theme.textPrimary)
+            
+            HStack(alignment: .top, spacing: 14) {
+                
+                // ── Left: day grid ───────────────────────────────────────────────
+                VStack(alignment: .leading, spacing: gap) {
+                    ForEach(rows.indices, id: \.self) { rowIndex in
+                        HStack(spacing: gap) {
+                            ForEach(rows[rowIndex].indices, id: \.self) { colIndex in
+                                let count = rows[rowIndex][colIndex]
+                                RoundedRectangle(cornerRadius: 2)
+                                    .fill(color(for: count))
+                                    .frame(width: squareSize, height: squareSize)
+                            }
+                        }
+                    }
+                }
+                .padding(.vertical)
+                
+                Divider()
+                
+                // ── Right: stats ─────────────────────────────────────────────────
+                VStack(alignment: .leading, spacing: 8) {
+                    HStack {
+                        ActivityStatRow(
+                            icon: "book.closed.fill",
+                            label: "Total Reads",
+                            value: "\(totalReads)",
+                            theme: theme
+                        )
+                        .padding(.horizontal)
+                        
+                        ActivityStatRow(
+                            icon: "calendar.badge.checkmark",
+                            label: "Active Days",
+                            value: "\(activeDays) / 40",
+                            theme: theme
+                        )
+                        .padding(.horizontal)
+                    }
+                    HStack {
+                        ActivityStatRow(
+                            icon: "star.fill",
+                            label: "Best Day",
+                            value: bestDay == 0 ? "—" : "\(bestDay)",
+                            theme: theme
+                        )
+                        .padding(.horizontal)
+                        
+                        ActivityStatRow(
+                            icon: "flame.fill",
+                            label: "Streak",
+                            value: currentStreak == 0 ? "—" : "\(currentStreak)d",
+                            theme: theme
+                        )
+                        .padding(.horizontal)
+                    }
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(.vertical)
+            }
+        }
+        .statsCardStyle(theme: theme)
+
+    }
+}
+
+// MARK: - ActivityStatRow
+
+private struct ActivityStatRow: View {
+    let icon: String
+    let label: String
+    let value: String
+    let theme: Theme
+
+    var body: some View {
+        HStack(spacing: 6) {
+            Image(systemName: icon)
+                .font(.caption2)
+                .foregroundColor(theme.accent)
+                .frame(width: 14)
+            VStack(alignment: .leading, spacing: 0) {
+                Text(label)
+                    .font(.system(size: 9))
+                    .foregroundColor(theme.textSecondary)
+                Text(value)
+                    .font(.caption.weight(.semibold))
+                    .foregroundColor(theme.textPrimary)
+            }
+        }
+    }
+}
+
 // MARK: - Card style helper
 
 extension View {
