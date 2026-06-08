@@ -1,0 +1,338 @@
+//
+//  StatsComponents.swift
+//  ScriptureGo
+//
+//  Shared stat subviews used by both StatsView and HistoricalStatsView.
+//
+
+import SwiftUI
+
+// MARK: - YearStatsCard
+
+struct YearStatsCard: View {
+
+    let year: Int
+    let totalReads: Int
+    let uniqueChapters: Int
+    let totalChapters: Int
+    let progressFraction: Double
+    let bestMonth: (name: String, count: Int)?
+    let readsByMonth: [Int: Int]
+    let theme: Theme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+
+            Text("\(String(year)) Reading")
+                .font(.headline)
+                .foregroundColor(theme.textPrimary)
+
+            // ── Key numbers ──────────────────────────────────────────────────
+            HStack(spacing: 0) {
+                StatPill(value: "\(totalReads)",
+                         label: "Reads Logged",
+                         theme: theme)
+                Divider().frame(height: 36)
+                StatPill(value: "\(uniqueChapters) / \(totalChapters)",
+                         label: "Chapters",
+                         theme: theme)
+                Divider().frame(height: 36)
+                StatPill(value: String(format: "%.1f%%", progressFraction * 100),
+                         label: "Coverage",
+                         theme: theme)
+            }
+            .frame(maxWidth: .infinity)
+
+            // ── Progress bar ─────────────────────────────────────────────────
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(theme.secondary.opacity(0.3))
+                        .frame(height: 8)
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(theme.accent)
+                        .frame(width: geo.size.width * progressFraction, height: 8)
+                        .animation(.easeOut(duration: 0.6), value: progressFraction)
+                }
+            }
+            .frame(height: 8)
+
+            // ── Best month ───────────────────────────────────────────────────
+            if let best = bestMonth {
+                HStack(spacing: 4) {
+                    Image(systemName: "star.fill")
+                        .font(.caption2)
+                        .foregroundColor(theme.accent)
+                    Text("Best month: \(best.name) · \(best.count) chapter\(best.count == 1 ? "" : "s")")
+                        .font(.caption)
+                        .foregroundColor(theme.textSecondary)
+                }
+            }
+
+            Divider()
+
+            // ── Monthly bar chart ────────────────────────────────────────────
+            MonthlyBarChart(readsByMonth: readsByMonth, theme: theme)
+        }
+        .statsCardStyle(theme: theme)
+    }
+}
+
+// MARK: - AllTimeStatsCard
+
+struct AllTimeStatsCard: View {
+
+    let totalReads: Int
+    let uniqueChapters: Int
+    let totalChapters: Int
+    let progressFraction: Double
+    let bestYear: (year: Int, count: Int)?
+    let mostReadBook: (name: String, count: Int)?
+    let yearsActive: Int
+    let readsByYear: [Int: Int]
+    let theme: Theme
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 14) {
+
+            Text("All-Time Reading")
+                .font(.headline)
+                .foregroundColor(theme.textPrimary)
+
+            // ── Key numbers ──────────────────────────────────────────────────
+            HStack(spacing: 0) {
+                StatPill(value: "\(totalReads)",
+                         label: "Reads Logged",
+                         theme: theme)
+                Divider().frame(height: 36)
+                StatPill(value: "\(uniqueChapters) / \(totalChapters)",
+                         label: "Chapters",
+                         theme: theme)
+                Divider().frame(height: 36)
+                StatPill(value: String(format: "%.1f%%", progressFraction * 100),
+                         label: "Coverage",
+                         theme: theme)
+            }
+            .frame(maxWidth: .infinity)
+
+            // ── Progress bar ─────────────────────────────────────────────────
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(theme.secondary.opacity(0.3))
+                        .frame(height: 8)
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(theme.accent)
+                        .frame(width: geo.size.width * progressFraction, height: 8)
+                        .animation(.easeOut(duration: 0.6), value: progressFraction)
+                }
+            }
+            .frame(height: 8)
+
+            // ── Highlights ───────────────────────────────────────────────────
+            VStack(alignment: .leading, spacing: 6) {
+                if let best = bestYear {
+                    HighlightRow(
+                        icon: "trophy.fill",
+                        text: "Best year: \(String(best.year)) · \(best.count) chapter\(best.count == 1 ? "" : "s") read",
+                        theme: theme
+                    )
+                }
+                if let book = mostReadBook {
+                    HighlightRow(
+                        icon: "book.fill",
+                        text: "Most read: \(book.name) · \(book.count) chapter\(book.count == 1 ? "" : "s") read",
+                        theme: theme
+                    )
+                }
+                HighlightRow(
+                    icon: "calendar",
+                    text: "Active across \(yearsActive) calendar year\(yearsActive == 1 ? "" : "s")",
+                    theme: theme
+                )
+            }
+
+            if readsByYear.count > 1 {
+                Divider()
+
+                // ── Year-over-year chart ─────────────────────────────────────
+                YearlyBarChart(readsByYear: readsByYear, theme: theme)
+            }
+        }
+        .statsCardStyle(theme: theme)
+    }
+}
+
+// MARK: - StatPill
+
+struct StatPill: View {
+    let value: String
+    let label: String
+    let theme: Theme
+
+    var body: some View {
+        VStack(spacing: 2) {
+            Text(value)
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(theme.textPrimary)
+            Text(label)
+                .font(.caption2)
+                .foregroundColor(theme.textSecondary)
+        }
+        .frame(maxWidth: .infinity)
+    }
+}
+
+// MARK: - HighlightRow
+
+struct HighlightRow: View {
+    let icon: String
+    let text: String
+    let theme: Theme
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: icon)
+                .font(.caption2)
+                .foregroundColor(theme.accent)
+            Text(text)
+                .font(.caption)
+                .foregroundColor(theme.textSecondary)
+        }
+    }
+}
+
+// MARK: - MonthlyBarChart
+
+struct MonthlyBarChart: View {
+
+    let readsByMonth: [Int: Int]
+    let theme: Theme
+
+    private let monthAbbrevs = ["J","F","M","A","M","J","J","A","S","O","N","D"]
+    private let maxBarHeight: CGFloat = 40
+
+    private var maxCount: Int { readsByMonth.values.max() ?? 1 }
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 4) {
+            ForEach(1...12, id: \.self) { month in
+                let count = readsByMonth[month] ?? 0
+                let fraction = maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
+                VStack(spacing: 3) {
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(count > 0
+                              ? theme.accent.opacity(0.3 + 0.7 * fraction)
+                              : theme.secondary.opacity(0.25))
+                        .frame(height: max(4, maxBarHeight * fraction))
+                        .animation(.easeOut(duration: 0.4), value: count)
+                    Text(monthAbbrevs[month - 1])
+                        .font(.system(size: 8))
+                        .foregroundColor(theme.textSecondary)
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .frame(height: maxBarHeight + 16)
+    }
+}
+
+// MARK: - YearlyBarChart
+
+struct YearlyBarChart: View {
+
+    let readsByYear: [Int: Int]
+    let theme: Theme
+
+    private let maxBarHeight: CGFloat = 40
+
+    private var sortedYears: [Int] { readsByYear.keys.sorted() }
+    private var maxCount: Int { readsByYear.values.max() ?? 1 }
+
+    var body: some View {
+        HStack(alignment: .bottom, spacing: 4) {
+            ForEach(sortedYears, id: \.self) { year in
+                let count = readsByYear[year] ?? 0
+                let fraction = maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
+                VStack(spacing: 3) {
+                    RoundedRectangle(cornerRadius: 3)
+                        .fill(theme.accent.opacity(0.3 + 0.7 * fraction))
+                        .frame(height: max(4, maxBarHeight * fraction))
+                        .animation(.easeOut(duration: 0.4), value: count)
+                    Text(String(year).suffix(2).description) // e.g. "26"
+                        .font(.system(size: 8))
+                        .foregroundColor(theme.textSecondary)
+                }
+                .frame(maxWidth: .infinity)
+            }
+        }
+        .frame(height: maxBarHeight + 16)
+    }
+}
+
+// MARK: - BookGridRow
+
+struct BookGridRow: View {
+
+    let book: Book
+    let chapterCounts: [Int: Int]
+    let squaresPerRow: Int
+    let squareSize: CGFloat
+    let gap: CGFloat
+    let theme: Theme
+
+    private var rows: [[Int]] {
+        let chapters = Array(1...max(1, book.chapters))
+        return stride(from: 0, to: chapters.count, by: squaresPerRow).map {
+            Array(chapters[$0 ..< min($0 + squaresPerRow, chapters.count)])
+        }
+    }
+
+    private func squareColor(for chapter: Int) -> Color {
+        switch chapterCounts[chapter] ?? 0 {
+        case 0:   return theme.secondary.opacity(0.25)
+        case 1:   return theme.accent.opacity(0.25)
+        case 2:   return theme.accent.opacity(0.45)
+        case 3:   return theme.accent.opacity(0.65)
+        case 4:   return theme.accent.opacity(0.82)
+        default:  return theme.accent.opacity(1.0)
+        }
+    }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 4) {
+            Text(book.name)
+                .font(.caption.weight(.semibold))
+                .foregroundColor(theme.textSecondary)
+
+            VStack(alignment: .leading, spacing: gap) {
+                ForEach(rows.indices, id: \.self) { rowIndex in
+                    HStack(spacing: gap) {
+                        ForEach(rows[rowIndex], id: \.self) { chapter in
+                            RoundedRectangle(cornerRadius: 2)
+                                .fill(squareColor(for: chapter))
+                                .frame(width: squareSize, height: squareSize)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Card style helper
+
+extension View {
+    func statsCardStyle(theme: Theme) -> some View {
+        self
+            .padding(14)
+            .background(
+                RoundedRectangle(cornerRadius: 18)
+                    .fill(theme.secondary.opacity(0.15))
+            )
+            .overlay(
+                RoundedRectangle(cornerRadius: 18)
+                    .stroke(theme.secondary.opacity(0.9), lineWidth: 1)
+            )
+    }
+}
