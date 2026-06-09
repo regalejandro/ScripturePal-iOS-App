@@ -256,6 +256,19 @@ struct SelectorView: View {
                                         .padding(.horizontal)
                                 }
                             }
+
+                            Divider()
+                                .padding(.horizontal)
+
+                            Button {
+                                saveSelections([])
+                            } label: {
+                                Text("Clear")
+                                    .font(.subheadline.weight(.medium))
+                                    .foregroundColor(themeManager.current.warning)
+                                    .frame(maxWidth: .infinity)
+                                    .padding(.vertical, 10)
+                            }
                         }
                         .background(
                             RoundedRectangle(cornerRadius: 18)
