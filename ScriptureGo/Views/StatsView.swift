@@ -58,40 +58,49 @@ struct StatsView: View {
 
     // MARK: - Last 40 days
 
-    private var last40Days: (counts: [Int], totalReads: Int, activeDays: Int, bestDay: Int, currentStreak: Int) {
+    private var last40Days: (counts: [Int], totalReads: Int, activeDays: Int, bestDay: Int) {
         let cal = Calendar.current
         let today = cal.startOfDay(for: .now)
 
-        // Map each record's date to its start-of-day bucket
         var dayCount: [Date: Int] = [:]
         for record in records {
-            let day = cal.startOfDay(for: record.date)
-            dayCount[day, default: 0] += 1
+            dayCount[cal.startOfDay(for: record.date), default: 0] += 1
         }
 
-        // Build ordered array: index 0 = 39 days ago, index 39 = today
         let counts: [Int] = (0..<40).reversed().map { offset in
             let day = cal.date(byAdding: .day, value: -offset, to: today)!
             return dayCount[day] ?? 0
         }
 
-        let totalReads  = counts.reduce(0, +)
-        let activeDays  = counts.filter { $0 > 0 }.count
-        let bestDay     = counts.max() ?? 0
+        return (counts, counts.reduce(0, +), counts.filter { $0 > 0 }.count, counts.max() ?? 0)
+    }
 
-        // Streak: walk backwards from today through ALL records, not just 40 days
-        var streak = 0
-        var checkDay = today
-        while true {
-            if dayCount[checkDay, default: 0] > 0 {
-                streak += 1
-                checkDay = cal.date(byAdding: .day, value: -1, to: checkDay)!
-            } else {
-                break
-            }
+    private var currentStreak: Int {
+        let cal = Calendar.current
+        var dayCount: [Date: Int] = [:]
+        for record in records {
+            dayCount[cal.startOfDay(for: record.date), default: 0] += 1
         }
+        var streak = 0
+        var checkDay = cal.startOfDay(for: .now)
+        while dayCount[checkDay, default: 0] > 0 {
+            streak += 1
+            checkDay = cal.date(byAdding: .day, value: -1, to: checkDay)!
+        }
+        return streak
+    }
 
-        return (counts, totalReads, activeDays, bestDay, streak)
+    private var bestStreak: Int {
+        let cal = Calendar.current
+        let sortedDays = Set(records.map { cal.startOfDay(for: $0.date) }).sorted()
+        guard !sortedDays.isEmpty else { return 0 }
+        var best = 1, current = 1
+        for i in 1..<sortedDays.count {
+            let gap = cal.dateComponents([.day], from: sortedDays[i - 1], to: sortedDays[i]).day ?? 0
+            current = gap == 1 ? current + 1 : 1
+            best = max(best, current)
+        }
+        return best
     }
 
     // MARK: - Grid lookup
@@ -126,7 +135,13 @@ struct StatsView: View {
                                 totalReads: d.totalReads,
                                 activeDays: d.activeDays,
                                 bestDay: d.bestDay,
-                                currentStreak: d.currentStreak,
+                                theme: themeManager.current
+                            )
+
+                            // ── Streak card ───────────────────────────────────
+                            StreakCard(
+                                currentStreak: currentStreak,
+                                bestStreak: bestStreak,
                                 theme: themeManager.current
                             )
 

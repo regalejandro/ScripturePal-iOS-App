@@ -320,6 +320,62 @@ struct BookGridRow: View {
     }
 }
 
+// MARK: - StreakCard
+
+struct StreakCard: View {
+
+    let currentStreak: Int
+    let bestStreak: Int
+    let theme: Theme
+
+    var body: some View {
+        HStack(spacing: 0) {
+
+            // ── Current streak ───────────────────────────────────────────────
+            VStack(spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Image(systemName: "flame.fill")
+                        .font(.title2)
+                        .foregroundColor(currentStreak > 0 ? theme.accent : theme.secondary.opacity(0.5))
+                    Text("\(currentStreak)")
+                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .foregroundColor(currentStreak > 0 ? theme.textPrimary : theme.secondary.opacity(0.5))
+                }
+                Text("Current Streak")
+                    .font(.caption.weight(.medium))
+                    .foregroundColor(theme.textSecondary)
+                Text(currentStreak == 1 ? "day" : "days")
+                    .font(.caption2)
+                    .foregroundColor(theme.textSecondary.opacity(0.7))
+            }
+            .frame(maxWidth: .infinity)
+
+            Divider().frame(height: 70)
+
+            // ── Best streak ──────────────────────────────────────────────────
+            VStack(spacing: 4) {
+                HStack(alignment: .firstTextBaseline, spacing: 6) {
+                    Image(systemName: "trophy.fill")
+                        .font(.title2)
+                        .foregroundColor(theme.accent.opacity(0.7))
+                    Text("\(bestStreak)")
+                        .font(.system(size: 48, weight: .bold, design: .rounded))
+                        .foregroundColor(theme.textPrimary)
+                }
+                Text("Best Streak")
+                    .font(.caption.weight(.medium))
+                    .foregroundColor(theme.textSecondary)
+                Text(bestStreak == 1 ? "day" : "days")
+                    .font(.caption2)
+                    .foregroundColor(theme.textSecondary.opacity(0.7))
+            }
+            .frame(maxWidth: .infinity)
+        }
+        .padding(.vertical, 8)
+        .statsCardStyle(theme: theme)
+    }
+}
+
 // MARK: - RecentActivityCard
 
 struct RecentActivityCard: View {
@@ -329,7 +385,6 @@ struct RecentActivityCard: View {
     let totalReads: Int
     let activeDays: Int
     let bestDay: Int
-    let currentStreak: Int
     let theme: Theme
 
     private let columns = 8
@@ -400,14 +455,6 @@ struct RecentActivityCard: View {
                         value: bestDay == 0 ? "—" : "\(bestDay)",
                         theme: theme
                     )
-                    /*
-                    ActivityStatRow(
-                        icon: "flame.fill",
-                        label: "Streak",
-                        value: currentStreak == 0 ? "—" : "\(currentStreak)d",
-                        theme: theme
-                    )
-                    */
                     
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
