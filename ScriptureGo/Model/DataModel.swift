@@ -25,7 +25,7 @@ struct Book: Codable, Identifiable {
     let canonicalKey: String
 }
 
-struct ChapterPointer {
+struct ChapterPointer: Codable {
     let bookID: Int
     let bookName: String
     let chapter: Int

@@ -8,6 +8,20 @@
 import SwiftUI
 import SwiftData
 
+private struct RecentSelection: Identifiable, Codable {
+    let id: UUID
+    let pointer: ChapterPointer
+    let translation: String
+    var markedAsRead: Bool
+
+    init(pointer: ChapterPointer, translation: String) {
+        self.id = UUID()
+        self.pointer = pointer
+        self.translation = translation
+        self.markedAsRead = false
+    }
+}
+
 struct SelectorView: View {
 
     
@@ -23,12 +37,27 @@ struct SelectorView: View {
     @State var translationAtLastSelected = "   "
     @State private var showSettings = false
     @State var lastSelected: ChapterPointer = .init(bookID: 0, bookName: "None Chosen", chapter: 0, canonicalKey: "None")
-    @State private var markedAsRead = false
+
+    /// Whether the current session's selection has been marked as read.
+    /// Reads from recentSelections[0] so both buttons share the same state.
+    private var currentSelectionMarked: Bool {
+        recentSelections.first?.markedAsRead ?? false
+    }
     @State private var showingGroupSelector = false
     @State var selectedGroupsBackup: [String] = []
     
     @State private var showingReveal = false
     @State private var revealedChapter: ChapterPointer?
+
+    @AppStorage("recentSelectionsData") private var recentSelectionsData: Data = Data("[]".utf8)
+
+    private var recentSelections: [RecentSelection] {
+        (try? JSONDecoder().decode([RecentSelection].self, from: recentSelectionsData)) ?? []
+    }
+
+    private func saveSelections(_ selections: [RecentSelection]) {
+        recentSelectionsData = (try? JSONEncoder().encode(selections)) ?? recentSelectionsData
+    }
     
     var selectedGroupsBinding: Binding<[String]> {
         Binding(
@@ -90,18 +119,20 @@ struct SelectorView: View {
                                     chapter: lastSelected.chapter
                                 )
                                 modelContext.insert(record)
-                                markedAsRead = true
+                                var updated = recentSelections
+                                if !updated.isEmpty { updated[0].markedAsRead = true }
+                                saveSelections(updated)
                             } label: {
                                 Label(
-                                    markedAsRead ? "Marked as Read" : "Mark as Read",
-                                    systemImage: markedAsRead ? "checkmark.circle.fill" : "book.pages"
+                                    currentSelectionMarked ? "Marked as Read" : "Mark as Read",
+                                    systemImage: currentSelectionMarked ? "checkmark.circle.fill" : "book.pages"
                                 )
                                 .font(.subheadline.weight(.medium))
-                                .foregroundColor(markedAsRead ? themeManager.current.accent.opacity(0.5) : themeManager.current.accent)
+                                .foregroundColor(currentSelectionMarked ? themeManager.current.accent.opacity(0.5) : themeManager.current.accent)
                             }
-                            .disabled(markedAsRead)
+                            .disabled(currentSelectionMarked)
                             .padding(.top, 6)
-                            .animation(.easeInOut(duration: 0.2), value: markedAsRead)
+                            .animation(.easeInOut(duration: 0.2), value: currentSelectionMarked)
                         }
 
                         Spacer()
@@ -134,7 +165,10 @@ struct SelectorView: View {
                             ) {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                     lastSelected = result
-                                    markedAsRead = false
+                                    var updated = recentSelections
+                                    updated.insert(RecentSelection(pointer: result, translation: selectedTranslation), at: 0)
+                                    if updated.count > 3 { updated.removeLast() }
+                                    saveSelections(updated)
                                 }
                                 revealedChapter = result
                                 showingReveal = true
@@ -174,7 +208,67 @@ struct SelectorView: View {
                         
                     }
                     .padding(.horizontal)
-                    
+
+                    // ── Recent chapters list ──────────────────────────────────
+                    if !recentSelections.isEmpty {
+                        VStack(spacing: 0) {
+                            ForEach(recentSelections.indices, id: \.self) { index in
+                                let selection = recentSelections[index]
+
+                                HStack(alignment: .center, spacing: 12) {
+                                    VStack(alignment: .leading, spacing: 2) {
+                                        Text("\(selection.pointer.bookName) \(selection.pointer.chapter)")
+                                            .font(.body.weight(.medium))
+                                            .foregroundColor(themeManager.current.textPrimary)
+                                        Text(selection.translation)
+                                            .font(.caption)
+                                            .foregroundColor(themeManager.current.accent)
+                                    }
+
+                                    Spacer()
+
+                                    Button {
+                                        let record = ReadingRecord(
+                                            canonicalKey: selection.pointer.canonicalKey,
+                                            chapter: selection.pointer.chapter
+                                        )
+                                        modelContext.insert(record)
+                                        var updated = recentSelections
+                                        updated[index].markedAsRead = true
+                                        saveSelections(updated)
+                                    } label: {
+                                        Image(systemName: selection.markedAsRead
+                                              ? "checkmark.circle.fill"
+                                              : "book.pages")
+                                            .font(.title3)
+                                            .foregroundColor(selection.markedAsRead
+                                                ? themeManager.current.accent.opacity(0.4)
+                                                : themeManager.current.accent)
+                                    }
+                                    .disabled(selection.markedAsRead)
+                                    .animation(.easeInOut(duration: 0.2), value: selection.markedAsRead)
+                                }
+                                .padding(.horizontal)
+                                .padding(.vertical, 10)
+
+                                if index < recentSelections.count - 1 {
+                                    Divider()
+                                        .padding(.horizontal)
+                                }
+                            }
+                        }
+                        .background(
+                            RoundedRectangle(cornerRadius: 18)
+                                .fill(themeManager.current.secondary.opacity(0.15))
+                        )
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 18)
+                                .stroke(themeManager.current.secondary.opacity(0.9), lineWidth: 1)
+                        )
+                        .padding(.horizontal)
+                        .padding(.top, 12)
+                    }
+
                     Spacer()
                     
                 }
