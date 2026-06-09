@@ -355,7 +355,7 @@ struct RecentActivityCard: View {
         
         VStack(alignment: .leading, spacing: 4) {
             Text("Last 40 Days")
-                .font(.title3.weight(.semibold))
+                .font(.headline.weight(.semibold))
                 .foregroundColor(theme.textPrimary)
             
             HStack(alignment: .top, spacing: 14) {
@@ -379,43 +379,39 @@ struct RecentActivityCard: View {
                 
                 // ── Right: stats ─────────────────────────────────────────────────
                 VStack(alignment: .leading, spacing: 8) {
-                    HStack {
-                        ActivityStatRow(
-                            icon: "book.closed.fill",
-                            label: "Total Reads",
-                            value: "\(totalReads)",
-                            theme: theme
-                        )
-                        .padding(.horizontal)
-                        
-                        ActivityStatRow(
-                            icon: "calendar.badge.checkmark",
-                            label: "Active Days",
-                            value: "\(activeDays) / 40",
-                            theme: theme
-                        )
-                        .padding(.horizontal)
-                    }
-                    HStack {
-                        ActivityStatRow(
-                            icon: "star.fill",
-                            label: "Best Day",
-                            value: bestDay == 0 ? "—" : "\(bestDay)",
-                            theme: theme
-                        )
-                        .padding(.horizontal)
-                        
-                        ActivityStatRow(
-                            icon: "flame.fill",
-                            label: "Streak",
-                            value: currentStreak == 0 ? "—" : "\(currentStreak)d",
-                            theme: theme
-                        )
-                        .padding(.horizontal)
-                    }
+                    
+                    ActivityStatRow(
+                        icon: "book.closed.fill",
+                        label: "Total Reads",
+                        value: "\(totalReads)",
+                        theme: theme
+                    )
+                   
+                    ActivityStatRow(
+                        icon: "calendar.badge.checkmark",
+                        label: "Active Days",
+                        value: "\(activeDays) / 40",
+                        theme: theme
+                    )
+             
+                    ActivityStatRow(
+                        icon: "star.fill",
+                        label: "Best Day",
+                        value: bestDay == 0 ? "—" : "\(bestDay)",
+                        theme: theme
+                    )
+                    /*
+                    ActivityStatRow(
+                        icon: "flame.fill",
+                        label: "Streak",
+                        value: currentStreak == 0 ? "—" : "\(currentStreak)d",
+                        theme: theme
+                    )
+                    */
+                    
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .padding(.vertical)
+                .padding(.horizontal)
             }
         }
         .statsCardStyle(theme: theme)
@@ -439,10 +435,10 @@ private struct ActivityStatRow: View {
                 .frame(width: 14)
             VStack(alignment: .leading, spacing: 0) {
                 Text(label)
-                    .font(.system(size: 9))
+                    .font(.caption2)
                     .foregroundColor(theme.textSecondary)
                 Text(value)
-                    .font(.caption.weight(.semibold))
+                    .font(.subheadline.weight(.semibold))
                     .foregroundColor(theme.textPrimary)
             }
         }
