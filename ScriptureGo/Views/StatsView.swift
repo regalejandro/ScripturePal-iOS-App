@@ -81,8 +81,15 @@ struct StatsView: View {
         for record in records {
             dayCount[cal.startOfDay(for: record.date), default: 0] += 1
         }
+        // If today has reads, count from today.
+        // If today has no reads yet, count from yesterday — the streak is still
+        // alive until a full day passes without any logged reads.
+        let today = cal.startOfDay(for: .now)
+        let yesterday = cal.date(byAdding: .day, value: -1, to: today)!
+        let startDay = dayCount[today, default: 0] > 0 ? today : yesterday
+
         var streak = 0
-        var checkDay = cal.startOfDay(for: .now)
+        var checkDay = startDay
         while dayCount[checkDay, default: 0] > 0 {
             streak += 1
             checkDay = cal.date(byAdding: .day, value: -1, to: checkDay)!

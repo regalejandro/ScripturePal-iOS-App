@@ -37,11 +37,13 @@ struct SelectorView: View {
     @State var translationAtLastSelected = "   "
     @State private var showSettings = false
     @State var lastSelected: ChapterPointer = .init(bookID: 0, bookName: "None Chosen", chapter: 0, canonicalKey: "None")
+    @State private var markedAsRead = false
 
-    /// Whether the current session's selection has been marked as read.
-    /// Reads from recentSelections[0] so both buttons share the same state.
+    /// True if the current session's selection has been marked as read.
+    /// Uses markedAsRead as a session-level fallback so the Last Selected
+    /// button stays locked even if the recents list is cleared.
     private var currentSelectionMarked: Bool {
-        recentSelections.first?.markedAsRead ?? false
+        markedAsRead || (recentSelections.first?.markedAsRead ?? false)
     }
     @State private var showingGroupSelector = false
     @State var selectedGroupsBackup: [String] = []
@@ -119,6 +121,7 @@ struct SelectorView: View {
                                     chapter: lastSelected.chapter
                                 )
                                 modelContext.insert(record)
+                                markedAsRead = true
                                 var updated = recentSelections
                                 if !updated.isEmpty { updated[0].markedAsRead = true }
                                 saveSelections(updated)
@@ -165,6 +168,7 @@ struct SelectorView: View {
                             ) {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                     lastSelected = result
+                                    markedAsRead = false
                                     var updated = recentSelections
                                     updated.insert(RecentSelection(pointer: result, translation: selectedTranslation), at: 0)
                                     if updated.count > 3 { updated.removeLast() }
@@ -233,6 +237,7 @@ struct SelectorView: View {
                                             chapter: selection.pointer.chapter
                                         )
                                         modelContext.insert(record)
+                                        if index == 0 { markedAsRead = true }
                                         var updated = recentSelections
                                         updated[index].markedAsRead = true
                                         saveSelections(updated)
