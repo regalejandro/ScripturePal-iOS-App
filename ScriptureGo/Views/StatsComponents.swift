@@ -210,28 +210,69 @@ struct MonthlyBarChart: View {
     let theme: Theme
 
     private let monthAbbrevs = ["J","F","M","A","M","J","J","A","S","O","N","D"]
+    private let monthNames = ["January","February","March","April","May","June",
+                              "July","August","September","October","November","December"]
     private let maxBarHeight: CGFloat = 40
 
     private var maxCount: Int { readsByMonth.values.max() ?? 1 }
 
+    /// Index (0...11) of the bar the user is currently pressing, if any.
+    @State private var activeIndex: Int?
+
     var body: some View {
-        HStack(alignment: .bottom, spacing: 4) {
-            ForEach(1...12, id: \.self) { month in
-                let count = readsByMonth[month] ?? 0
-                let fraction = maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
-                VStack(spacing: 3) {
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(count > 0
-                              ? theme.accent.opacity(0.3 + 0.7 * fraction)
-                              : theme.secondary.opacity(0.25))
-                        .frame(height: max(4, maxBarHeight * fraction))
-                        .animation(.easeOut(duration: 0.4), value: count)
-                    Text(monthAbbrevs[month - 1])
-                        .font(.system(size: 8))
-                        .foregroundColor(theme.textSecondary)
+        GeometryReader { geo in
+            let cellWidth = geo.size.width / 12
+
+            HStack(alignment: .bottom, spacing: 4) {
+                ForEach(1...12, id: \.self) { month in
+                    let count = readsByMonth[month] ?? 0
+                    let fraction = maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
+                    let isActive = activeIndex == month - 1
+                    VStack(spacing: 3) {
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(count > 0
+                                  ? theme.accent.opacity(0.3 + 0.7 * fraction)
+                                  : theme.secondary.opacity(0.25))
+                            .frame(height: max(4, maxBarHeight * fraction))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .stroke(theme.accent, lineWidth: isActive ? 2 : 0)
+                            )
+                            .animation(.easeOut(duration: 0.4), value: count)
+                        Text(monthAbbrevs[month - 1])
+                            .font(.system(size: 8))
+                            .foregroundColor(isActive ? theme.accent : theme.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
             }
+            .frame(height: maxBarHeight + 16, alignment: .bottom)
+            // Tooltip floating above the active bar.
+            .overlay(alignment: .topLeading) {
+                if let idx = activeIndex {
+                    BarTooltip(title: monthNames[idx],
+                               count: readsByMonth[idx + 1] ?? 0,
+                               theme: theme)
+                        .alignmentGuide(.top) { d in d[.bottom] + 6 }
+                        .alignmentGuide(.leading) { d in d.width / 2 - (CGFloat(idx) + 0.5) * cellWidth }
+                        .animation(.easeOut(duration: 0.12), value: activeIndex)
+                }
+            }
+            .contentShape(Rectangle())
+            .gesture(
+                LongPressGesture(minimumDuration: 0.5)
+                    .sequenced(before: DragGesture(minimumDistance: 0))
+                    .onChanged { value in
+                        switch value {
+                        case .second(true, let drag?):
+                            let i = Int(drag.location.x / cellWidth)
+                            activeIndex = min(11, max(0, i))
+                        default:
+                            break
+                        }
+                    }
+                    .onEnded { _ in activeIndex = nil }
+            )
         }
         .frame(height: maxBarHeight + 16)
     }
@@ -249,24 +290,96 @@ struct YearlyBarChart: View {
     private var sortedYears: [Int] { readsByYear.keys.sorted() }
     private var maxCount: Int { readsByYear.values.max() ?? 1 }
 
+    /// Index into `sortedYears` of the bar the user is currently pressing, if any.
+    @State private var activeIndex: Int?
+
     var body: some View {
-        HStack(alignment: .bottom, spacing: 4) {
-            ForEach(sortedYears, id: \.self) { year in
-                let count = readsByYear[year] ?? 0
-                let fraction = maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
-                VStack(spacing: 3) {
-                    RoundedRectangle(cornerRadius: 3)
-                        .fill(theme.accent.opacity(0.3 + 0.7 * fraction))
-                        .frame(height: max(4, maxBarHeight * fraction))
-                        .animation(.easeOut(duration: 0.4), value: count)
-                    Text(String(year).suffix(2).description) // e.g. "26"
-                        .font(.system(size: 8))
-                        .foregroundColor(theme.textSecondary)
+        let years = sortedYears
+        GeometryReader { geo in
+            let cellWidth = years.isEmpty ? geo.size.width : geo.size.width / CGFloat(years.count)
+
+            HStack(alignment: .bottom, spacing: 4) {
+                ForEach(Array(years.enumerated()), id: \.element) { index, year in
+                    let count = readsByYear[year] ?? 0
+                    let fraction = maxCount > 0 ? CGFloat(count) / CGFloat(maxCount) : 0
+                    let isActive = activeIndex == index
+                    VStack(spacing: 3) {
+                        RoundedRectangle(cornerRadius: 3)
+                            .fill(theme.accent.opacity(0.3 + 0.7 * fraction))
+                            .frame(height: max(4, maxBarHeight * fraction))
+                            .overlay(
+                                RoundedRectangle(cornerRadius: 3)
+                                    .stroke(theme.accent, lineWidth: isActive ? 2 : 0)
+                            )
+                            .animation(.easeOut(duration: 0.4), value: count)
+                        Text(String(year).suffix(2).description) // e.g. "26"
+                            .font(.system(size: 8))
+                            .foregroundColor(isActive ? theme.accent : theme.textSecondary)
+                    }
+                    .frame(maxWidth: .infinity)
                 }
-                .frame(maxWidth: .infinity)
             }
+            .frame(height: maxBarHeight + 16, alignment: .bottom)
+            .overlay(alignment: .topLeading) {
+                if let idx = activeIndex, idx < years.count {
+                    BarTooltip(title: String(years[idx]),
+                               count: readsByYear[years[idx]] ?? 0,
+                               theme: theme)
+                        .alignmentGuide(.top) { d in d[.bottom] + 6 }
+                        .alignmentGuide(.leading) { d in d.width / 2 - (CGFloat(idx) + 0.5) * cellWidth }
+                        .animation(.easeOut(duration: 0.12), value: activeIndex)
+                }
+            }
+            .contentShape(Rectangle())
+            .gesture(
+                LongPressGesture(minimumDuration: 0.5)
+                    .sequenced(before: DragGesture(minimumDistance: 0))
+                    .onChanged { value in
+                        switch value {
+                        case .second(true, let drag?):
+                            let i = Int(drag.location.x / cellWidth)
+                            activeIndex = min(years.count - 1, max(0, i))
+                        default:
+                            break
+                        }
+                    }
+                    .onEnded { _ in activeIndex = nil }
+            )
         }
         .frame(height: maxBarHeight + 16)
+    }
+}
+
+// MARK: - BarTooltip
+
+/// Cute little callout bubble shown above a bar while the user presses it.
+private struct BarTooltip: View {
+    let title: String
+    let count: Int
+    let theme: Theme
+
+    var body: some View {
+        VStack(spacing: 1) {
+            Text("\(count)")
+                .font(.caption.weight(.bold))
+                .foregroundColor(theme.textPrimary)
+            Text("\(title) · Read\(count == 1 ? "" : "s")")
+                .font(.system(size: 8))
+                .foregroundColor(theme.textSecondary)
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 5)
+        .background(
+            RoundedRectangle(cornerRadius: 8)
+                .fill(theme.secondary.opacity(0.95))
+                .shadow(color: .black.opacity(0.15), radius: 4, y: 2)
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 8)
+                .stroke(theme.accent.opacity(0.5), lineWidth: 1)
+        )
+        .fixedSize()
+        .allowsHitTesting(false)
     }
 }
 
