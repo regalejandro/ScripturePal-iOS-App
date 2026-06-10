@@ -22,9 +22,9 @@ struct ContentView: View {
                     Label("Select", systemImage: "rays")
                 }
         
-            TranslationPickerView()
+            LibraryView()
                 .tabItem {
-                    Label("Books", systemImage: "books.vertical.fill")
+                    Label("Library", systemImage: "books.vertical.fill")
                 }
 
             StatsView()
