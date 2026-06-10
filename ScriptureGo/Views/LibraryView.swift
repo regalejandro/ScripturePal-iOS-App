@@ -36,12 +36,14 @@ struct LibraryView: View {
 
                 GeometryReader { geo in
                     // Fit as many tiles of the chosen size as the width allows.
-                    let available = geo.size.width - horizontalPadding * 2
+                    // Clamp to 0 so the first (zero-width) layout pass can't
+                    // produce a negative frame height.
+                    let available = max(0, geo.size.width - horizontalPadding * 2)
                     let columnCount = max(
                         1,
                         Int((available + spacing) / (tileSize.targetWidth + spacing))
                     )
-                    let tileWidth = (available - spacing * CGFloat(columnCount - 1)) / CGFloat(columnCount)
+                    let tileWidth = max(0, (available - spacing * CGFloat(columnCount - 1)) / CGFloat(columnCount))
                     let tileHeight = tileWidth * tileSize.aspectRatio
 
                     let columns = Array(
