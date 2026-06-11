@@ -75,39 +75,62 @@ struct StatsView: View {
         return (counts, counts.reduce(0, +), counts.filter { $0 > 0 }.count, counts.max() ?? 0)
     }
 
-    private var currentStreak: Int {
-        let cal = Calendar.current
-        var dayCount: [Date: Int] = [:]
-        for record in records {
-            dayCount[cal.startOfDay(for: record.date), default: 0] += 1
-        }
-        // If today has reads, count from today.
-        // If today has no reads yet, count from yesterday — the streak is still
-        // alive until a full day passes without any logged reads.
-        let today = cal.startOfDay(for: .now)
-        let yesterday = cal.date(byAdding: .day, value: -1, to: today)!
-        let startDay = dayCount[today, default: 0] > 0 ? today : yesterday
-
-        var streak = 0
-        var checkDay = startDay
-        while dayCount[checkDay, default: 0] > 0 {
-            streak += 1
-            checkDay = cal.date(byAdding: .day, value: -1, to: checkDay)!
-        }
-        return streak
+    /// Streak length plus the dates that bound it.
+    private struct StreakInfo {
+        var current: Int = 0
+        var currentStart: Date?
+        var best: Int = 0
+        var bestStart: Date?
+        var bestEnd: Date?
     }
 
-    private var bestStreak: Int {
+    private var streakInfo: StreakInfo {
         let cal = Calendar.current
-        let sortedDays = Set(records.map { cal.startOfDay(for: $0.date) }).sorted()
-        guard !sortedDays.isEmpty else { return 0 }
-        var best = 1, current = 1
-        for i in 1..<sortedDays.count {
-            let gap = cal.dateComponents([.day], from: sortedDays[i - 1], to: sortedDays[i]).day ?? 0
-            current = gap == 1 ? current + 1 : 1
-            best = max(best, current)
+        let days = Set(records.map { cal.startOfDay(for: $0.date) }).sorted()
+        guard !days.isEmpty else { return StreakInfo() }
+        let daySet = Set(days)
+
+        var info = StreakInfo()
+
+        // ── Current streak ──────────────────────────────────────────────────
+        // If today has reads, count from today. If not, count from yesterday —
+        // the streak is still alive until a full day passes with no reads.
+        let today = cal.startOfDay(for: .now)
+        let yesterday = cal.date(byAdding: .day, value: -1, to: today)!
+        let startDay = daySet.contains(today) ? today
+                     : (daySet.contains(yesterday) ? yesterday : nil)
+
+        if let startDay {
+            var checkDay = startDay
+            while daySet.contains(checkDay) {
+                info.current += 1
+                info.currentStart = checkDay
+                checkDay = cal.date(byAdding: .day, value: -1, to: checkDay)!
+            }
         }
-        return best
+
+        // ── Best streak (with its date range) ───────────────────────────────
+        var best = 1, run = 1
+        var runStart = days[0]
+        info.bestStart = days[0]
+        info.bestEnd = days[0]
+        for i in 1..<days.count {
+            let gap = cal.dateComponents([.day], from: days[i - 1], to: days[i]).day ?? 0
+            if gap == 1 {
+                run += 1
+            } else {
+                run = 1
+                runStart = days[i]
+            }
+            if run > best {
+                best = run
+                info.bestStart = runStart
+                info.bestEnd = days[i]
+            }
+        }
+        info.best = best
+
+        return info
     }
 
     // MARK: - Grid lookup
@@ -146,9 +169,13 @@ struct StatsView: View {
                             )
 
                             // ── Streak card ───────────────────────────────────
+                            let streaks = streakInfo
                             StreakCard(
-                                currentStreak: currentStreak,
-                                bestStreak: bestStreak,
+                                currentStreak: streaks.current,
+                                currentStreakStart: streaks.currentStart,
+                                bestStreak: streaks.best,
+                                bestStreakStart: streaks.bestStart,
+                                bestStreakEnd: streaks.bestEnd,
                                 theme: themeManager.current
                             )
 

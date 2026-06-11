@@ -438,8 +438,15 @@ struct BookGridRow: View {
 struct StreakCard: View {
 
     let currentStreak: Int
+    let currentStreakStart: Date?
     let bestStreak: Int
+    let bestStreakStart: Date?
+    let bestStreakEnd: Date?
     let theme: Theme
+
+    private func formatted(_ date: Date) -> String {
+        date.formatted(date: .long, time: .omitted)
+    }
 
     var body: some View {
         HStack(spacing: 0) {
@@ -460,6 +467,14 @@ struct StreakCard: View {
                 Text(currentStreak == 1 ? "day" : "days")
                     .font(.caption2)
                     .foregroundColor(theme.textSecondary.opacity(0.7))
+
+                if currentStreak > 0, let start = currentStreakStart {
+                    Text("Since \(formatted(start))")
+                        .font(.caption2)
+                        .foregroundColor(theme.textSecondary.opacity(0.7))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 2)
+                }
             }
             .frame(maxWidth: .infinity)
 
@@ -481,6 +496,16 @@ struct StreakCard: View {
                 Text(bestStreak == 1 ? "day" : "days")
                     .font(.caption2)
                     .foregroundColor(theme.textSecondary.opacity(0.7))
+
+                if bestStreak > 0, let start = bestStreakStart, let end = bestStreakEnd {
+                    Text(start == end
+                         ? formatted(start)
+                         : "\(formatted(start)) – \(formatted(end))")
+                        .font(.caption2)
+                        .foregroundColor(theme.textSecondary.opacity(0.7))
+                        .multilineTextAlignment(.center)
+                        .padding(.top, 2)
+                }
             }
             .frame(maxWidth: .infinity)
         }
