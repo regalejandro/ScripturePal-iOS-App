@@ -180,7 +180,7 @@ struct BookDetailView: View {
                     displayedComponents: .date
                 )
                 .datePickerStyle(.graphical)
-                .tint(theme.accent)
+                .tint(theme.primary)
                 .padding()
 
                 Spacer()

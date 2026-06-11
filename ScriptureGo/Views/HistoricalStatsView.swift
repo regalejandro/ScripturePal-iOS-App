@@ -161,8 +161,8 @@ struct HistoricalStatsView: View {
 
                     ForEach(group.records, id: \.persistentModelID) { record in
                         LoggedReadCard(
+                            record: record,
                             bookName: bookName(record.canonicalKey),
-                            chapter: record.chapter,
                             theme: theme
                         )
                     }
@@ -261,9 +261,15 @@ struct HistoricalStatsView: View {
 // MARK: - LoggedReadCard
 
 private struct LoggedReadCard: View {
+
+    @Environment(\.modelContext) private var modelContext
+
+    let record: ReadingRecord
     let bookName: String
-    let chapter: Int
     let theme: Theme
+
+    @State private var showingDatePicker = false
+    @State private var pickedDate = Date()
 
     var body: some View {
         HStack(spacing: 12) {
@@ -275,12 +281,34 @@ private struct LoggedReadCard: View {
                 Text(bookName)
                     .font(.subheadline.weight(.semibold))
                     .foregroundColor(theme.textPrimary)
-                Text("Chapter \(chapter)")
+                Text("Chapter \(record.chapter)")
                     .font(.caption)
                     .foregroundColor(theme.textSecondary)
             }
 
             Spacer(minLength: 0)
+
+            // Edit / delete menu.
+            Menu {
+                Button {
+                    pickedDate = record.date
+                    showingDatePicker = true
+                } label: {
+                    Label("Edit Date", systemImage: "calendar")
+                }
+
+                Button(role: .destructive) {
+                    modelContext.delete(record)
+                } label: {
+                    Label("Delete", systemImage: "trash")
+                }
+            } label: {
+                Image(systemName: "pencil")
+                    .font(.subheadline)
+                    .foregroundColor(theme.primary)
+                    .padding(8)
+                    .contentShape(Rectangle())
+            }
         }
         .padding(.horizontal, 14)
         .padding(.vertical, 10)
@@ -292,6 +320,44 @@ private struct LoggedReadCard: View {
             RoundedRectangle(cornerRadius: 14)
                 .stroke(theme.secondary.opacity(0.9), lineWidth: 1)
         )
+        .sheet(isPresented: $showingDatePicker) {
+            datePickerSheet
+        }
+    }
+
+    // MARK: - Date picker sheet
+
+    private var datePickerSheet: some View {
+        NavigationStack {
+            VStack {
+                DatePicker(
+                    "Reading Date",
+                    selection: $pickedDate,
+                    in: ...Date(),
+                    displayedComponents: .date
+                )
+                .datePickerStyle(.graphical)
+                .tint(theme.primary)
+                .padding()
+
+                Spacer()
+            }
+            .background(theme.background.ignoresSafeArea())
+            .navigationTitle("\(bookName) \(record.chapter)")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .cancellationAction) {
+                    Button("Cancel") { showingDatePicker = false }
+                }
+                ToolbarItem(placement: .confirmationAction) {
+                    Button("Save") {
+                        record.date = pickedDate
+                        showingDatePicker = false
+                    }
+                }
+            }
+        }
+        .presentationDetents([.medium, .large])
     }
 }
 
