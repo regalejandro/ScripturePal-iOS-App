@@ -50,6 +50,8 @@ struct BookDetailView: View {
                 chaptersSection
 
                 historySection
+
+                readingLogSection
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
@@ -156,6 +158,27 @@ struct BookDetailView: View {
                 .foregroundColor(theme.textPrimary)
 
             BookHistoryGrid(book: book, theme: theme)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 18)
+                .fill(theme.secondary.opacity(0.15))
+        )
+        .overlay(
+            RoundedRectangle(cornerRadius: 18)
+                .stroke(theme.secondary.opacity(0.9), lineWidth: 1)
+        )
+    }
+
+    // MARK: - Reading log
+
+    private var readingLogSection: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Reading Log")
+                .font(.headline)
+                .foregroundColor(theme.textPrimary)
+
+            BookReadingLog(book: book, theme: theme)
         }
         .padding(14)
         .background(
@@ -367,6 +390,33 @@ private struct BookHistoryGrid: View {
                         availableWidth = newValue
                     }
             }
+        )
+    }
+}
+
+// MARK: - BookReadingLog
+
+/// The shared reading log scoped to a single book. Isolated so its @Query
+/// reacts live to readings logged, edited, or deleted for this book.
+private struct BookReadingLog: View {
+
+    let book: Book
+    let theme: Theme
+
+    @Query private var records: [ReadingRecord]
+
+    init(book: Book, theme: Theme) {
+        self.book = book
+        self.theme = theme
+        let key = book.canonicalKey
+        _records = Query(filter: #Predicate<ReadingRecord> { $0.canonicalKey == key })
+    }
+
+    var body: some View {
+        ReadingLogView(
+            records: records,
+            bookName: { _ in book.name },
+            theme: theme
         )
     }
 }
