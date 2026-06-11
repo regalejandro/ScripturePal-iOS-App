@@ -17,7 +17,6 @@ struct BookDetailView: View {
 
     // Logging flow state
     @State private var selectedChapter: Int?
-    @State private var showingLogOptions = false
     @State private var showingDatePicker = false
     @State private var pickedDate = Date()
     @State private var showingReadAlert = false
@@ -58,23 +57,6 @@ struct BookDetailView: View {
         .background(theme.background.ignoresSafeArea())
         .navigationTitle(book.name)
         .navigationBarTitleDisplayMode(.inline)
-        // Step 1: choose how to log.
-        .confirmationDialog(
-            selectedChapter.map { "Log \(book.name) \($0)" } ?? "Log Reading",
-            isPresented: $showingLogOptions,
-            titleVisibility: .visible
-        ) {
-            Button("Log for Today") {
-                if let chapter = selectedChapter {
-                    logReading(chapter: chapter, date: .now)
-                }
-            }
-            Button("Log for a Specific Date") {
-                pickedDate = Date()
-                showingDatePicker = true
-            }
-            Button("Cancel", role: .cancel) { }
-        }
         // Step 2 (optional): pick a custom date.
         .sheet(isPresented: $showingDatePicker) {
             datePickerSheet
@@ -143,11 +125,14 @@ struct BookDetailView: View {
                 ForEach(1...book.chapters, id: \.self) { chapter in
                     Button {
                         selectedChapter = chapter
-                        showingLogOptions = true
                     } label: {
                         ChapterSquare(number: chapter, theme: theme)
                     }
                     .buttonStyle(PressableSquareStyle())
+                    .popover(isPresented: optionsBinding(for: chapter)) {
+                        logOptionsPopover(for: chapter)
+                            .presentationCompactAdaptation(.popover)
+                    }
                 }
             }
         }
@@ -205,7 +190,10 @@ struct BookDetailView: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
-                    Button("Cancel") { showingDatePicker = false }
+                    Button("Cancel") {
+                        showingDatePicker = false
+                        selectedChapter = nil
+                    }
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Log") {
@@ -213,11 +201,66 @@ struct BookDetailView: View {
                             logReading(chapter: chapter, date: pickedDate)
                         }
                         showingDatePicker = false
+                        selectedChapter = nil
                     }
                 }
             }
         }
         .presentationDetents([.medium, .large])
+    }
+
+    // MARK: - Log options popover
+
+    /// The options popover for `chapter` is shown when it is the selected chapter
+    /// and no date sheet is up. Anchors the popover to that specific square.
+    private func optionsBinding(for chapter: Int) -> Binding<Bool> {
+        Binding(
+            get: { selectedChapter == chapter && !showingDatePicker },
+            set: { isShown in
+                if !isShown && selectedChapter == chapter {
+                    selectedChapter = nil
+                }
+            }
+        )
+    }
+
+    private func logOptionsPopover(for chapter: Int) -> some View {
+        VStack(alignment: .leading, spacing: 0) {
+            Text("Log \(book.name) \(chapter)")
+                .font(.caption.weight(.semibold))
+                .foregroundColor(theme.textSecondary)
+                .padding(.horizontal, 16)
+                .padding(.vertical, 10)
+
+            Divider()
+
+            Button {
+                logReading(chapter: chapter, date: .now)
+                selectedChapter = nil
+            } label: {
+                Label("Log for Today", systemImage: "checkmark.circle")
+                    .foregroundColor(theme.textPrimary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+            }
+
+            Divider()
+
+            Button {
+                pickedDate = Date()
+                showingDatePicker = true
+            } label: {
+                Label("Log for a Specific Date", systemImage: "calendar")
+                    .foregroundColor(theme.textPrimary)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+                    .padding(.horizontal, 16)
+                    .padding(.vertical, 12)
+            }
+        }
+        .tint(theme.accent)
+        .frame(width: 240)
+        .background(theme.background)
     }
 
     // MARK: - Logging
