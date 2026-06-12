@@ -100,6 +100,22 @@ struct SelectorView: View {
         return keys
     }
     
+    /// The Book matching a pointer's canonicalKey in the current translation.
+    private func book(for pointer: ChapterPointer) -> Book? {
+        bible.books(for: selectedTranslation).first { $0.canonicalKey == pointer.canonicalKey }
+    }
+
+    private func recentLeading(_ selection: RecentSelection) -> some View {
+        VStack(alignment: .leading, spacing: 2) {
+            Text("\(selection.pointer.bookName) \(selection.pointer.chapter)")
+                .font(.body.weight(.medium))
+                .foregroundColor(themeManager.current.textPrimary)
+            Text(selection.translation)
+                .font(.caption)
+                .foregroundColor(themeManager.current.accent)
+        }
+    }
+
     var body: some View {
         NavigationView {
             ZStack {
@@ -130,11 +146,22 @@ struct SelectorView: View {
                                 .padding(.horizontal)
                         }
                         
-                        Text(
-                            lastSelected.bookID != 0
-                            ? "\(lastSelected.bookName) \(lastSelected.chapter)"
-                            : "\(lastSelected.bookName)"
-                        )
+                        Group {
+                            if lastSelected.bookID != 0, let selectedBook = book(for: lastSelected) {
+                                NavigationLink {
+                                    BookDetailView(book: selectedBook)
+                                } label: {
+                                    Text("\(lastSelected.bookName) \(lastSelected.chapter)")
+                                }
+                                .buttonStyle(.plain)
+                            } else {
+                                Text(
+                                    lastSelected.bookID != 0
+                                    ? "\(lastSelected.bookName) \(lastSelected.chapter)"
+                                    : "\(lastSelected.bookName)"
+                                )
+                            }
+                        }
                         .font(.largeTitle)
                         .padding(.top, 22)
                         .padding(.horizontal)
@@ -247,13 +274,15 @@ struct SelectorView: View {
                                 let selection = recentSelections[index]
 
                                 HStack(alignment: .center, spacing: 12) {
-                                    VStack(alignment: .leading, spacing: 2) {
-                                        Text("\(selection.pointer.bookName) \(selection.pointer.chapter)")
-                                            .font(.body.weight(.medium))
-                                            .foregroundColor(themeManager.current.textPrimary)
-                                        Text(selection.translation)
-                                            .font(.caption)
-                                            .foregroundColor(themeManager.current.accent)
+                                    if let selectedBook = book(for: selection.pointer) {
+                                        NavigationLink {
+                                            BookDetailView(book: selectedBook)
+                                        } label: {
+                                            recentLeading(selection)
+                                        }
+                                        .buttonStyle(.plain)
+                                    } else {
+                                        recentLeading(selection)
                                     }
 
                                     Spacer()

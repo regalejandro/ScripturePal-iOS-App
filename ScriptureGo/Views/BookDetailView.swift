@@ -81,8 +81,10 @@ struct BookDetailView: View {
         } message: {
             Text("\(book.name) will be added to the new group.")
         }
-        .navigationDestination(isPresented: $showingGroupManager) {
-            GroupManagerView()
+        .sheet(isPresented: $showingGroupManager) {
+            NavigationStack {
+                GroupManagerView()
+            }
         }
     }
 
@@ -132,7 +134,7 @@ struct BookDetailView: View {
                 Button {
                     showingGroupManager = true
                 } label: {
-                    Label("Manage Groups", systemImage: "folder")
+                    Label("Manage Groups", systemImage: "rectangle.3.group")
                 }
             } label: {
                 HStack(spacing: 6) {

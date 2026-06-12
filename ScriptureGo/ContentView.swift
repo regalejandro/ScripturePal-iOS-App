@@ -12,24 +12,24 @@ struct ContentView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.colorScheme) private var colorScheme
 
-    
+
     var body: some View {
             
         TabView {
-            
+
             SelectorView()
                 .tabItem {
                     Label("Select", systemImage: "rays")
                 }
-        
+
             LibraryView()
                 .tabItem {
-                    Label("Library", systemImage: "books.vertical.fill")
+                    Label("Library", systemImage: "books.vertical")
                 }
 
             StatsView()
                 .tabItem {
-                    Label("Stats", systemImage: "chart.bar.fill")
+                    Label("Stats", systemImage: "chart.bar")
                 }
         }
         .tint(themeManager.current.primary)

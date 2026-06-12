@@ -134,7 +134,7 @@ struct GroupSelectionView: View {
                     NavigationLink {
                         GroupManagerView()
                     } label: {
-                        Label("Manage Groups", systemImage: "folder")
+                        Label("Manage Groups", systemImage: "rectangle.3.group")
                     }
                 }
                 .foregroundColor(theme.textPrimary)

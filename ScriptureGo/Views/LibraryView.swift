@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 // MARK: - LibraryView
 
@@ -16,8 +17,11 @@ struct LibraryView: View {
 
     @StateObject var bible = BibleManager()
     @EnvironmentObject var themeManager: ThemeManager
+    @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
 
     @State private var searchText = ""
+    @State private var testamentFilter: TestamentFilter = .all
+    @State private var groupFilter: GroupFilter = .all
 
     /// Horizontal inset on both edges of the grid.
     private let horizontalPadding: CGFloat = 16
@@ -30,11 +34,48 @@ struct LibraryView: View {
 
     private var books: [Book] { bible.books(for: selectedTranslation) }
 
-    /// Books filtered by the smart search matcher (all books when not searching).
+    /// Books after applying testament + group filters and the search matcher.
     private var filteredBooks: [Book] {
+        var result = books
+
+        switch testamentFilter {
+        case .all: break
+        case .old: result = result.filter { isOldTestament($0) }
+        case .new: result = result.filter { isNewTestament($0) }
+        }
+
+        switch groupFilter {
+        case .all:
+            break
+        case .defaultGroup(let name):
+            result = result.filter { $0.groups.contains(name) }
+        case .custom(let uuid):
+            if let group = customGroups.first(where: { $0.uuid == uuid }) {
+                let keys = Set(group.bookKeys)
+                result = result.filter { keys.contains($0.canonicalKey) }
+            }
+        }
+
         let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
-        guard !query.isEmpty else { return books }
-        return books.filter { BookSearch.matches(query: query, name: $0.name) }
+        if !query.isEmpty {
+            result = result.filter { BookSearch.matches(query: query, name: $0.name) }
+        }
+
+        return result
+    }
+
+    private var isFiltering: Bool {
+        testamentFilter != .all || groupFilter != .all
+    }
+
+    private func isOldTestament(_ book: Book) -> Bool {
+        ["OT", "OLD", "OLD TESTAMENT"]
+            .contains(book.section.trimmingCharacters(in: .whitespaces).uppercased())
+    }
+
+    private func isNewTestament(_ book: Book) -> Bool {
+        ["NT", "NEW", "NEW TESTAMENT"]
+            .contains(book.section.trimmingCharacters(in: .whitespaces).uppercased())
     }
 
     var body: some View {
@@ -82,14 +123,62 @@ struct LibraryView: View {
                     }
                 }
                 .overlay {
-                    if filteredBooks.isEmpty && !searchText.isEmpty {
-                        ContentUnavailableView.search(text: searchText)
+                    if filteredBooks.isEmpty {
+                        if !searchText.isEmpty {
+                            ContentUnavailableView.search(text: searchText)
+                        } else {
+                            ContentUnavailableView(
+                                "No Books",
+                                systemImage: "book.closed",
+                                description: Text("No books match the current filters.")
+                            )
+                        }
                     }
                 }
             }
             .searchable(text: $searchText, prompt: "Search the library")
             .navigationTitle("Library")
             .toolbar {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Menu {
+                        Picker("Testament", selection: $testamentFilter) {
+                            ForEach(TestamentFilter.allCases) { filter in
+                                Text(filter.label).tag(filter)
+                            }
+                        }
+                        Picker("Group", selection: $groupFilter) {
+                            Text("All Groups").tag(GroupFilter.all)
+
+                            Section("Default Groups") {
+                                ForEach(bible.groups(for: selectedTranslation), id: \.self) { group in
+                                    Text(group).tag(GroupFilter.defaultGroup(group))
+                                }
+                            }
+
+                            if !customGroups.isEmpty {
+                                Section("Custom Groups") {
+                                    ForEach(customGroups) { group in
+                                        Text(group.name).tag(GroupFilter.custom(group.uuid))
+                                    }
+                                }
+                            }
+                        }
+                        if isFiltering {
+                            Button(role: .destructive) {
+                                testamentFilter = .all
+                                groupFilter = .all
+                            } label: {
+                                Label("Clear Filters", systemImage: "xmark.circle")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: isFiltering
+                              ? "line.3.horizontal.decrease.circle.fill"
+                              : "line.3.horizontal.decrease.circle")
+                            .foregroundColor(themeManager.current.primary)
+                    }
+                }
+
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {
                         Picker("Tile Size", selection: $tileSizeRaw) {
@@ -240,6 +329,34 @@ private struct PressableTileStyle: ButtonStyle {
             .opacity(configuration.isPressed ? 0.85 : 1)
             .animation(.spring(response: 0.3, dampingFraction: 0.6), value: configuration.isPressed)
     }
+}
+
+// MARK: - TestamentFilter
+
+/// Testament filter options for the library.
+enum TestamentFilter: String, CaseIterable, Identifiable {
+    case all
+    case old
+    case new
+
+    var id: String { rawValue }
+
+    var label: String {
+        switch self {
+        case .all: return "All Testaments"
+        case .old: return "Old Testament"
+        case .new: return "New Testament"
+        }
+    }
+}
+
+// MARK: - GroupFilter
+
+/// Library group filter: all books, a default (built-in) group, or a custom group.
+enum GroupFilter: Hashable {
+    case all
+    case defaultGroup(String)
+    case custom(UUID)
 }
 
 // MARK: - LibraryTileSize
