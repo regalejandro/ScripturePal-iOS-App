@@ -17,6 +17,8 @@ struct LibraryView: View {
     @StateObject var bible = BibleManager()
     @EnvironmentObject var themeManager: ThemeManager
 
+    @State private var searchText = ""
+
     /// Horizontal inset on both edges of the grid.
     private let horizontalPadding: CGFloat = 16
     /// Spacing between tiles, both horizontally and vertically.
@@ -27,6 +29,13 @@ struct LibraryView: View {
     }
 
     private var books: [Book] { bible.books(for: selectedTranslation) }
+
+    /// Books filtered by the smart search matcher (all books when not searching).
+    private var filteredBooks: [Book] {
+        let query = searchText.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !query.isEmpty else { return books }
+        return books.filter { BookSearch.matches(query: query, name: $0.name) }
+    }
 
     var body: some View {
         NavigationStack {
@@ -53,7 +62,7 @@ struct LibraryView: View {
 
                     ScrollView {
                         LazyVGrid(columns: columns, spacing: spacing) {
-                            ForEach(books) { book in
+                            ForEach(filteredBooks) { book in
                                 NavigationLink {
                                     BookDetailView(book: book)
                                 } label: {
@@ -72,7 +81,13 @@ struct LibraryView: View {
                         .animation(.easeInOut(duration: 0.25), value: tileSizeRaw)
                     }
                 }
+                .overlay {
+                    if filteredBooks.isEmpty && !searchText.isEmpty {
+                        ContentUnavailableView.search(text: searchText)
+                    }
+                }
             }
+            .searchable(text: $searchText, prompt: "Search the library")
             .navigationTitle("Library")
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
@@ -90,6 +105,77 @@ struct LibraryView: View {
                 }
             }
         }
+    }
+}
+
+// MARK: - BookSearch
+
+/// Lightweight "smart" library search.
+///
+/// Matches when the query is a prefix of the book name or of any word in it
+/// (so "Ge" → Genesis, "cor" → 1 Corinthians, but a mid-word hit like "esis"
+/// won't match). Misspellings are tolerated via a small Levenshtein distance
+/// against equal-ish-length prefixes; fuzziness is disabled for 1–2 character
+/// queries to avoid spurious matches.
+enum BookSearch {
+
+    static func matches(query: String, name: String) -> Bool {
+        let q = normalize(query)
+        guard !q.isEmpty else { return true }
+
+        let n = normalize(name)
+        var candidates = n.split(separator: " ").map(String.init)
+        candidates.append(n) // whole name, for multi-word queries like "1 cor"
+
+        for candidate in candidates {
+            if candidate.hasPrefix(q) { return true }
+            if q.count >= 3 && fuzzyPrefixMatch(q, candidate) { return true }
+        }
+        return false
+    }
+
+    private static func normalize(_ s: String) -> String {
+        s.folding(options: [.diacriticInsensitive, .caseInsensitive], locale: .current)
+            .trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
+    /// True if `query` is within an edit-distance tolerance of a same-length-ish
+    /// prefix of `candidate`.
+    private static func fuzzyPrefixMatch(_ query: String, _ candidate: String) -> Bool {
+        let tolerance = query.count <= 5 ? 1 : 2
+        let q = Array(query)
+        let c = Array(candidate)
+
+        let lower = max(1, q.count - tolerance)
+        let upper = min(c.count, q.count + tolerance)
+        guard lower <= upper else { return false }
+
+        for length in lower...upper {
+            if levenshtein(q, Array(c[0..<length])) <= tolerance { return true }
+        }
+        return false
+    }
+
+    private static func levenshtein(_ a: [Character], _ b: [Character]) -> Int {
+        if a.isEmpty { return b.count }
+        if b.isEmpty { return a.count }
+
+        var previous = Array(0...b.count)
+        var current = [Int](repeating: 0, count: b.count + 1)
+
+        for i in 1...a.count {
+            current[0] = i
+            for j in 1...b.count {
+                let cost = a[i - 1] == b[j - 1] ? 0 : 1
+                current[j] = min(
+                    previous[j] + 1,      // deletion
+                    current[j - 1] + 1,   // insertion
+                    previous[j - 1] + cost // substitution
+                )
+            }
+            swap(&previous, &current)
+        }
+        return previous[b.count]
     }
 }
 
