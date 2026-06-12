@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import UIKit
 
 // MARK: - YearStatsCard
 
@@ -259,20 +260,7 @@ struct MonthlyBarChart: View {
                 }
             }
             .contentShape(Rectangle())
-            .gesture(
-                LongPressGesture(minimumDuration: 0.5)
-                    .sequenced(before: DragGesture(minimumDistance: 0))
-                    .onChanged { value in
-                        switch value {
-                        case .second(true, let drag?):
-                            let i = Int(drag.location.x / cellWidth)
-                            activeIndex = min(11, max(0, i))
-                        default:
-                            break
-                        }
-                    }
-                    .onEnded { _ in activeIndex = nil }
-            )
+            .barInspect(count: 12) { activeIndex = $0 }
         }
         .frame(height: maxBarHeight + 16)
     }
@@ -331,22 +319,129 @@ struct YearlyBarChart: View {
                 }
             }
             .contentShape(Rectangle())
-            .gesture(
-                LongPressGesture(minimumDuration: 0.5)
-                    .sequenced(before: DragGesture(minimumDistance: 0))
-                    .onChanged { value in
-                        switch value {
-                        case .second(true, let drag?):
-                            let i = Int(drag.location.x / cellWidth)
-                            activeIndex = min(years.count - 1, max(0, i))
-                        default:
-                            break
-                        }
-                    }
-                    .onEnded { _ in activeIndex = nil }
-            )
+            .barInspect(count: years.count) { activeIndex = $0 }
         }
         .frame(height: maxBarHeight + 16)
+    }
+}
+
+// MARK: - Bar inspect gesture
+
+/// A UIKit-backed press-and-hold scrub overlay that does **not** block the
+/// surrounding ScrollView. It uses a `UILongPressGestureRecognizer` configured
+/// to recognize *simultaneously* with the scroll view's pan: a normal swipe
+/// (even starting on the chart) scrolls, and a brief deliberate hold reveals the
+/// bar data, after which sliding left/right moves between bars. Reports the
+/// active bar index, or `nil` when released.
+private struct BarInspectOverlay: UIViewRepresentable {
+    let count: Int
+    var minimumPressDuration: TimeInterval = 0.2
+    let onChange: (Int?) -> Void
+
+    func makeCoordinator() -> Coordinator { Coordinator(self) }
+
+    func makeUIView(context: Context) -> UIView {
+        let view = UIView()
+        view.backgroundColor = .clear
+        let press = UILongPressGestureRecognizer(
+            target: context.coordinator,
+            action: #selector(Coordinator.handle(_:))
+        )
+        press.minimumPressDuration = minimumPressDuration
+        press.delegate = context.coordinator
+        view.addGestureRecognizer(press)
+        return view
+    }
+
+    func updateUIView(_ uiView: UIView, context: Context) {
+        context.coordinator.parent = self
+    }
+
+    final class Coordinator: NSObject, UIGestureRecognizerDelegate {
+        var parent: BarInspectOverlay
+        /// The scroll view whose scrolling we paused during an active hold.
+        private weak var pausedScrollView: UIScrollView?
+        /// The navigation back-swipe we paused during an active hold.
+        private weak var pausedPopGesture: UIGestureRecognizer?
+
+        init(_ parent: BarInspectOverlay) { self.parent = parent }
+
+        @objc func handle(_ gr: UILongPressGestureRecognizer) {
+            guard let view = gr.view else { return }
+            switch gr.state {
+            case .began:
+                // Hold recognized → freeze vertical scrolling and the navigation
+                // back-swipe so the user can slide left/right between bars without
+                // the screen moving or popping the page.
+                let scrollView = enclosingScrollView(of: view)
+                scrollView?.isScrollEnabled = false
+                pausedScrollView = scrollView
+
+                let popGesture = enclosingViewController(of: view)?
+                    .navigationController?.interactivePopGestureRecognizer
+                popGesture?.isEnabled = false
+                pausedPopGesture = popGesture
+
+                emit(gr, in: view)
+            case .changed:
+                // Re-assert in case SwiftUI re-enabled them between updates.
+                pausedScrollView?.isScrollEnabled = false
+                pausedPopGesture?.isEnabled = false
+                emit(gr, in: view)
+            case .ended, .cancelled, .failed:
+                pausedScrollView?.isScrollEnabled = true
+                pausedScrollView = nil
+                pausedPopGesture?.isEnabled = true
+                pausedPopGesture = nil
+                parent.onChange(nil)
+            default:
+                break
+            }
+        }
+
+        private func emit(_ gr: UILongPressGestureRecognizer, in view: UIView) {
+            let width = view.bounds.width
+            guard width > 0, parent.count > 0 else { return }
+            let x = gr.location(in: view).x
+            let cell = width / CGFloat(parent.count)
+            let i = min(parent.count - 1, max(0, Int(x / cell)))
+            parent.onChange(i)
+        }
+
+        private func enclosingScrollView(of view: UIView) -> UIScrollView? {
+            var current = view.superview
+            while let v = current {
+                if let scroll = v as? UIScrollView { return scroll }
+                current = v.superview
+            }
+            return nil
+        }
+
+        private func enclosingViewController(of view: UIView) -> UIViewController? {
+            var responder: UIResponder? = view
+            while let r = responder {
+                if let vc = r as? UIViewController { return vc }
+                responder = r.next
+            }
+            return nil
+        }
+
+        // Run alongside the scroll view's pan (so a normal swipe still scrolls
+        // until a hold is recognized), but never alongside the navigation
+        // back-swipe — while inspecting, that edge pan must not fire.
+        func gestureRecognizer(
+            _ gestureRecognizer: UIGestureRecognizer,
+            shouldRecognizeSimultaneouslyWith other: UIGestureRecognizer
+        ) -> Bool {
+            if other is UIScreenEdgePanGestureRecognizer { return false }
+            return true
+        }
+    }
+}
+
+private extension View {
+    func barInspect(count: Int, onChange: @escaping (Int?) -> Void) -> some View {
+        overlay(BarInspectOverlay(count: count, onChange: onChange))
     }
 }
 
