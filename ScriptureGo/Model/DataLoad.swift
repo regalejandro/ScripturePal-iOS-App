@@ -41,11 +41,17 @@ class BibleManager: ObservableObject {
     func randomChapter(
         for translation: String,
         selectedGroups: [String],
-        groupMode: String
+        groupMode: String,
+        customGroupKeys: Set<String> = []
     ) -> ChapterPointer? {
-        
+
         // Get filtered books
-        let books = filteredBooks(for: translation, matchingGroups: selectedGroups, groupMode: groupMode)
+        let books = filteredBooks(
+            for: translation,
+            matchingGroups: selectedGroups,
+            groupMode: groupMode,
+            customGroupKeys: customGroupKeys
+        )
         guard books.isEmpty == false else { return nil }
         
         // Count total chapters
@@ -95,17 +101,21 @@ class BibleManager: ObservableObject {
     func filteredBooks(
         for translation: String,
         matchingGroups groups: [String],
-        groupMode: String
+        groupMode: String,
+        customGroupKeys: Set<String> = []
     ) -> [Book] {
-        
+
         let allBooks = books(for: translation)
-        
+
         if groupMode == "all" {
             return allBooks
         }
-        
+
+        // In custom mode a book qualifies if it belongs to a selected default
+        // group OR is a member of a selected custom group.
         return allBooks.filter { book in
             !Set(book.groups).isDisjoint(with: groups)
+            || customGroupKeys.contains(book.canonicalKey)
         }
     }
 

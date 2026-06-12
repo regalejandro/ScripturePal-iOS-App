@@ -12,6 +12,7 @@ struct BookDetailView: View {
 
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var themeManager: ThemeManager
+    @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
 
     let book: Book
 
@@ -21,6 +22,11 @@ struct BookDetailView: View {
     @State private var pickedDate = Date()
     @State private var showingReadAlert = false
     @State private var logConfirmationMessage = ""
+
+    // Group management state
+    @State private var showingNewGroup = false
+    @State private var newGroupName = ""
+    @State private var showingGroupManager = false
 
     private var theme: Theme { themeManager.current }
 
@@ -67,6 +73,17 @@ struct BookDetailView: View {
         .alert(logConfirmationMessage, isPresented: $showingReadAlert) {
             Button("OK", role: .cancel) { }
         }
+        // New custom group (adds this book to it).
+        .alert("New Group", isPresented: $showingNewGroup) {
+            TextField("Group name", text: $newGroupName)
+            Button("Create") { createGroupAndAdd() }
+            Button("Cancel", role: .cancel) { }
+        } message: {
+            Text("\(book.name) will be added to the new group.")
+        }
+        .navigationDestination(isPresented: $showingGroupManager) {
+            GroupManagerView()
+        }
     }
 
     // MARK: - Header
@@ -88,6 +105,44 @@ struct BookDetailView: View {
             Text("\(groupLabel): \(book.groups.joined(separator: ", "))")
                 .font(.subheadline)
                 .foregroundColor(theme.textSecondary)
+
+            // Custom group actions.
+            Menu {
+                if !customGroups.isEmpty {
+                    Section("Add to Group") {
+                        ForEach(customGroups) { group in
+                            Button {
+                                toggleMembership(group)
+                            } label: {
+                                if group.contains(book.canonicalKey) {
+                                    Label(group.name, systemImage: "checkmark")
+                                } else {
+                                    Text(group.name)
+                                }
+                            }
+                        }
+                    }
+                }
+                Button {
+                    newGroupName = ""
+                    showingNewGroup = true
+                } label: {
+                    Label("New Group…", systemImage: "plus")
+                }
+                Button {
+                    showingGroupManager = true
+                } label: {
+                    Label("Manage Groups", systemImage: "folder")
+                }
+            } label: {
+                HStack(spacing: 6) {
+                    Image(systemName: "folder.badge.plus")
+                    Text("Add to Group")
+                }
+                .font(.subheadline.weight(.semibold))
+                .foregroundColor(theme.primary)
+                .padding(.vertical, 2)
+            }
 
             // Clear chapter count display.
             HStack(spacing: 6) {
@@ -284,6 +339,23 @@ struct BookDetailView: View {
         .tint(theme.accent)
         .frame(width: 240)
         .background(theme.background)
+    }
+
+    // MARK: - Custom groups
+
+    private func toggleMembership(_ group: CustomGroup) {
+        if group.contains(book.canonicalKey) {
+            group.remove(book.canonicalKey)
+        } else {
+            group.add(book.canonicalKey)
+        }
+    }
+
+    private func createGroupAndAdd() {
+        let trimmed = newGroupName.trimmingCharacters(in: .whitespacesAndNewlines)
+        guard !trimmed.isEmpty else { return }
+        modelContext.insert(CustomGroup(name: trimmed, bookKeys: [book.canonicalKey]))
+        newGroupName = ""
     }
 
     // MARK: - Logging

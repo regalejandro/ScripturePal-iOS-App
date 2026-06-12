@@ -82,6 +82,16 @@ struct SettingsView: View {
 
                     }
                     
+                    /* Groups */
+                    Section(header: Text("Groups")) {
+                        NavigationLink {
+                            GroupManagerView()
+                        } label: {
+                            Label("Manage Groups", systemImage: "folder")
+                        }
+                    }
+                    .foregroundColor(themeManager.current.textPrimary)
+
                     /* Themes */
                     Section(header: Text("App Theme")) {
                         ForEach(AppTheme.allCases, id: \.self) { theme in

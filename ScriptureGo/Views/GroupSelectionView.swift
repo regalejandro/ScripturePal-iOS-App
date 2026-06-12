@@ -6,17 +6,23 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct GroupSelectionView: View {
     @Binding var selectedGroups: [String]
     @Binding var groupMode: String  // "all" or "custom"
-    
+
     @Binding var selectedGroupsBackup: [String]
-    
+    /// Selected custom groups, stored by CustomGroup.uuid.uuidString.
+    @Binding var selectedCustomGroups: [String]
+
     @EnvironmentObject var themeManager: ThemeManager
-    
+    @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
+
     let allGroups: [String]
-    
+
+    private var theme: Theme { themeManager.current }
+
     var body: some View {
         NavigationStack {
             Form {
@@ -33,7 +39,7 @@ struct GroupSelectionView: View {
                             Spacer()
                             if groupMode == "all" {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(themeManager.current.accent)
+                                    .foregroundColor(theme.accent)
                             }
                         }
                     }
@@ -47,23 +53,25 @@ struct GroupSelectionView: View {
                             Spacer()
                             if groupMode == "custom" {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(themeManager.current.accent)
+                                    .foregroundColor(theme.accent)
                             }
                         }
                     }
                 }
-                .foregroundColor(themeManager.current.textPrimary)
+                .foregroundColor(theme.textPrimary)
 
 
-                // MARK: - CUSTOM GROUPS
+                // MARK: - DEFAULT GROUPS
                 if groupMode == "custom" {
-                    Section("Choose Sections") {
+                    Section("Default Groups") {
                         ForEach(allGroups, id: \.self) { group in
                             Toggle(group, isOn: Binding(
                                 get: { selectedGroups.contains(group) },
                                 set: { isOn in
                                     if isOn {
-                                        selectedGroups.append(group)
+                                        if !selectedGroups.contains(group) {
+                                            selectedGroups.append(group)
+                                        }
                                     } else {
                                         selectedGroups.removeAll { $0 == group }
                                     }
@@ -71,45 +79,76 @@ struct GroupSelectionView: View {
                             ))
                         }
                     }
-                    .foregroundColor(themeManager.current.textPrimary)
+                    .foregroundColor(theme.textPrimary)
 
-                }
-                
-                if groupMode == "custom" {
-                    if selectedGroups.count < allGroups.count {
-                        Button {
-                            selectedGroups = allGroups
-                        } label: {
-                            HStack {
+                    // MARK: - CUSTOM GROUPS
+                    Section("Custom Groups") {
+                        if customGroups.isEmpty {
+                            Text("No custom groups yet.")
+                                .font(.caption)
+                                .foregroundColor(theme.textSecondary)
+                        } else {
+                            ForEach(customGroups) { group in
+                                Toggle(group.name, isOn: Binding(
+                                    get: { selectedCustomGroups.contains(group.uuid.uuidString) },
+                                    set: { isOn in
+                                        let id = group.uuid.uuidString
+                                        if isOn {
+                                            if !selectedCustomGroups.contains(id) {
+                                                selectedCustomGroups.append(id)
+                                            }
+                                        } else {
+                                            selectedCustomGroups.removeAll { $0 == id }
+                                        }
+                                    }
+                                ))
+                            }
+                        }
+                    }
+                    .foregroundColor(theme.textPrimary)
+
+                    Section {
+                        if !allSelected {
+                            Button {
+                                selectedGroups = allGroups
+                                selectedCustomGroups = customGroups.map { $0.uuid.uuidString }
+                            } label: {
                                 Text("Select All")
-                                    .foregroundColor(themeManager.current.accent)
-                                Spacer()
+                                    .foregroundColor(theme.accent)
                             }
                         }
-                    }
-                    if selectedGroups.count > 0{
-                        Button {
-                            
-                            selectedGroups = []
-                        } label: {
-                            HStack {
+                        if hasAnySelection {
+                            Button {
+                                selectedGroups = []
+                                selectedCustomGroups = []
+                            } label: {
                                 Text("Deselect All")
-                                    .foregroundColor(themeManager.current.warning)
-                                Spacer()
+                                    .foregroundColor(theme.warning)
                             }
                         }
                     }
                 }
 
-
+                // MARK: - MANAGE GROUPS
+                Section {
+                    NavigationLink {
+                        GroupManagerView()
+                    } label: {
+                        Label("Manage Groups", systemImage: "folder")
+                    }
+                }
+                .foregroundColor(theme.textPrimary)
             }
             .navigationTitle("Section Filtering")
         }
     }
+
+    private var allSelected: Bool {
+        selectedGroups.count >= allGroups.count
+        && selectedCustomGroups.count >= customGroups.count
+    }
+
+    private var hasAnySelection: Bool {
+        !selectedGroups.isEmpty || !selectedCustomGroups.isEmpty
+    }
 }
-
-
-/*
-#Preview {
-    GroupSelectionView(selectedGroups: ["Major Prophets"])
-}*/

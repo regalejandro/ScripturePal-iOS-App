@@ -27,11 +27,14 @@ struct SelectorView: View {
     
     @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
     @AppStorage("selectedGroupsData") private var selectedGroupsData: Data = Data("[]".utf8)
+    @AppStorage("selectedCustomGroupsData") private var selectedCustomGroupsData: Data = Data("[]".utf8)
     @AppStorage("groupMode") var groupMode: String = "all"
-    
+
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var themeManager: ThemeManager
-    
+
+    @Query private var customGroups: [CustomGroup]
+
     @StateObject var bible = BibleManager()
     
     @State var translationAtLastSelected = "   "
@@ -72,6 +75,29 @@ struct SelectorView: View {
                 }
             }
         )
+    }
+
+    var selectedCustomGroupsBinding: Binding<[String]> {
+        Binding(
+            get: {
+                (try? JSONDecoder().decode([String].self, from: selectedCustomGroupsData)) ?? []
+            },
+            set: { newValue in
+                if let encoded = try? JSONEncoder().encode(newValue) {
+                    selectedCustomGroupsData = encoded
+                }
+            }
+        )
+    }
+
+    /// Union of canonicalKeys belonging to the currently selected custom groups.
+    private var selectedCustomGroupKeys: Set<String> {
+        let ids = Set(selectedCustomGroupsBinding.wrappedValue)
+        var keys = Set<String>()
+        for group in customGroups where ids.contains(group.uuid.uuidString) {
+            keys.formUnion(group.bookKeys)
+        }
+        return keys
     }
     
     var body: some View {
@@ -164,7 +190,8 @@ struct SelectorView: View {
                             if let result = bible.randomChapter(
                                 for: selectedTranslation,
                                 selectedGroups: selectedGroupsBinding.wrappedValue,
-                                groupMode: groupMode
+                                groupMode: groupMode,
+                                customGroupKeys: selectedCustomGroupKeys
                             ) {
                                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
                                     lastSelected = result
@@ -202,8 +229,8 @@ struct SelectorView: View {
                                 selectedGroups: selectedGroupsBinding,
                                 groupMode: $groupMode,
                                 selectedGroupsBackup: $selectedGroupsBackup,
+                                selectedCustomGroups: selectedCustomGroupsBinding,
                                 allGroups: bible.groups(for: selectedTranslation)
-                                
                             )
                         }
                         .tint(themeManager.current.primary)
