@@ -30,9 +30,18 @@ struct BookDetailView: View {
 
     private var theme: Theme { themeManager.current }
 
+    /// All groups this book belongs to: its built-in default groups plus any
+    /// custom groups that currently contain it.
+    private var membershipGroups: [String] {
+        let custom = customGroups
+            .filter { $0.contains(book.canonicalKey) }
+            .map { $0.name }
+        return book.groups + custom
+    }
+
     /// "Group" / "Groups" depending on how many groups the book belongs to.
     private var groupLabel: String {
-        book.groups.count > 1 ? "Groups" : "Group"
+        membershipGroups.count > 1 ? "Groups" : "Group"
     }
 
     /// Full testament name, expanded from the stored abbreviation (e.g. "OT").
@@ -103,8 +112,8 @@ struct BookDetailView: View {
                 .font(.title3.weight(.semibold))
                 .foregroundColor(theme.primary)
 
-            // Group membership.
-            Text("\(groupLabel): \(book.groups.joined(separator: ", "))")
+            // Group membership (default + custom groups).
+            Text("\(groupLabel): \(membershipGroups.joined(separator: ", "))")
                 .font(.subheadline)
                 .foregroundColor(theme.textSecondary)
 

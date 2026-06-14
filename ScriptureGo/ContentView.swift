@@ -12,25 +12,32 @@ struct ContentView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.colorScheme) private var colorScheme
 
+    @State private var selection = 0
+
 
     var body: some View {
             
-        TabView {
+        TabView(selection: $selection) {
 
             SelectorView()
                 .tabItem {
                     Label("Select", systemImage: "rays")
                 }
+                .tag(0)
 
             LibraryView()
                 .tabItem {
-                    Label("Library", systemImage: "books.vertical")
+                    Label("Library", systemImage: selection == 1 ? "books.vertical.fill" : "books.vertical")
+                        .environment(\.symbolVariants, .none)
                 }
+                .tag(1)
 
             StatsView()
                 .tabItem {
-                    Label("Stats", systemImage: "chart.bar")
+                    Label("Stats", systemImage: selection == 2 ? "chart.bar.fill" : "chart.bar")
+                        .environment(\.symbolVariants, .none)
                 }
+                .tag(2)
         }
         .tint(themeManager.current.primary)
         .onAppear {
