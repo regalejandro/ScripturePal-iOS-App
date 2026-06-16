@@ -83,8 +83,8 @@ struct SettingsView: View {
                     Section(header: Text("App Theme")) {
                         ForEach(AppTheme.allCases, id: \.self) { theme in
                             HStack(spacing: 10) {
-                                Text(theme.rawValue.capitalized)
-                                    .frame(width: 100, alignment: .leading)
+                                Text(theme.displayName)
+                                    .frame(width: 120, alignment: .leading)
                                     .lineLimit(1)
                                 ThemeSwatch(appTheme: theme, colorScheme: colorScheme)
                                 Spacer()

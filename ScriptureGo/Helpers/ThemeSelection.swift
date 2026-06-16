@@ -61,50 +61,97 @@ struct Theme {
 }
 
 enum AppTheme: String, CaseIterable {
-    case parchment
-    case meadow
-    case moonlight
+    case noTheme
     case childlike
+    case dawn
+    case inkVellum
+    case meadow
     case miracle
+    case moonlight
+    case parchment
+    case wilderness
+    
+
+    /// User-facing name (rawValue is the stored key).
+    var displayName: String {
+        switch self {
+        case .noTheme:      return "No Theme"
+        case .parchment:    return "Parchment"
+        case .meadow:       return "Meadow"
+        case .moonlight:    return "Moonlight"
+        case .miracle:      return "Miracle"
+        case .childlike:    return "Childlike"
+        case .wilderness:   return "Wilderness"
+        case .inkVellum:    return "Ink & Vellum"
+        case .dawn:         return "Dawn"
+        }
+    }
 
     // Light variant
     var light: AppThemeVariant {
         switch self {
-        case .parchment: return .parchment
-        case .meadow: return .meadow
-        case .moonlight: return .moonlight
-        case .childlike: return .childlike
-        case .miracle: return .miracle
+        case .noTheme:      return .noTheme
+        case .parchment:    return .parchment
+        case .meadow:       return .meadow
+        case .moonlight:    return .moonlight
+        case .childlike:    return .childlike
+        case .miracle:      return .miracle
+        case .wilderness:   return .wilderness
+        case .inkVellum:    return .inkVellum
+        case .dawn:         return .dawn
         }
     }
 
     // Dark variant
     var dark: AppThemeVariant {
         switch self {
-        case .parchment: return .parchmentDark
-        case .meadow: return .meadowDark
-        case .moonlight: return .moonlightDark
-        case .childlike: return .childlikeDark
-        case .miracle: return .miracleDark
+        case .noTheme:      return .noTheme
+        case .parchment:    return .parchmentDark
+        case .meadow:       return .meadowDark
+        case .moonlight:    return .moonlightDark
+        case .childlike:    return .childlikeDark
+        case .miracle:      return .miracleDark
+        case .wilderness:   return .wildernessDark
+        case .inkVellum:    return .inkVellumDark
+        case .dawn:         return .dawnDark
         }
     }
 }
 
 enum AppThemeVariant {
+    case noTheme
     case parchment
     case parchmentDark
     case meadow
+    case meadowDark
     case childlike
     case childlikeDark
     case miracle
     case miracleDark
-    case meadowDark
     case moonlight
     case moonlightDark
+    case wilderness
+    case wildernessDark
+    case inkVellum
+    case inkVellumDark
+    case dawn
+    case dawnDark
 
     var theme: Theme {
         switch self {
-            
+
+        // MARK: - No Theme (system colors)
+        case .noTheme:
+            return Theme(
+                primary: Color(.systemBlue),
+                secondary: Color(.systemGray4),
+                background: Color(.systemBackground),
+                textPrimary: Color(.label),
+                textSecondary: Color(.secondaryLabel),
+                accent: Color(.systemBlue),
+                warning: Color(.systemRed)
+            )
+
         // MARK: - Parchment
         case .parchment:
             return Theme(
@@ -172,29 +219,6 @@ enum AppThemeVariant {
                 warning: Color(red: 190/255, green: 95/255, blue: 105/255)     // muted rose red
             )
 
-        // MARK: - Childlike
-        case .childlike:
-            return Theme(
-                primary: Color(red: 65/255, green: 145/255, blue: 215/255),    // crayon sky blue
-                secondary: Color(red: 90/255, green: 190/255, blue: 105/255),  // grass green
-                background: Color(red: 255/255, green: 250/255, blue: 220/255),// sunny yellow-white
-                textPrimary: Color(red: 40/255, green: 40/255, blue: 50/255),
-                textSecondary: Color(red: 100/255, green: 100/255, blue: 115/255),
-                accent: Color(red: 230/255, green: 65/255, blue: 70/255),      // cherry red
-                warning: Color(red: 230/255, green: 130/255, blue: 40/255)     // bright orange
-            )
-
-        case .childlikeDark:
-            return Theme(
-                primary: Color(red: 80/255, green: 160/255, blue: 230/255),    // bright blue, still vivid
-                secondary: Color(red: 70/255, green: 155/255, blue: 85/255),   // deeper grass green
-                background: Color(red: 22/255, green: 24/255, blue: 38/255),   // deep navy-night
-                textPrimary: Color(red: 240/255, green: 240/255, blue: 248/255),
-                textSecondary: Color(red: 175/255, green: 180/255, blue: 200/255),
-                accent: Color(red: 235/255, green: 85/255, blue: 90/255),      // cherry red, slightly softened
-                warning: Color(red: 235/255, green: 145/255, blue: 55/255)     // warm orange
-            )
-
         // MARK: - Miracle
         case .miracle:
             return Theme(
@@ -216,6 +240,98 @@ enum AppThemeVariant {
                 textSecondary: Color(red: 185/255, green: 160/255, blue: 180/255),
                 accent: Color(red: 215/255, green: 170/255, blue: 70/255),     // warm gold chalice
                 warning: Color(red: 195/255, green: 75/255, blue: 70/255)
+            )
+            
+        // MARK: - Childlike
+        case .childlike:
+            return Theme(
+                primary: Color(red: 60/255, green: 150/255, blue: 220/255),    // crayon sky blue
+                secondary: Color(red: 105/255, green: 190/255, blue: 125/255), // grass green
+                background: Color(red: 250/255, green: 250/255, blue: 247/255),// soft cloud white
+                textPrimary: Color(red: 50/255, green: 55/255, blue: 65/255),
+                textSecondary: Color(red: 120/255, green: 125/255, blue: 135/255),
+                accent: Color(red: 245/255, green: 175/255, blue: 55/255),     // sunny gold
+                warning: Color(red: 225/255, green: 75/255, blue: 70/255)      // cherry red
+            )
+
+        case .childlikeDark:
+            return Theme(
+                primary: Color(red: 85/255, green: 165/255, blue: 235/255),    // bright sky blue
+                secondary: Color(red: 85/255, green: 170/255, blue: 105/255),  // grass green
+                background: Color(red: 22/255, green: 26/255, blue: 42/255),   // blueberry navy night
+                textPrimary: Color(red: 240/255, green: 242/255, blue: 250/255),
+                textSecondary: Color(red: 175/255, green: 182/255, blue: 200/255),
+                accent: Color(red: 245/255, green: 185/255, blue: 75/255),     // sunny gold
+                warning: Color(red: 235/255, green: 90/255, blue: 85/255)      // cherry red
+            )
+
+        // MARK: - Wilderness
+        case .wilderness:
+            return Theme(
+                primary: Color(red: 180/255, green: 95/255, blue: 60/255),     // burnt terracotta
+                secondary: Color(red: 225/255, green: 210/255, blue: 185/255), // pale sand
+                background: Color(red: 248/255, green: 242/255, blue: 230/255),// warm bone
+                textPrimary: Color(red: 70/255, green: 55/255, blue: 45/255),
+                textSecondary: Color(red: 130/255, green: 110/255, blue: 95/255),
+                accent: Color(red: 95/255, green: 150/255, blue: 175/255),     // desert-sky blue
+                warning: Color(red: 170/255, green: 70/255, blue: 50/255)      // clay red
+            )
+
+        case .wildernessDark:
+            return Theme(
+                primary: Color(red: 200/255, green: 120/255, blue: 80/255),    // warm terracotta
+                secondary: Color(red: 60/255, green: 48/255, blue: 38/255),    // dark umber
+                background: Color(red: 26/255, green: 22/255, blue: 18/255),   // deep brown-black
+                textPrimary: Color(red: 238/255, green: 228/255, blue: 215/255),
+                textSecondary: Color(red: 185/255, green: 168/255, blue: 150/255),
+                accent: Color(red: 120/255, green: 170/255, blue: 195/255),    // dusty sky blue
+                warning: Color(red: 195/255, green: 90/255, blue: 65/255)      // clay
+            )
+
+        // MARK: - Ink & Vellum
+        case .inkVellum:
+            return Theme(
+                primary: Color(red: 55/255, green: 52/255, blue: 48/255),      // charcoal ink
+                secondary: Color(red: 205/255, green: 200/255, blue: 192/255), // soft gray
+                background: Color(red: 245/255, green: 240/255, blue: 230/255),// cream vellum
+                textPrimary: Color(red: 40/255, green: 38/255, blue: 35/255),
+                textSecondary: Color(red: 110/255, green: 105/255, blue: 98/255),
+                accent: Color(red: 160/255, green: 50/255, blue: 45/255),      // sealing-wax red
+                warning: Color(red: 150/255, green: 75/255, blue: 45/255)      // rust
+            )
+
+        case .inkVellumDark:
+            return Theme(
+                primary: Color(red: 215/255, green: 210/255, blue: 200/255),   // pale ink on dark
+                secondary: Color(red: 55/255, green: 53/255, blue: 50/255),    // dark gray
+                background: Color(red: 22/255, green: 21/255, blue: 20/255),   // near-black
+                textPrimary: Color(red: 235/255, green: 232/255, blue: 225/255),
+                textSecondary: Color(red: 160/255, green: 156/255, blue: 148/255),
+                accent: Color(red: 200/255, green: 80/255, blue: 70/255),      // bright wax red
+                warning: Color(red: 185/255, green: 100/255, blue: 65/255)     // rust
+            )
+
+        // MARK: - Dawn
+        case .dawn:
+            return Theme(
+                primary: Color(red: 190/255, green: 110/255, blue: 130/255),   // rose-mauve
+                secondary: Color(red: 245/255, green: 215/255, blue: 200/255), // blush peach
+                background: Color(red: 252/255, green: 245/255, blue: 242/255),// warm blush-white
+                textPrimary: Color(red: 75/255, green: 55/255, blue: 60/255),
+                textSecondary: Color(red: 140/255, green: 110/255, blue: 115/255),
+                accent: Color(red: 225/255, green: 165/255, blue: 95/255),     // sunrise gold
+                warning: Color(red: 210/255, green: 95/255, blue: 90/255)      // coral
+            )
+
+        case .dawnDark:
+            return Theme(
+                primary: Color(red: 200/255, green: 130/255, blue: 150/255),   // soft rose
+                secondary: Color(red: 60/255, green: 45/255, blue: 52/255),    // deep plum-rose
+                background: Color(red: 26/255, green: 20/255, blue: 24/255),   // dusky night
+                textPrimary: Color(red: 240/255, green: 228/255, blue: 230/255),
+                textSecondary: Color(red: 185/255, green: 160/255, blue: 165/255),
+                accent: Color(red: 225/255, green: 170/255, blue: 100/255),    // warm sunrise gold
+                warning: Color(red: 215/255, green: 105/255, blue: 100/255)    // coral
             )
 
         }
