@@ -40,48 +40,35 @@ struct SettingsView: View {
             VStack {
                 List {
                     /* Tradition */
-                    Section(header: Text("Tradtion")) {
-                        ForEach(["Catholic", "Orthodox", "Protestant"], id: \.self) { tradition in
-                            HStack{
-                                Text(tradition)
-                                Spacer()
-                                if tradition == selectedTradition {
-                                    Image(systemName: "checkmark")
-                                        .foregroundColor(themeManager.current.accent)
-                                }
-                            }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                selectedTradition = tradition
+                    Section(
+                        header: Text("Tradition"),
+                        footer: Text("Tradition selection is purely for determining which translations are presented to you.")
+                    ) {
+                        Picker("Tradition", selection: $selectedTradition) {
+                            ForEach(["Catholic", "Orthodox", "Protestant"], id: \.self) { tradition in
+                                Text(tradition).tag(tradition)
                             }
                         }
-                        
+                        .pickerStyle(.menu)
                     }
                     .foregroundColor(themeManager.current.textPrimary)
 
-                    
-                    /* Translations */
+                    /* Translation */
                     if let translations = categorizedTranslations[selectedTradition], !translations.isEmpty {
-                        Section(header: Text("\(selectedTradition) Translations")) {
-                            ForEach(translations, id: \.self) { translationID in
-                                HStack {
-                                    Text(translationID)
-                                    Spacer()
-                                    if translationID == selectedTranslation {
-                                        Image(systemName: "checkmark")
-                                            .foregroundColor(themeManager.current.accent)
-                                    }
-                                }
-                                .contentShape(Rectangle())
-                                .onTapGesture {
-                                    selectedTranslation = translationID
+                        Section(
+                            header: Text("\(selectedTradition) Translations"),
+                            footer: Text(translationFooter)
+                        ) {
+                            Picker("Translation", selection: $selectedTranslation) {
+                                ForEach(translations, id: \.self) { translationID in
+                                    Text(translationID).tag(translationID)
                                 }
                             }
+                            .pickerStyle(.menu)
                         }
                         .foregroundColor(themeManager.current.textPrimary)
-
                     }
-                    
+
                     /* Groups */
                     Section(header: Text("Groups")) {
                         NavigationLink {
@@ -95,8 +82,11 @@ struct SettingsView: View {
                     /* Themes */
                     Section(header: Text("App Theme")) {
                         ForEach(AppTheme.allCases, id: \.self) { theme in
-                            HStack {
+                            HStack(spacing: 10) {
                                 Text(theme.rawValue.capitalized)
+                                    .frame(width: 100, alignment: .leading)
+                                    .lineLimit(1)
+                                ThemeSwatch(appTheme: theme, colorScheme: colorScheme)
                                 Spacer()
                                 if theme.rawValue == selectedTheme {
                                     Image(systemName: "checkmark")
@@ -141,9 +131,54 @@ struct SettingsView: View {
 
                 }
                 .navigationTitle("Settings")
+                // Keep the translation consistent with the chosen tradition:
+                // selecting a tradition snaps to its first translation.
+                .onChange(of: selectedTradition) { _, newTradition in
+                    if let first = categorizedTranslations[newTradition]?.first,
+                       !(categorizedTranslations[newTradition]?.contains(selectedTranslation) ?? false) {
+                        selectedTranslation = first
+                    }
+                }
             }
 
         }
+    }
+
+    /// Disclaimer shown beneath the translation picker.
+    private var translationFooter: String {
+        let base = "Different translations may contain different books, number chapters differently, and contain a different cannon."
+        if selectedTradition == "Protestant" {
+            return base + " The vast majority of English protestant translations share the same book names and chapter numbering."
+        }
+        return base
+    }
+}
+
+// MARK: - ThemeSwatch
+
+/// A connected strip of a theme's representative colors, shown beside its name.
+private struct ThemeSwatch: View {
+    let appTheme: AppTheme
+    let colorScheme: ColorScheme
+
+    private var colors: [Color] {
+        let theme = (colorScheme == .dark ? appTheme.dark : appTheme.light).theme
+        return [theme.primary, theme.secondary, theme.background, theme.accent, theme.warning]
+    }
+
+    var body: some View {
+        HStack(spacing: 0) {
+            ForEach(Array(colors.enumerated()), id: \.offset) { _, color in
+                Rectangle()
+                    .fill(color)
+                    .frame(width: 14, height: 16)
+            }
+        }
+        .clipShape(RoundedRectangle(cornerRadius: 3))
+        .overlay(
+            RoundedRectangle(cornerRadius: 3)
+                .stroke(Color.primary.opacity(0.12), lineWidth: 0.5)
+        )
     }
 }
 
