@@ -91,6 +91,8 @@ struct AllTimeStatsCard: View {
     let mostReadBook: (name: String, count: Int)?
     let yearsActive: Int
     let readsByYear: [Int: Int]
+    let oldTestament: (read: Int, total: Int)
+    let newTestament: (read: Int, total: Int)
     let theme: Theme
 
     var body: some View {
@@ -159,8 +161,65 @@ struct AllTimeStatsCard: View {
                 // ── Year-over-year chart ─────────────────────────────────────
                 YearlyBarChart(readsByYear: readsByYear, theme: theme)
             }
+
+            Divider()
+
+            // ── Testament progress ───────────────────────────────────────────
+            VStack(alignment: .leading, spacing: 12) {
+                TestamentProgressRow(
+                    label: "Old Testament",
+                    read: oldTestament.read,
+                    total: oldTestament.total,
+                    theme: theme
+                )
+                TestamentProgressRow(
+                    label: "New Testament",
+                    read: newTestament.read,
+                    total: newTestament.total,
+                    theme: theme
+                )
+            }
         }
         .statsCardStyle(theme: theme)
+    }
+}
+
+// MARK: - TestamentProgressRow
+
+/// A labeled progress bar with "read / total · pct%" for one testament.
+private struct TestamentProgressRow: View {
+    let label: String
+    let read: Int
+    let total: Int
+    let theme: Theme
+
+    private var fraction: Double { total > 0 ? Double(read) / Double(total) : 0 }
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 6) {
+            HStack {
+                Text(label)
+                    .font(.subheadline.weight(.medium))
+                    .foregroundColor(theme.textPrimary)
+                Spacer()
+                Text("\(read) / \(total) · \(String(format: "%.0f", fraction * 100))%")
+                    .font(.caption)
+                    .foregroundColor(theme.textSecondary)
+            }
+
+            GeometryReader { geo in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(theme.secondary.opacity(0.3))
+                        .frame(height: 8)
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(theme.accent)
+                        .frame(width: geo.size.width * fraction, height: 8)
+                        .animation(.easeOut(duration: 0.6), value: fraction)
+                }
+            }
+            .frame(height: 8)
+        }
     }
 }
 

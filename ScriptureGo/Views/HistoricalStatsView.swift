@@ -68,6 +68,42 @@ struct HistoricalStatsView: View {
         return (name, top.value)
     }
 
+    // MARK: - Testament progress
+
+    private func isOldTestament(_ section: String) -> Bool {
+        ["OT", "OLD", "OLD TESTAMENT"]
+            .contains(section.trimmingCharacters(in: .whitespaces).uppercased())
+    }
+
+    /// Unique chapters read out of total chapters, split by testament.
+    private var testamentProgress: (old: (read: Int, total: Int), new: (read: Int, total: Int)) {
+        let books = bible.books(for: selectedTranslation)
+
+        var oldTotal = 0, newTotal = 0
+        var oldKeys = Set<String>(), newKeys = Set<String>()
+        for book in books {
+            if isOldTestament(book.section) {
+                oldTotal += book.chapters
+                oldKeys.insert(book.canonicalKey)
+            } else {
+                newTotal += book.chapters
+                newKeys.insert(book.canonicalKey)
+            }
+        }
+
+        var oldRead = Set<String>(), newRead = Set<String>()
+        for record in records {
+            let id = "\(record.canonicalKey)-\(record.chapter)"
+            if oldKeys.contains(record.canonicalKey) {
+                oldRead.insert(id)
+            } else if newKeys.contains(record.canonicalKey) {
+                newRead.insert(id)
+            }
+        }
+
+        return ((oldRead.count, oldTotal), (newRead.count, newTotal))
+    }
+
     // MARK: - Per-year helpers
 
     private func records(for year: Int) -> [ReadingRecord] {
@@ -156,6 +192,8 @@ struct HistoricalStatsView: View {
                         mostReadBook: mostReadBook,
                         yearsActive: activeYears.count,
                         readsByYear: readsByYear,
+                        oldTestament: testamentProgress.old,
+                        newTestament: testamentProgress.new,
                         theme: themeManager.current
                     )
 
