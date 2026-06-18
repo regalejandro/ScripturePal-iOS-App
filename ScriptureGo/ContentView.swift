@@ -43,9 +43,7 @@ struct ContentView: View {
             }
             .tint(themeManager.current.primary)
 
-            // Full-screen chapter reveal rendered in-hierarchy (above the tab
-            // bar) rather than as a modal cover — avoids the first-launch
-            // background flash a fullScreenCover causes on its cold present.
+            // Full-screen chapter reveal rendered in-hierarchy
             if let reveal {
                 ChapterRevealView(
                     chapter: reveal.chapter,

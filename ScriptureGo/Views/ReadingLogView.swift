@@ -73,7 +73,7 @@ struct ReadingLogView: View {
                     } label: {
                         Text(showAll ? "Show Less" : "Show All")
                             .font(.subheadline.weight(.semibold))
-                            .foregroundColor(theme.accent)
+                            .foregroundColor(theme.primary)
                             .frame(maxWidth: .infinity)
                             .padding(.vertical, 10)
                     }
@@ -115,7 +115,7 @@ struct LoggedReadCard: View {
         HStack(spacing: 12) {
             Image(systemName: "book.closed.fill")
                 .font(.subheadline)
-                .foregroundColor(theme.accent)
+                .foregroundColor(theme.primary)
 
             VStack(alignment: .leading, spacing: 2) {
                 Text(bookName)
@@ -188,6 +188,7 @@ struct LoggedReadCard: View {
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { showingDatePicker = false }
+                        .tint(theme.warning)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {

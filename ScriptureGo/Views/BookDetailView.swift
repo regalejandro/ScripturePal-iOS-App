@@ -167,11 +167,11 @@ struct BookDetailView: View {
                     Text("\(book.chapters) \(book.chapters == 1 ? "Chapter" : "Chapters")")
                         .font(.subheadline.weight(.semibold))
                 }
-                .foregroundColor(theme.accent)
+                .foregroundColor(theme.primary)
                 .padding(.horizontal, 12)
                 .padding(.vertical, 6)
                 .background(
-                    Capsule().fill(theme.accent.opacity(0.10))
+                    Capsule().fill(theme.primary.opacity(0.10))
                 )
 
                 Spacer()
@@ -310,6 +310,7 @@ struct BookDetailView: View {
                         showingDatePicker = false
                         selectedChapter = nil
                     }
+                    .tint(theme.warning)
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Log") {
@@ -374,7 +375,7 @@ struct BookDetailView: View {
                     .padding(.vertical, 12)
             }
         }
-        .tint(theme.accent)
+        .tint(theme.primary)
         .frame(width: 240)
         .background(theme.background)
     }
@@ -475,7 +476,6 @@ private struct BookHistoryGrid: View {
     let theme: Theme
 
     @Query private var records: [ReadingRecord]
-    @State private var availableWidth: CGFloat = 0
 
     private let squareSize: CGFloat = 12
     private let gap: CGFloat = 3
@@ -495,26 +495,32 @@ private struct BookHistoryGrid: View {
         return counts
     }
 
+    private func color(for count: Int) -> Color {
+        switch count {
+        case 0:   return theme.secondary.opacity(0.25)
+        case 1:   return theme.accent.opacity(0.25)
+        case 2:   return theme.accent.opacity(0.45)
+        case 3:   return theme.accent.opacity(0.65)
+        case 4:   return theme.accent.opacity(0.82)
+        default:  return theme.accent.opacity(1.0)
+        }
+    }
+
     var body: some View {
-        let squaresPerRow = max(1, Int((availableWidth + gap) / (squareSize + gap)))
-        BookGridRow(
-            book: book,
-            chapterCounts: chapterCounts,
-            squaresPerRow: squaresPerRow,
-            squareSize: squareSize,
-            gap: gap,
-            theme: theme
-        )
-        .frame(maxWidth: .infinity, alignment: .leading)
-        .background(
-            GeometryReader { geo in
-                Color.clear
-                    .onAppear { availableWidth = geo.size.width }
-                    .onChange(of: geo.size.width) { _, newValue in
-                        availableWidth = newValue
-                    }
+        // Adaptive grid reflows to the available width automatically, so it
+        // can't get stuck at a stale (landscape) width on rotation.
+        LazyVGrid(
+            columns: [GridItem(.adaptive(minimum: squareSize, maximum: squareSize), spacing: gap)],
+            alignment: .leading,
+            spacing: gap
+        ) {
+            ForEach(1...max(1, book.chapters), id: \.self) { chapter in
+                RoundedRectangle(cornerRadius: 2)
+                    .fill(color(for: chapterCounts[chapter] ?? 0))
+                    .frame(width: squareSize, height: squareSize)
             }
-        )
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

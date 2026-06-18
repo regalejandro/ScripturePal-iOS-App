@@ -63,7 +63,7 @@ struct YearStatsCard: View {
                 HStack(spacing: 4) {
                     Image(systemName: "star.fill")
                         .font(.caption2)
-                        .foregroundColor(theme.accent)
+                        .foregroundColor(theme.primary)
                     Text("Best month: \(best.name) · \(best.count) chapter\(best.count == 1 ? "" : "s")")
                         .font(.caption)
                         .foregroundColor(theme.textSecondary)
@@ -254,7 +254,7 @@ struct HighlightRow: View {
         HStack(spacing: 4) {
             Image(systemName: icon)
                 .font(.caption2)
-                .foregroundColor(theme.accent)
+                .foregroundColor(theme.primary)
             Text(text)
                 .font(.caption)
                 .foregroundColor(theme.textSecondary)
@@ -610,7 +610,7 @@ struct StreakCard: View {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Image(systemName: "flame.fill")
                         .font(.title2)
-                        .foregroundColor(currentStreak > 0 ? theme.accent : theme.secondary.opacity(0.5))
+                        .foregroundColor(currentStreak > 0 ? theme.primary : theme.secondary.opacity(0.5))
                     Text("\(currentStreak)")
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .foregroundColor(currentStreak > 0 ? theme.textPrimary : theme.secondary.opacity(0.5))
@@ -639,7 +639,7 @@ struct StreakCard: View {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Image(systemName: "trophy.fill")
                         .font(.title2)
-                        .foregroundColor(theme.accent.opacity(0.7))
+                        .foregroundColor(theme.primary.opacity(0.7))
                     Text("\(bestStreak)")
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .foregroundColor(theme.textPrimary)
@@ -770,7 +770,7 @@ private struct ActivityStatRow: View {
         HStack(spacing: 6) {
             Image(systemName: icon)
                 .font(.caption2)
-                .foregroundColor(theme.accent)
+                .foregroundColor(theme.primary)
                 .frame(width: 14)
             VStack(alignment: .leading, spacing: 0) {
                 Text(label)

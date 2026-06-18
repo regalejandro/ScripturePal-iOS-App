@@ -67,7 +67,7 @@ struct GroupManagerView: View {
                     showingNewGroup = true
                 } label: {
                     Label("New Group", systemImage: "plus.circle.fill")
-                        .foregroundColor(theme.accent)
+                        .foregroundColor(theme.primary)
                 }
             }
             .foregroundColor(theme.textPrimary)
@@ -81,7 +81,7 @@ struct GroupManagerView: View {
                 } label: {
                     Image(systemName: "plus")
                 }
-                .tint(theme.accent)
+                .tint(theme.primary)
             }
             if let onClose {
                 ToolbarItem(placement: .topBarTrailing) {

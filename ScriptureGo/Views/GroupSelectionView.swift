@@ -40,7 +40,7 @@ struct GroupSelectionView: View {
                             Spacer()
                             if groupMode == "all" {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(theme.accent)
+                                    .foregroundColor(theme.primary)
                             }
                         }
                     }
@@ -54,7 +54,7 @@ struct GroupSelectionView: View {
                             Spacer()
                             if groupMode == "custom" {
                                 Image(systemName: "checkmark")
-                                    .foregroundColor(theme.accent)
+                                    .foregroundColor(theme.primary)
                             }
                         }
                     }
@@ -115,7 +115,7 @@ struct GroupSelectionView: View {
                                 selectedCustomGroups = customGroups.map { $0.uuid.uuidString }
                             } label: {
                                 Text("Select All")
-                                    .foregroundColor(theme.accent)
+                                    .foregroundColor(theme.primary)
                             }
                         }
                         if hasAnySelection {

@@ -197,7 +197,7 @@ struct SelectorView: View {
                                     systemImage: currentSelectionMarked ? "checkmark.circle.fill" : "book.pages"
                                 )
                                 .font(.subheadline.weight(.medium))
-                                .foregroundColor(currentSelectionMarked ? themeManager.current.accent.opacity(0.5) : themeManager.current.accent)
+                                .foregroundColor(currentSelectionMarked ? themeManager.current.primary.opacity(0.5) : themeManager.current.primary)
                             }
                             .disabled(currentSelectionMarked)
                             .padding(.top, 6)
@@ -315,8 +315,8 @@ struct SelectorView: View {
                                               : "book.pages")
                                             .font(.title3)
                                             .foregroundColor(selection.markedAsRead
-                                                ? themeManager.current.accent.opacity(0.4)
-                                                : themeManager.current.accent)
+                                                ? themeManager.current.primary.opacity(0.4)
+                                                : themeManager.current.primary)
                                     }
                                     .disabled(selection.markedAsRead)
                                     .animation(.easeInOut(duration: 0.2), value: selection.markedAsRead)

@@ -91,7 +91,7 @@ struct SettingsView: View {
                                 Spacer()
                                 if theme.rawValue == selectedTheme {
                                     Image(systemName: "checkmark")
-                                        .foregroundColor(themeManager.current.accent)
+                                        .foregroundColor(themeManager.current.primary)
                                 }
                             }
                             .contentShape(Rectangle())
