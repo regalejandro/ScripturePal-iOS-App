@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
 
 private struct RecentSelection: Identifiable, Codable {
     let id: UUID
@@ -116,6 +117,9 @@ struct SelectorView: View {
         }
     }
 
+    /// iPad shows the title inside the (margined) content so it lines up with it.
+    private var isPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -127,6 +131,14 @@ struct SelectorView: View {
 
                 ScrollView {
                   VStack {
+
+                    if isPad {
+                        Text("ScriptureGo")
+                            .font(.largeTitle.bold())
+                            .foregroundColor(themeManager.current.textPrimary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                            .padding(.horizontal)
+                    }
 
                     VStack {
                         VStack(alignment: .leading) {
@@ -348,7 +360,8 @@ struct SelectorView: View {
                   .frame(maxWidth: 640)
                   .frame(maxWidth: .infinity)
                 }
-                .navigationTitle("ScriptureGo")
+                .navigationTitle(isPad ? "" : "ScriptureGo")
+                .navigationBarTitleDisplayMode(isPad ? .inline : .automatic)
                 .toolbar {
                     ToolbarItem(placement: .topBarTrailing) {
                         Button {

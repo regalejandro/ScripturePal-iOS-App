@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
 
 // MARK: - LibraryView
 
@@ -29,6 +30,11 @@ struct LibraryView: View {
     private let horizontalPadding: CGFloat = 16
     /// Spacing between tiles, both horizontally and vertically.
     private let spacing: CGFloat = 12
+    /// Caps content width on wide/landscape screens so there's margin at the edges.
+    private let maxContentWidth: CGFloat = 640
+
+    /// iPad shows the title inside the (margined) content so it lines up with it.
+    private var isPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
 
     private var tileSize: LibraryTileSize {
         LibraryTileSize(rawValue: tileSizeRaw) ?? .medium
@@ -106,8 +112,9 @@ struct LibraryView: View {
                 GeometryReader { geo in
                     // Fit as many tiles of the chosen size as the width allows.
                     // Clamp to 0 so the first (zero-width) layout pass can't
-                    // produce a negative frame height.
-                    let available = max(0, geo.size.width - horizontalPadding * 2)
+                    // produce a negative frame height. Cap to maxContentWidth so
+                    // wide screens get edge margins instead of stretching.
+                    let available = max(0, min(geo.size.width, maxContentWidth) - horizontalPadding * 2)
                     let columnCount = max(
                         1,
                         Int((available + spacing) / (tileSize.targetWidth + spacing))
@@ -122,6 +129,13 @@ struct LibraryView: View {
 
                     ScrollView {
                         VStack(alignment: .leading, spacing: 20) {
+                            if isPad {
+                                Text("Library")
+                                    .font(.largeTitle.bold())
+                                    .foregroundColor(themeManager.current.textPrimary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+
                             if !currentlyReadingBooks.isEmpty {
                                 sectionHeader("Currently Reading")
                                 bookGrid(currentlyReadingBooks, columns: columns, tileHeight: tileHeight)
@@ -134,6 +148,8 @@ struct LibraryView: View {
                         }
                         .padding(.horizontal, horizontalPadding)
                         .padding(.vertical, 16)
+                        .frame(maxWidth: maxContentWidth)
+                        .frame(maxWidth: .infinity)
                         .animation(.easeInOut(duration: 0.25), value: tileSizeRaw)
                     }
                 }
@@ -152,7 +168,8 @@ struct LibraryView: View {
                 }
             }
             .searchable(text: $searchText, prompt: "Search the library")
-            .navigationTitle("Library")
+            .navigationTitle(isPad ? "" : "Library")
+            .navigationBarTitleDisplayMode(isPad ? .inline : .automatic)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     Menu {

@@ -71,6 +71,8 @@ struct BookDetailView: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 12)
+            .frame(maxWidth: 640)
+            .frame(maxWidth: .infinity)
         }
         .background(theme.background.ignoresSafeArea())
         .navigationTitle(book.name)

@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct StatsView: View {
 
@@ -20,6 +21,9 @@ struct StatsView: View {
     private let gap: CGFloat = 3
     /// Caps content width on wide/landscape screens so there's margin at the edges.
     private let maxContentWidth: CGFloat = 640
+
+    /// iPad shows the title inside the (margined) content so it lines up with it.
+    private var isPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
 
     // MARK: - Derived stats
 
@@ -161,6 +165,13 @@ struct StatsView: View {
                     ScrollView {
                         LazyVStack(alignment: .leading, spacing: 16) {
 
+                            if isPad {
+                                Text("Reading Stats")
+                                    .font(.largeTitle.bold())
+                                    .foregroundColor(themeManager.current.textPrimary)
+                                    .frame(maxWidth: .infinity, alignment: .leading)
+                            }
+
                             // ── Recent activity card ─────────────────────────
                             let d = last40Days
                             RecentActivityCard(
@@ -234,7 +245,8 @@ struct StatsView: View {
                     }
                 }
             }
-            .navigationTitle("Reading Stats")
+            .navigationTitle(isPad ? "" : "Reading Stats")
+            .navigationBarTitleDisplayMode(isPad ? .inline : .automatic)
         }
     }
 }

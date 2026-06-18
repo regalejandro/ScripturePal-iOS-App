@@ -7,6 +7,7 @@
 
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct HistoricalStatsView: View {
 
@@ -14,6 +15,9 @@ struct HistoricalStatsView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
     @StateObject private var bible = BibleManager()
+
+    /// iPad shows the title inside the (margined) content so it lines up with it.
+    private var isPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
 
     // MARK: - All-time computed stats
 
@@ -182,6 +186,13 @@ struct HistoricalStatsView: View {
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: 16) {
 
+                    if isPad {
+                        Text("Reading History")
+                            .font(.largeTitle.bold())
+                            .foregroundColor(themeManager.current.textPrimary)
+                            .frame(maxWidth: .infinity, alignment: .leading)
+                    }
+
                     // ── All-time card ────────────────────────────────────────
                     AllTimeStatsCard(
                         totalReads: totalReadsAllTime,
@@ -227,8 +238,8 @@ struct HistoricalStatsView: View {
                 .frame(maxWidth: .infinity)
             }
         }
-        .navigationTitle("Reading History")
-        .navigationBarTitleDisplayMode(.large)
+        .navigationTitle(isPad ? "" : "Reading History")
+        .navigationBarTitleDisplayMode(isPad ? .inline : .large)
     }
 }
 
