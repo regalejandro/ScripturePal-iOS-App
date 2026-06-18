@@ -92,7 +92,7 @@ struct BookDetailView: View {
         }
         .sheet(isPresented: $showingGroupManager) {
             NavigationStack {
-                GroupManagerView()
+                GroupManagerView(onClose: { showingGroupManager = false })
             }
         }
     }

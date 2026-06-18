@@ -223,6 +223,8 @@ struct HistoricalStatsView: View {
                 }
                 .padding(.horizontal, 16)
                 .padding(.vertical, 12)
+                .frame(maxWidth: 640)
+                .frame(maxWidth: .infinity)
             }
         }
         .navigationTitle("Reading History")

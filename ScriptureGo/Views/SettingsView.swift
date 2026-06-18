@@ -16,6 +16,7 @@ struct SettingsView: View {
 
     @Environment(\.colorScheme) private var colorScheme
     @Environment(\.modelContext) private var modelContext
+    @Environment(\.dismiss) private var dismiss
     @EnvironmentObject var themeManager: ThemeManager
 
     @State private var showingClearAlert = false
@@ -131,6 +132,7 @@ struct SettingsView: View {
 
                 }
                 .navigationTitle("Settings")
+                .sheetCloseButton { dismiss() }
                 // Keep the translation consistent with the chosen tradition:
                 // selecting a tradition snaps to its first translation.
                 .onChange(of: selectedTradition) { _, newTradition in

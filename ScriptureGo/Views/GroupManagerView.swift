@@ -19,6 +19,9 @@ struct GroupManagerView: View {
 
     @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
 
+    /// When presented as a sheet, provides the top-right close action.
+    var onClose: (() -> Void)?
+
     @State private var booksContext: GroupBooksContext?
     @State private var showingNewGroup = false
     @State private var newGroupName = ""
@@ -79,6 +82,16 @@ struct GroupManagerView: View {
                     Image(systemName: "plus")
                 }
                 .tint(theme.accent)
+            }
+            if let onClose {
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button(action: onClose) {
+                        Image(systemName: "xmark")
+                            .font(.title3)
+                            .foregroundStyle(.primary)
+                    }
+                    .accessibilityLabel("Close")
+                }
             }
         }
         .sheet(item: $booksContext) { context in
@@ -203,11 +216,7 @@ private struct GroupBooksSheet: View {
             }
             .navigationTitle(title)
             .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Done") { dismiss() }
-                }
-            }
+            .sheetCloseButton { dismiss() }
         }
     }
 

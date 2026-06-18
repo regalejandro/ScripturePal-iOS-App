@@ -117,16 +117,17 @@ struct SelectorView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 themeManager.current.background
                     .ignoresSafeArea()
 
                 /*Color(.sRGB, red: 250/255, green: 235/255, blue: 220/255)
                     .ignoresSafeArea()*/
-                
-                VStack {
-                    
+
+                ScrollView {
+                  VStack {
+
                     VStack {
                         VStack(alignment: .leading) {
                             HStack {
@@ -343,8 +344,9 @@ struct SelectorView: View {
                         .padding(.top, 12)
                     }
 
-                    Spacer()
-                    
+                  }
+                  .frame(maxWidth: 640)
+                  .frame(maxWidth: .infinity)
                 }
                 .navigationTitle("ScriptureGo")
                 .toolbar {
@@ -356,13 +358,12 @@ struct SelectorView: View {
                                 .font(.system(size: 18, weight: .semibold))
                                 .padding(6)
                         }
-                        
+
                     }
                 }
                 .sheet(isPresented: $showSettings) {
                     SettingsView()
                 }
-                .padding(.top, 50)
             }
         }
         .fullScreenCover(isPresented: $showingReveal) {

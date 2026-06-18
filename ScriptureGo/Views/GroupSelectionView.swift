@@ -17,6 +17,7 @@ struct GroupSelectionView: View {
     @Binding var selectedCustomGroups: [String]
 
     @EnvironmentObject var themeManager: ThemeManager
+    @Environment(\.dismiss) private var dismiss
     @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
 
     let allGroups: [String]
@@ -140,6 +141,7 @@ struct GroupSelectionView: View {
                 .foregroundColor(theme.textPrimary)
             }
             .navigationTitle("Section Filtering")
+            .sheetCloseButton { dismiss() }
         }
     }
 

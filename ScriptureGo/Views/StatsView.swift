@@ -18,6 +18,8 @@ struct StatsView: View {
     // Grid dimensions
     private let squareSize: CGFloat = 12
     private let gap: CGFloat = 3
+    /// Caps content width on wide/landscape screens so there's margin at the edges.
+    private let maxContentWidth: CGFloat = 640
 
     // MARK: - Derived stats
 
@@ -146,13 +148,14 @@ struct StatsView: View {
     // MARK: - Body
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 themeManager.current.background
                     .ignoresSafeArea()
 
                 GeometryReader { geo in
-                    let availableWidth = geo.size.width - 32
+                    let contentWidth = min(geo.size.width, maxContentWidth)
+                    let availableWidth = contentWidth - 32
                     let squaresPerRow = max(1, Int((availableWidth + gap) / (squareSize + gap)))
 
                     ScrollView {
@@ -226,6 +229,8 @@ struct StatsView: View {
                         }
                         .padding(.horizontal, 16)
                         .padding(.vertical, 12)
+                        .frame(maxWidth: maxContentWidth)
+                        .frame(maxWidth: .infinity)
                     }
                 }
             }
