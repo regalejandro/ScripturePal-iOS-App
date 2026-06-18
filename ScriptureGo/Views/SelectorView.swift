@@ -25,7 +25,9 @@ private struct RecentSelection: Identifiable, Codable {
 
 struct SelectorView: View {
 
-    
+    /// Called when a chapter is chosen, so the app root can present the reveal.
+    var onReveal: (ChapterPointer, String) -> Void = { _, _ in }
+
     @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
     @AppStorage("selectedGroupsData") private var selectedGroupsData: Data = Data("[]".utf8)
     @AppStorage("selectedCustomGroupsData") private var selectedCustomGroupsData: Data = Data("[]".utf8)
@@ -52,8 +54,6 @@ struct SelectorView: View {
     @State private var showingGroupSelector = false
     @State var selectedGroupsBackup: [String] = []
     
-    @State private var showingReveal = false
-    @State private var revealedChapter: ChapterPointer?
 
     @AppStorage("recentSelectionsData") private var recentSelectionsData: Data = Data("[]".utf8)
 
@@ -241,8 +241,7 @@ struct SelectorView: View {
                                     if updated.count > 3 { updated.removeLast() }
                                     saveSelections(updated)
                                 }
-                                revealedChapter = result
-                                showingReveal = true
+                                onReveal(result, selectedTranslation)
                             }
                         } label: {
                             Label("Choose Chapter", systemImage: "book")
@@ -379,16 +378,6 @@ struct SelectorView: View {
                 }
             }
         }
-        .fullScreenCover(isPresented: $showingReveal) {
-            if let chapter = revealedChapter {
-                ChapterRevealView(
-                    chapter: chapter,
-                    translation: translationAtLastSelected
-                )
-                .environmentObject(themeManager)
-            }
-        }
-        
     }
 }
 

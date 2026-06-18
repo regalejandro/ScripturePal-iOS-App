@@ -11,10 +11,10 @@ struct ChapterRevealView: View {
     
     let chapter: ChapterPointer
     let translation: String
-    
+    let onDismiss: () -> Void
+
     @EnvironmentObject var themeManager: ThemeManager
-    @Environment(\.dismiss) private var dismiss
-    
+
     @State private var stage: Int = 0
     @State private var showContent = false
     
@@ -55,7 +55,7 @@ struct ChapterRevealView: View {
                 
                 if stage >= 4 {
                     Button {
-                        dismiss()
+                        onDismiss()
                     } label: {
                         Text("Begin Reading")
                             .font(.title2.bold())
@@ -72,7 +72,6 @@ struct ChapterRevealView: View {
             }
             .padding()
         }
-        .presentationBackground(.clear)
         .onAppear {
             runRevealSequence()
         }
