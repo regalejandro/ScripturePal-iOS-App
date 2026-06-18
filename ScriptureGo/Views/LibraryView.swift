@@ -17,7 +17,9 @@ struct LibraryView: View {
 
     @StateObject var bible = BibleManager()
     @EnvironmentObject var themeManager: ThemeManager
+    @Environment(\.modelContext) private var modelContext
     @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
+    @Query private var currentlyReading: [CurrentlyReading]
 
     @State private var searchText = ""
     @State private var testamentFilter: TestamentFilter = .all
@@ -68,6 +70,23 @@ struct LibraryView: View {
         testamentFilter != .all || groupFilter != .all
     }
 
+    private var currentlyReadingKeys: Set<String> {
+        Set(currentlyReading.map { $0.canonicalKey })
+    }
+
+    /// Currently-read books that also match the active filters/search.
+    private var currentlyReadingBooks: [Book] {
+        filteredBooks.filter { currentlyReadingKeys.contains($0.canonicalKey) }
+    }
+
+    private func toggleCurrentlyReading(_ key: String) {
+        if let existing = currentlyReading.first(where: { $0.canonicalKey == key }) {
+            modelContext.delete(existing)
+        } else {
+            modelContext.insert(CurrentlyReading(canonicalKey: key))
+        }
+    }
+
     private func isOldTestament(_ book: Book) -> Bool {
         ["OT", "OLD", "OLD TESTAMENT"]
             .contains(book.section.trimmingCharacters(in: .whitespaces).uppercased())
@@ -102,19 +121,15 @@ struct LibraryView: View {
                     )
 
                     ScrollView {
-                        LazyVGrid(columns: columns, spacing: spacing) {
-                            ForEach(filteredBooks) { book in
-                                NavigationLink {
-                                    BookDetailView(book: book)
-                                } label: {
-                                    BookTile(
-                                        book: book,
-                                        size: tileSize,
-                                        height: tileHeight,
-                                        theme: themeManager.current
-                                    )
-                                }
-                                .buttonStyle(PressableTileStyle())
+                        VStack(alignment: .leading, spacing: 20) {
+                            if !currentlyReadingBooks.isEmpty {
+                                sectionHeader("Currently Reading")
+                                bookGrid(currentlyReadingBooks, columns: columns, tileHeight: tileHeight)
+
+                                sectionHeader("All Books")
+                                bookGrid(filteredBooks, columns: columns, tileHeight: tileHeight)
+                            } else {
+                                bookGrid(filteredBooks, columns: columns, tileHeight: tileHeight)
                             }
                         }
                         .padding(.horizontal, horizontalPadding)
@@ -191,6 +206,50 @@ struct LibraryView: View {
                         Image(systemName: tileSize.icon)
                             .foregroundColor(themeManager.current.primary)
                     }
+                }
+            }
+        }
+    }
+
+    // MARK: - Section helpers
+
+    private func sectionHeader(_ title: String) -> some View {
+        Text(title)
+            .font(.headline)
+            .foregroundColor(themeManager.current.textPrimary)
+    }
+
+    private func bookGrid(_ books: [Book], columns: [GridItem], tileHeight: CGFloat) -> some View {
+        LazyVGrid(columns: columns, spacing: spacing) {
+            ForEach(books) { book in
+                tileCell(book, tileHeight: tileHeight)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private func tileCell(_ book: Book, tileHeight: CGFloat) -> some View {
+        let reading = currentlyReadingKeys.contains(book.canonicalKey)
+        NavigationLink {
+            BookDetailView(book: book)
+        } label: {
+            BookTile(
+                book: book,
+                size: tileSize,
+                height: tileHeight,
+                isCurrentlyReading: reading,
+                theme: themeManager.current
+            )
+        }
+        .buttonStyle(PressableTileStyle())
+        .contextMenu {
+            Button {
+                toggleCurrentlyReading(book.canonicalKey)
+            } label: {
+                if reading {
+                    Label("Reading", systemImage: "checkmark.circle.fill")
+                } else {
+                    Label("Reading", systemImage: "circle")
                 }
             }
         }
@@ -275,12 +334,13 @@ private struct BookTile: View {
     let book: Book
     let size: LibraryTileSize
     let height: CGFloat
+    let isCurrentlyReading: Bool
     let theme: Theme
 
     var body: some View {
         VStack(spacing: size.innerSpacing) {
 
-            Image(systemName: "book.closed.fill")
+            Image(systemName: isCurrentlyReading ? "book.closed.circle" : "book.closed.fill")
                 .font(.system(size: size.iconSize, weight: .medium))
                 .foregroundColor(theme.primary)
 

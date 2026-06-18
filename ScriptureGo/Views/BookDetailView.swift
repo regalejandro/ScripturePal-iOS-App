@@ -13,6 +13,7 @@ struct BookDetailView: View {
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var themeManager: ThemeManager
     @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
+    @Query private var currentlyReading: [CurrentlyReading]
 
     let book: Book
 
@@ -155,19 +156,43 @@ struct BookDetailView: View {
                 .padding(.vertical, 2)
             }
 
-            // Clear chapter count display.
-            HStack(spacing: 6) {
-                Image(systemName: "book.closed.fill")
-                    .font(.caption)
-                Text("\(book.chapters) \(book.chapters == 1 ? "Chapter" : "Chapters")")
+            // Chapter count + currently-reading toggle.
+            HStack {
+                // Clear chapter count display.
+                HStack(spacing: 6) {
+                    Image(systemName: "book.closed.fill")
+                        .font(.caption)
+                    Text("\(book.chapters) \(book.chapters == 1 ? "Chapter" : "Chapters")")
+                        .font(.subheadline.weight(.semibold))
+                }
+                .foregroundColor(theme.accent)
+                .padding(.horizontal, 12)
+                .padding(.vertical, 6)
+                .background(
+                    Capsule().fill(theme.accent.opacity(0.10))
+                )
+
+                Spacer()
+
+                // Currently-reading toggle.
+                Button {
+                    toggleCurrentlyReading()
+                } label: {
+                    HStack(spacing: 6) {
+                        Text("Reading")
+                        Image(systemName: isCurrentlyReading ? "checkmark.circle.fill" : "circle")
+                    }
                     .font(.subheadline.weight(.semibold))
+                    .foregroundColor(isCurrentlyReading ? theme.accent : theme.textSecondary)
+                    .padding(.horizontal, 12)
+                    .padding(.vertical, 6)
+                    .background(
+                        Capsule().fill((isCurrentlyReading ? theme.accent : theme.secondary).opacity(0.12))
+                    )
+                }
+                .buttonStyle(.plain)
+                .animation(.easeInOut(duration: 0.2), value: isCurrentlyReading)
             }
-            .foregroundColor(theme.accent)
-            .padding(.horizontal, 12)
-            .padding(.vertical, 6)
-            .background(
-                Capsule().fill(theme.accent.opacity(0.10))
-            )
             .padding(.top, 2)
         }
         .frame(maxWidth: .infinity, alignment: .leading)
@@ -350,6 +375,20 @@ struct BookDetailView: View {
         .tint(theme.accent)
         .frame(width: 240)
         .background(theme.background)
+    }
+
+    // MARK: - Currently reading
+
+    private var isCurrentlyReading: Bool {
+        currentlyReading.contains { $0.canonicalKey == book.canonicalKey }
+    }
+
+    private func toggleCurrentlyReading() {
+        if let existing = currentlyReading.first(where: { $0.canonicalKey == book.canonicalKey }) {
+            modelContext.delete(existing)
+        } else {
+            modelContext.insert(CurrentlyReading(canonicalKey: book.canonicalKey))
+        }
     }
 
     // MARK: - Custom groups
