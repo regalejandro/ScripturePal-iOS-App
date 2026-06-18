@@ -20,7 +20,7 @@ struct ScriptureGoApp: App {
             ContentView()
                 .environmentObject(themeManager)
         }
-        .modelContainer(for: [ReadingRecord.self, CustomGroup.self, CurrentlyReading.self])
+        .modelContainer(for: [ReadingRecord.self, CustomGroup.self, CurrentlyReading.self, BookCompletion.self])
     }
 }
 

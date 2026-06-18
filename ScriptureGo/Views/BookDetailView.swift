@@ -14,6 +14,7 @@ struct BookDetailView: View {
     @EnvironmentObject var themeManager: ThemeManager
     @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
     @Query private var currentlyReading: [CurrentlyReading]
+    @Query private var completions: [BookCompletion]
 
     let book: Book
 
@@ -28,6 +29,9 @@ struct BookDetailView: View {
     @State private var showingNewGroup = false
     @State private var newGroupName = ""
     @State private var showingGroupManager = false
+
+    // Reading session state
+    @State private var showingCompletionAlert = false
 
     private var theme: Theme { themeManager.current }
 
@@ -84,6 +88,14 @@ struct BookDetailView: View {
         // Step 3: confirmation, matching the app's existing alert.
         .alert(logConfirmationMessage, isPresented: $showingReadAlert) {
             Button("OK", role: .cancel) { }
+        }
+        // Cover-to-cover completion of the current reading session.
+        .alert("You've finished \(book.name)!", isPresented: $showingCompletionAlert) {
+            Button("Read Again") { startNewSession() }
+            Button("Remove from Currently Reading", role: .destructive) { removeFromCurrentlyReading() }
+            Button("Stay in Session", role: .cancel) { }
+        } message: {
+            Text("You've read every chapter this session. What next?")
         }
         // New custom group (adds this book to it).
         .alert("New Group", isPresented: $showingNewGroup) {
@@ -158,8 +170,18 @@ struct BookDetailView: View {
                 .padding(.vertical, 2)
             }
 
+            // Times read (lifetime completions).
+            if timesRead > 0 {
+                HStack(spacing: 4) {
+                    Image(systemName: "checkmark.seal.fill")
+                    Text("Read \(timesRead) time\(timesRead == 1 ? "" : "s")")
+                }
+                .font(.caption.weight(.medium))
+                .foregroundColor(theme.primary)
+            }
+
             // Chapter count + currently-reading toggle.
-            HStack {
+            HStack(spacing: 10) {
                 // Clear chapter count display.
                 HStack(spacing: 6) {
                     Image(systemName: "book.closed.fill")
@@ -175,6 +197,29 @@ struct BookDetailView: View {
                 )
 
                 Spacer()
+
+                // When the session is complete: Read Again / Remove.
+                if isCurrentlyReading && sessionCompleted {
+                    Button {
+                        startNewSession()
+                    } label: {
+                        Image(systemName: "arrow.clockwise.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(theme.primary)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Read Again")
+
+                    Button {
+                        removeFromCurrentlyReading()
+                    } label: {
+                        Image(systemName: "minus.circle.fill")
+                            .font(.title3)
+                            .foregroundColor(theme.warning)
+                    }
+                    .buttonStyle(.plain)
+                    .accessibilityLabel("Done Reading")
+                }
 
                 // Currently-reading toggle.
                 Button {
@@ -208,7 +253,9 @@ struct BookDetailView: View {
                 .font(.headline)
                 .foregroundColor(theme.textPrimary)
 
-            Text("Tap a chapter to log a reading.")
+            Text(isCurrentlyReading
+                 ? "Tap a chapter to log a reading. Chapters read this session are marked."
+                 : "Tap a chapter to log a reading.")
                 .font(.caption)
                 .foregroundColor(theme.textSecondary)
 
@@ -221,7 +268,11 @@ struct BookDetailView: View {
                     Button {
                         selectedChapter = chapter
                     } label: {
-                        ChapterSquare(number: chapter, theme: theme)
+                        ChapterSquare(
+                            number: chapter,
+                            isSessionRead: isCurrentlyReading && sessionChapters.contains(chapter),
+                            theme: theme
+                        )
                     }
                     .buttonStyle(PressableSquareStyle())
                     .popover(isPresented: optionsBinding(for: chapter)) {
@@ -382,15 +433,71 @@ struct BookDetailView: View {
 
     // MARK: - Currently reading
 
+    private var readingSession: CurrentlyReading? {
+        currentlyReading.first { $0.canonicalKey == book.canonicalKey }
+    }
+
     private var isCurrentlyReading: Bool {
-        currentlyReading.contains { $0.canonicalKey == book.canonicalKey }
+        readingSession != nil
+    }
+
+    /// Chapters read during the active session (empty when not reading).
+    private var sessionChapters: Set<Int> {
+        Set(readingSession?.sessionChapters ?? [])
+    }
+
+    /// Whether the current session has been completed and acknowledged.
+    private var sessionCompleted: Bool {
+        readingSession?.completed ?? false
+    }
+
+    /// How many times this book has been read cover-to-cover.
+    private var timesRead: Int {
+        completions.first { $0.canonicalKey == book.canonicalKey }?.count ?? 0
     }
 
     private func toggleCurrentlyReading() {
-        if let existing = currentlyReading.first(where: { $0.canonicalKey == book.canonicalKey }) {
+        if let existing = readingSession {
             modelContext.delete(existing)
         } else {
             modelContext.insert(CurrentlyReading(canonicalKey: book.canonicalKey))
+        }
+    }
+
+    /// Begin a fresh session for an already-current book (Read Again).
+    private func startNewSession() {
+        guard let session = readingSession else { return }
+        session.sessionChapters = []
+        session.completed = false
+    }
+
+    private func removeFromCurrentlyReading() {
+        if let session = readingSession {
+            modelContext.delete(session)
+        }
+    }
+
+    /// Records a chapter read this session. Returns true if this read just
+    /// completed the book cover-to-cover (so the caller can show the
+    /// completion prompt instead of the normal confirmation).
+    @discardableResult
+    private func recordSessionRead(_ chapter: Int) -> Bool {
+        guard let session = readingSession, !session.completed else { return false }
+        session.markSessionRead(chapter)
+
+        if session.sessionReadCount(totalChapters: book.chapters) >= book.chapters {
+            session.completed = true
+            incrementCompletionCount()
+            return true
+        }
+        return false
+    }
+
+    private func incrementCompletionCount() {
+        if let existing = completions.first(where: { $0.canonicalKey == book.canonicalKey }) {
+            existing.count += 1
+        } else {
+            modelContext.insert(BookCompletion(canonicalKey: book.canonicalKey, count: 1))
         }
     }
 
@@ -417,6 +524,15 @@ struct BookDetailView: View {
         let record = ReadingRecord(canonicalKey: book.canonicalKey, chapter: chapter, date: date)
         modelContext.insert(record)
 
+        // Track session progress when currently reading. If this read finished
+        // the book, show the completion prompt instead of the usual confirmation.
+        let justCompleted = recordSessionRead(chapter)
+
+        if justCompleted {
+            showingCompletionAlert = true
+            return
+        }
+
         if Calendar.current.isDateInToday(date) {
             logConfirmationMessage =
                 "Reading of \(book.name) \(chapter) has been logged for today's date."
@@ -433,24 +549,37 @@ struct BookDetailView: View {
 
 private struct ChapterSquare: View {
     let number: Int
+    var isSessionRead: Bool = false
     let theme: Theme
 
     var body: some View {
         RoundedRectangle(cornerRadius: 10)
-            .fill(theme.secondary.opacity(0.18))
+            .fill(isSessionRead ? theme.primary.opacity(0.22) : theme.secondary.opacity(0.18))
             .aspectRatio(1, contentMode: .fit)
             .overlay(
                 RoundedRectangle(cornerRadius: 10)
-                    .stroke(theme.secondary.opacity(0.9), lineWidth: 1)
+                    .stroke(isSessionRead ? theme.primary : theme.secondary.opacity(0.9),
+                            lineWidth: isSessionRead ? 1.5 : 1)
             )
             .overlay(
                 Text("\(number)")
                     .font(.system(size: 16, weight: .semibold, design: .rounded))
-                    .foregroundColor(theme.textPrimary)
+                    .foregroundColor(isSessionRead ? theme.primary : theme.textPrimary)
                     .minimumScaleFactor(0.5)
                     .lineLimit(1)
                     .padding(2)
             )
+            // Session-read check badge in the corner.
+            .overlay(alignment: .topTrailing) {
+                if isSessionRead {
+                    Image(systemName: "checkmark.circle.fill")
+                        .font(.system(size: 12))
+                        .foregroundStyle(theme.primary)
+                        .background(Circle().fill(theme.background))
+                        .padding(2)
+                }
+            }
+            .animation(.easeInOut(duration: 0.2), value: isSessionRead)
     }
 }
 

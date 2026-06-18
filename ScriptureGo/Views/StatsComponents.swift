@@ -639,7 +639,7 @@ struct StreakCard: View {
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
                     Image(systemName: "trophy.fill")
                         .font(.title2)
-                        .foregroundColor(theme.primary.opacity(0.7))
+                        .foregroundColor(theme.primary)
                     Text("\(bestStreak)")
                         .font(.system(size: 48, weight: .bold, design: .rounded))
                         .foregroundColor(theme.textPrimary)
