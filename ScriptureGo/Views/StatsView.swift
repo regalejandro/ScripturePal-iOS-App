@@ -62,6 +62,42 @@ struct StatsView: View {
         return (Calendar.current.monthSymbols[top.key - 1], top.value)
     }
 
+    // MARK: - Testament progress (this year)
+
+    private func isOldTestament(_ section: String) -> Bool {
+        ["OT", "OLD", "OLD TESTAMENT"]
+            .contains(section.trimmingCharacters(in: .whitespaces).uppercased())
+    }
+
+    /// Unique chapters read this year out of total chapters, split by testament.
+    private var testamentProgressThisYear: (old: (read: Int, total: Int), new: (read: Int, total: Int)) {
+        let books = bible.books(for: selectedTranslation)
+
+        var oldTotal = 0, newTotal = 0
+        var oldKeys = Set<String>(), newKeys = Set<String>()
+        for book in books {
+            if isOldTestament(book.section) {
+                oldTotal += book.chapters
+                oldKeys.insert(book.canonicalKey)
+            } else {
+                newTotal += book.chapters
+                newKeys.insert(book.canonicalKey)
+            }
+        }
+
+        var oldRead = Set<String>(), newRead = Set<String>()
+        for record in thisYearRecords {
+            let id = "\(record.canonicalKey)-\(record.chapter)"
+            if oldKeys.contains(record.canonicalKey) {
+                oldRead.insert(id)
+            } else if newKeys.contains(record.canonicalKey) {
+                newRead.insert(id)
+            }
+        }
+
+        return ((oldRead.count, oldTotal), (newRead.count, newTotal))
+    }
+
     // MARK: - Last 40 days
 
     private var last40Days: (counts: [Int], totalReads: Int, activeDays: Int, bestDay: Int) {
@@ -202,6 +238,8 @@ struct StatsView: View {
                                 progressFraction: progressFraction,
                                 bestMonth: bestMonth,
                                 readsByMonth: readsByMonth,
+                                oldTestament: testamentProgressThisYear.old,
+                                newTestament: testamentProgressThisYear.new,
                                 theme: themeManager.current
                             )
 

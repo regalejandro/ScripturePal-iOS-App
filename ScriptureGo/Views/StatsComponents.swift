@@ -19,6 +19,8 @@ struct YearStatsCard: View {
     let progressFraction: Double
     let bestMonth: (name: String, count: Int)?
     let readsByMonth: [Int: Int]
+    let oldTestament: (read: Int, total: Int)
+    let newTestament: (read: Int, total: Int)
     let theme: Theme
 
     var body: some View {
@@ -74,6 +76,24 @@ struct YearStatsCard: View {
 
             // ── Monthly bar chart ────────────────────────────────────────────
             MonthlyBarChart(readsByMonth: readsByMonth, theme: theme)
+
+            Divider()
+
+            // ── Testament progress ───────────────────────────────────────────
+            VStack(alignment: .leading, spacing: 12) {
+                TestamentProgressRow(
+                    label: "Old Testament",
+                    read: oldTestament.read,
+                    total: oldTestament.total,
+                    theme: theme
+                )
+                TestamentProgressRow(
+                    label: "New Testament",
+                    read: newTestament.read,
+                    total: newTestament.total,
+                    theme: theme
+                )
+            }
         }
         .statsCardStyle(theme: theme)
     }

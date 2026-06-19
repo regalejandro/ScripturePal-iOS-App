@@ -142,6 +142,35 @@ struct HistoricalStatsView: View {
         return (Calendar.current.monthSymbols[top.key - 1], top.value)
     }
 
+    /// Unique chapters read that year out of total chapters, split by testament.
+    private func testamentProgress(for year: Int) -> (old: (read: Int, total: Int), new: (read: Int, total: Int)) {
+        let books = bible.books(for: selectedTranslation)
+
+        var oldTotal = 0, newTotal = 0
+        var oldKeys = Set<String>(), newKeys = Set<String>()
+        for book in books {
+            if isOldTestament(book.section) {
+                oldTotal += book.chapters
+                oldKeys.insert(book.canonicalKey)
+            } else {
+                newTotal += book.chapters
+                newKeys.insert(book.canonicalKey)
+            }
+        }
+
+        var oldRead = Set<String>(), newRead = Set<String>()
+        for record in records(for: year) {
+            let id = "\(record.canonicalKey)-\(record.chapter)"
+            if oldKeys.contains(record.canonicalKey) {
+                oldRead.insert(id)
+            } else if newKeys.contains(record.canonicalKey) {
+                newRead.insert(id)
+            }
+        }
+
+        return ((oldRead.count, oldTotal), (newRead.count, newTotal))
+    }
+
     // MARK: - Reading log helpers
 
     /// canonicalKey → display book name for the current translation.
@@ -225,6 +254,8 @@ struct HistoricalStatsView: View {
                                 progressFraction: progressFraction(for: year),
                                 bestMonth: bestMonth(for: year),
                                 readsByMonth: readsByMonth(for: year),
+                                oldTestament: testamentProgress(for: year).old,
+                                newTestament: testamentProgress(for: year).new,
                                 theme: themeManager.current
                             )
                         }
