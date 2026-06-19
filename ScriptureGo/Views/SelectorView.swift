@@ -32,18 +32,25 @@ struct SelectorView: View {
     @AppStorage("selectedGroupsData") private var selectedGroupsData: Data = Data("[]".utf8)
     @AppStorage("selectedCustomGroupsData") private var selectedCustomGroupsData: Data = Data("[]".utf8)
     @AppStorage("groupMode") var groupMode: String = "all"
+    @AppStorage("includeCurrentlyReadingFilter") var includeCurrentlyReadingFilter: Bool = false
 
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var themeManager: ThemeManager
 
     @Query private var customGroups: [CustomGroup]
+    @Query private var currentlyReading: [CurrentlyReading]
+    @Query private var completions: [BookCompletion]
 
     @StateObject var bible = BibleManager()
-    
+
     @State var translationAtLastSelected = "   "
     @State private var showSettings = false
     @State var lastSelected: ChapterPointer = .init(bookID: 0, bookName: "None Chosen", chapter: 0, canonicalKey: "None")
     @State private var markedAsRead = false
+
+    // Reading session prompt state (shared by all "mark as read" actions).
+    @State private var showingAddToReadingAlert = false
+    @State private var pendingAddToReadingPointer: ChapterPointer?
 
     /// True if the current session's selection has been marked as read.
     /// Uses markedAsRead as a session-level fallback so the Last Selected
@@ -91,12 +98,16 @@ struct SelectorView: View {
         )
     }
 
-    /// Union of canonicalKeys belonging to the currently selected custom groups.
+    /// Union of canonicalKeys belonging to the currently selected custom groups,
+    /// plus the Currently Reading list when that filter is enabled.
     private var selectedCustomGroupKeys: Set<String> {
         let ids = Set(selectedCustomGroupsBinding.wrappedValue)
         var keys = Set<String>()
         for group in customGroups where ids.contains(group.uuid.uuidString) {
             keys.formUnion(group.bookKeys)
+        }
+        if includeCurrentlyReadingFilter {
+            keys.formUnion(currentlyReading.map { $0.canonicalKey })
         }
         return keys
     }
@@ -104,6 +115,64 @@ struct SelectorView: View {
     /// The Book matching a pointer's canonicalKey in the current translation.
     private func book(for pointer: ChapterPointer) -> Book? {
         bible.books(for: selectedTranslation).first { $0.canonicalKey == pointer.canonicalKey }
+    }
+
+    // MARK: - Reading session
+
+    private func isCurrentlyReading(_ key: String) -> Bool {
+        currentlyReading.contains { $0.canonicalKey == key }
+    }
+
+    private func incrementCompletionCount(for key: String) {
+        if let existing = completions.first(where: { $0.canonicalKey == key }) {
+            existing.count += 1
+        } else {
+            modelContext.insert(BookCompletion(canonicalKey: key, count: 1))
+        }
+    }
+
+    /// Marks a chapter as read in an already-active session. The 3-option
+    /// completion prompt (Read Again / Remove / Stay in Session) only lives in
+    /// BookDetailView, so finishing a book from here just records the
+    /// completion silently.
+    private func recordSessionRead(for key: String, chapter: Int, totalChapters: Int) {
+        guard let session = currentlyReading.first(where: { $0.canonicalKey == key }), !session.completed else { return }
+        session.markSessionRead(chapter)
+        if session.sessionReadCount(totalChapters: totalChapters) >= totalChapters {
+            session.completed = true
+            incrementCompletionCount(for: key)
+        }
+    }
+
+    /// Logs a chapter read for `pointer`, handling currently-reading session
+    /// tracking the same way BookDetailView does:
+    /// - Already reading: feeds the chapter into the active session.
+    /// - Single-chapter book: that one read finishes it outright.
+    /// - Multi-chapter book, not reading: only the last chapter prompts to
+    ///   start a session — random/individual chapters from here don't, since
+    ///   this view isn't meant for progressive reading.
+    private func logChapterRead(_ pointer: ChapterPointer) {
+        let record = ReadingRecord(canonicalKey: pointer.canonicalKey, chapter: pointer.chapter)
+        modelContext.insert(record)
+
+        guard let selectedBook = book(for: pointer) else { return }
+
+        if isCurrentlyReading(pointer.canonicalKey) {
+            recordSessionRead(for: pointer.canonicalKey, chapter: pointer.chapter, totalChapters: selectedBook.chapters)
+        } else if selectedBook.chapters == 1 {
+            incrementCompletionCount(for: pointer.canonicalKey)
+        } else if pointer.chapter == selectedBook.chapters {
+            pendingAddToReadingPointer = pointer
+            showingAddToReadingAlert = true
+        }
+    }
+
+    private func confirmAddToReading() {
+        guard let pointer = pendingAddToReadingPointer else { return }
+        let session = CurrentlyReading(canonicalKey: pointer.canonicalKey)
+        session.markSessionRead(pointer.chapter)
+        modelContext.insert(session)
+        pendingAddToReadingPointer = nil
     }
 
     private func recentLeading(_ selection: RecentSelection) -> some View {
@@ -182,11 +251,7 @@ struct SelectorView: View {
 
                         if lastSelected.bookID != 0 {
                             Button {
-                                let record = ReadingRecord(
-                                    canonicalKey: lastSelected.canonicalKey,
-                                    chapter: lastSelected.chapter
-                                )
-                                modelContext.insert(record)
+                                logChapterRead(lastSelected)
                                 markedAsRead = true
                                 var updated = recentSelections
                                 if !updated.isEmpty { updated[0].markedAsRead = true }
@@ -269,6 +334,7 @@ struct SelectorView: View {
                                 groupMode: $groupMode,
                                 selectedGroupsBackup: $selectedGroupsBackup,
                                 selectedCustomGroups: selectedCustomGroupsBinding,
+                                includeCurrentlyReading: $includeCurrentlyReadingFilter,
                                 allGroups: bible.groups(for: selectedTranslation)
                             )
                         }
@@ -300,11 +366,7 @@ struct SelectorView: View {
                                     Spacer()
 
                                     Button {
-                                        let record = ReadingRecord(
-                                            canonicalKey: selection.pointer.canonicalKey,
-                                            chapter: selection.pointer.chapter
-                                        )
-                                        modelContext.insert(record)
+                                        logChapterRead(selection.pointer)
                                         if index == 0 { markedAsRead = true }
                                         var updated = recentSelections
                                         updated[index].markedAsRead = true
@@ -375,6 +437,15 @@ struct SelectorView: View {
                 }
                 .sheet(isPresented: $showSettings) {
                     SettingsView()
+                }
+                .alert(
+                    "Add \(pendingAddToReadingPointer?.bookName ?? "") to Currently Reading?",
+                    isPresented: $showingAddToReadingAlert
+                ) {
+                    Button("Add to Currently Reading") { confirmAddToReading() }
+                    Button("Not Now", role: .cancel) { pendingAddToReadingPointer = nil }
+                } message: {
+                    Text("That was the last chapter. A full reading of this book will only count toward your times-read total if you start a reading session.")
                 }
             }
         }

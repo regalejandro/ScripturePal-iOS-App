@@ -15,10 +15,13 @@ struct GroupSelectionView: View {
     @Binding var selectedGroupsBackup: [String]
     /// Selected custom groups, stored by CustomGroup.uuid.uuidString.
     @Binding var selectedCustomGroups: [String]
+    /// Whether books on the Currently Reading list are included in the selection.
+    @Binding var includeCurrentlyReading: Bool
 
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
+    @Query private var currentlyReading: [CurrentlyReading]
 
     let allGroups: [String]
 
@@ -108,11 +111,24 @@ struct GroupSelectionView: View {
                     }
                     .foregroundColor(theme.textPrimary)
 
+                    // MARK: - CURRENTLY READING
+                    Section("Currently Reading") {
+                        if currentlyReading.isEmpty {
+                            Text("No books in your reading list yet.")
+                                .font(.caption)
+                                .foregroundColor(theme.textSecondary)
+                        } else {
+                            Toggle("Currently Reading", isOn: $includeCurrentlyReading)
+                        }
+                    }
+                    .foregroundColor(theme.textPrimary)
+
                     Section {
                         if !allSelected {
                             Button {
                                 selectedGroups = allGroups
                                 selectedCustomGroups = customGroups.map { $0.uuid.uuidString }
+                                includeCurrentlyReading = true
                             } label: {
                                 Text("Select All")
                                     .foregroundColor(theme.primary)
@@ -122,6 +138,7 @@ struct GroupSelectionView: View {
                             Button {
                                 selectedGroups = []
                                 selectedCustomGroups = []
+                                includeCurrentlyReading = false
                             } label: {
                                 Text("Deselect All")
                                     .foregroundColor(theme.warning)
@@ -148,9 +165,10 @@ struct GroupSelectionView: View {
     private var allSelected: Bool {
         selectedGroups.count >= allGroups.count
         && selectedCustomGroups.count >= customGroups.count
+        && (currentlyReading.isEmpty || includeCurrentlyReading)
     }
 
     private var hasAnySelection: Bool {
-        !selectedGroups.isEmpty || !selectedCustomGroups.isEmpty
+        !selectedGroups.isEmpty || !selectedCustomGroups.isEmpty || includeCurrentlyReading
     }
 }

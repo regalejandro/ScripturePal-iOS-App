@@ -32,6 +32,8 @@ struct BookDetailView: View {
 
     // Reading session state
     @State private var showingCompletionAlert = false
+    @State private var showingAddToReadingAlert = false
+    @State private var pendingAddToReadingChapter: Int?
 
     private var theme: Theme { themeManager.current }
 
@@ -92,10 +94,18 @@ struct BookDetailView: View {
         // Cover-to-cover completion of the current reading session.
         .alert("You've finished \(book.name)!", isPresented: $showingCompletionAlert) {
             Button("Read Again") { startNewSession() }
-            Button("Remove from Currently Reading", role: .destructive) { removeFromCurrentlyReading() }
+            Button("Done Reading", role: .destructive) { removeFromCurrentlyReading() }
             Button("Stay in Session", role: .cancel) { }
         } message: {
             Text("You've read every chapter this session. What next?")
+        }
+        // Offer to start a session when logging a chapter of a book that
+        // isn't currently being read.
+        .alert("Add \(book.name) to Currently Reading?", isPresented: $showingAddToReadingAlert) {
+            Button("Add to Currently Reading") { confirmAddToReading() }
+            Button("Not Now", role: .cancel) { pendingAddToReadingChapter = nil }
+        } message: {
+            Text("This chapter has been logged. A full reading of \(book.name) will only count if you start a reading session.")
         }
         // New custom group (adds this book to it).
         .alert("New Group", isPresented: $showingNewGroup) {
@@ -477,6 +487,17 @@ struct BookDetailView: View {
         }
     }
 
+    /// Starts a session for a book that wasn't being read, seeding it with the
+    /// chapter that was just logged. Only used for multi-chapter books, so a
+    /// single chapter can never complete the book on its own.
+    private func confirmAddToReading() {
+        guard let chapter = pendingAddToReadingChapter else { return }
+        let session = CurrentlyReading(canonicalKey: book.canonicalKey)
+        session.markSessionRead(chapter)
+        modelContext.insert(session)
+        pendingAddToReadingChapter = nil
+    }
+
     /// Records a chapter read this session. Returns true if this read just
     /// completed the book cover-to-cover (so the caller can show the
     /// completion prompt instead of the normal confirmation).
@@ -524,12 +545,22 @@ struct BookDetailView: View {
         let record = ReadingRecord(canonicalKey: book.canonicalKey, chapter: chapter, date: date)
         modelContext.insert(record)
 
-        // Track session progress when currently reading. If this read finished
-        // the book, show the completion prompt instead of the usual confirmation.
-        let justCompleted = recordSessionRead(chapter)
-
-        if justCompleted {
-            showingCompletionAlert = true
+        if isCurrentlyReading {
+            // Track session progress. If this read finished the book, show the
+            // completion prompt instead of the usual confirmation.
+            if recordSessionRead(chapter) {
+                showingCompletionAlert = true
+                return
+            }
+        } else if book.chapters == 1 {
+            // A single-chapter book is finished outright by this one read, so
+            // there's no session to start — just record the completion.
+            incrementCompletionCount()
+        } else {
+            // Not currently reading a multi-chapter book: offer to start a
+            // session so future reads count toward it.
+            pendingAddToReadingChapter = chapter
+            showingAddToReadingAlert = true
             return
         }
 
