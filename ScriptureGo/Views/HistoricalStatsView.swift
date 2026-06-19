@@ -12,6 +12,7 @@ import UIKit
 struct HistoricalStatsView: View {
 
     @Query private var records: [ReadingRecord]
+    @Query private var completions: [BookCompletion]
     @EnvironmentObject var themeManager: ThemeManager
     @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
     @StateObject private var bible = BibleManager()
@@ -199,6 +200,7 @@ struct HistoricalStatsView: View {
 
             ReadingLogView(
                 records: records,
+                completions: completions,
                 bookName: bookName,
                 theme: themeManager.current
             )

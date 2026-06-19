@@ -39,7 +39,7 @@ struct SelectorView: View {
 
     @Query private var customGroups: [CustomGroup]
     @Query private var currentlyReading: [CurrentlyReading]
-    @Query private var completions: [BookCompletion]
+    @Query private var readingRecords: [ReadingRecord]
 
     @StateObject var bible = BibleManager()
 
@@ -48,9 +48,12 @@ struct SelectorView: View {
     @State var lastSelected: ChapterPointer = .init(bookID: 0, bookName: "None Chosen", chapter: 0, canonicalKey: "None")
     @State private var markedAsRead = false
 
-    // Reading session prompt state (shared by all "mark as read" actions).
-    @State private var showingAddToReadingAlert = false
-    @State private var pendingAddToReadingPointer: ChapterPointer?
+    // Reading session completion prompt, shown when logging from here
+    // finishes a book that's already in Currently Reading (same alert as
+    // BookDetailView's).
+    @State private var showingCompletionAlert = false
+    @State private var completionBookKey: String?
+    @State private var completionBookName: String = ""
 
     /// True if the current session's selection has been marked as read.
     /// Uses markedAsRead as a session-level fallback so the Last Selected
@@ -118,61 +121,88 @@ struct SelectorView: View {
     }
 
     // MARK: - Reading session
+    //
+    // Selector never offers to start a Currently Reading session (that's
+    // BookDetailView's "Reading" toggle). It only matters once a book is
+    // already being read: chapters logged here feed the active session the
+    // same way BookDetailView's chapter grid does, and finishing the book
+    // from here shows the same completion alert.
 
-    private func isCurrentlyReading(_ key: String) -> Bool {
-        currentlyReading.contains { $0.canonicalKey == key }
+    private func session(for key: String) -> CurrentlyReading? {
+        currentlyReading.first { $0.canonicalKey == key }
     }
 
-    private func incrementCompletionCount(for key: String) {
-        if let existing = completions.first(where: { $0.canonicalKey == key }) {
-            existing.count += 1
-        } else {
-            modelContext.insert(BookCompletion(canonicalKey: key, count: 1))
+    /// True once every chapter 1...totalChapters has a record dated at/after
+    /// the session start, treating `justLogged` as already present even
+    /// though the @Query feeding `readingRecords` may not have caught up.
+    private func sessionCoversAllChapters(key: String, totalChapters: Int, session: CurrentlyReading, includingJustLogged justLogged: ReadingRecord) -> Bool {
+        var chapters = Set(readingRecords.filter { $0.canonicalKey == key && $0.date >= session.addedAt }.map { $0.chapter })
+        chapters.insert(justLogged.chapter)
+        return chapters.isSuperset(of: 1...totalChapters)
+    }
+
+    /// For each chapter 1...totalChapters, the id of the earliest record (at
+    /// or after the session start) that satisfied it.
+    private func contributingRecordIDs(key: String, totalChapters: Int, session: CurrentlyReading, justLogged: ReadingRecord) -> [UUID] {
+        var earliestByChapter: [Int: ReadingRecord] = [:]
+        let scoped = readingRecords.filter { $0.canonicalKey == key } + [justLogged]
+        for record in scoped where record.date >= session.addedAt {
+            if let existing = earliestByChapter[record.chapter] {
+                if record.date < existing.date { earliestByChapter[record.chapter] = record }
+            } else {
+                earliestByChapter[record.chapter] = record
+            }
         }
+        return (1...totalChapters).compactMap { earliestByChapter[$0]?.id }
     }
 
-    /// Marks a chapter as read in an already-active session. The 3-option
-    /// completion prompt (Read Again / Remove / Stay in Session) only lives in
-    /// BookDetailView, so finishing a book from here just records the
-    /// completion silently.
-    private func recordSessionRead(for key: String, chapter: Int, totalChapters: Int) {
-        guard let session = currentlyReading.first(where: { $0.canonicalKey == key }), !session.completed else { return }
-        session.markSessionRead(chapter)
-        if session.sessionReadCount(totalChapters: totalChapters) >= totalChapters {
-            session.completed = true
-            incrementCompletionCount(for: key)
-        }
-    }
-
-    /// Logs a chapter read for `pointer`, handling currently-reading session
-    /// tracking the same way BookDetailView does:
-    /// - Already reading: feeds the chapter into the active session.
-    /// - Single-chapter book: that one read finishes it outright.
-    /// - Multi-chapter book, not reading: only the last chapter prompts to
-    ///   start a session — random/individual chapters from here don't, since
-    ///   this view isn't meant for progressive reading.
+    /// Logs a chapter read for `pointer`:
+    /// - Already reading: feeds the chapter into the active session, showing
+    ///   the completion alert if this finishes the book.
+    /// - Single-chapter book, not reading: that one read finishes it outright.
+    /// - Multi-chapter book, not reading: just a normal logged read — Selector
+    ///   never offers to start a session.
     private func logChapterRead(_ pointer: ChapterPointer) {
         let record = ReadingRecord(canonicalKey: pointer.canonicalKey, chapter: pointer.chapter)
         modelContext.insert(record)
 
         guard let selectedBook = book(for: pointer) else { return }
 
-        if isCurrentlyReading(pointer.canonicalKey) {
-            recordSessionRead(for: pointer.canonicalKey, chapter: pointer.chapter, totalChapters: selectedBook.chapters)
-        } else if selectedBook.chapters == 1 {
-            incrementCompletionCount(for: pointer.canonicalKey)
-        } else if pointer.chapter == selectedBook.chapters {
-            pendingAddToReadingPointer = pointer
-            showingAddToReadingAlert = true
+        if let activeSession = session(for: pointer.canonicalKey), !activeSession.completed {
+            guard sessionCoversAllChapters(
+                key: pointer.canonicalKey,
+                totalChapters: selectedBook.chapters,
+                session: activeSession,
+                includingJustLogged: record
+            ) else { return }
+
+            activeSession.completed = true
+            let ids = contributingRecordIDs(
+                key: pointer.canonicalKey,
+                totalChapters: selectedBook.chapters,
+                session: activeSession,
+                justLogged: record
+            )
+            modelContext.insert(BookCompletion(canonicalKey: pointer.canonicalKey, contributingRecordIDs: ids))
+
+            completionBookKey = pointer.canonicalKey
+            completionBookName = pointer.bookName
+            showingCompletionAlert = true
+        } else if session(for: pointer.canonicalKey) == nil && selectedBook.chapters == 1 {
+            modelContext.insert(BookCompletion(canonicalKey: pointer.canonicalKey, contributingRecordIDs: [record.id]))
         }
     }
 
-    private func confirmAddToReading() {
-        guard let pointer = pendingAddToReadingPointer else { return }
-        let session = CurrentlyReading(canonicalKey: pointer.canonicalKey)
-        session.markSessionRead(pointer.chapter)
-        modelContext.insert(session)
-        pendingAddToReadingPointer = nil
+    /// Begin a fresh session for the book in the completion alert (Read Again).
+    private func startNewSessionForCompletionBook() {
+        guard let key = completionBookKey, let activeSession = session(for: key) else { return }
+        activeSession.addedAt = .now
+        activeSession.completed = false
+    }
+
+    private func removeCompletionBookFromReading() {
+        guard let key = completionBookKey, let activeSession = session(for: key) else { return }
+        modelContext.delete(activeSession)
     }
 
     private func recentLeading(_ selection: RecentSelection) -> some View {
@@ -439,13 +469,14 @@ struct SelectorView: View {
                     SettingsView()
                 }
                 .alert(
-                    "Add \(pendingAddToReadingPointer?.bookName ?? "") to Currently Reading?",
-                    isPresented: $showingAddToReadingAlert
+                    "You've finished \(completionBookName)!",
+                    isPresented: $showingCompletionAlert
                 ) {
-                    Button("Add to Currently Reading") { confirmAddToReading() }
-                    Button("Not Now", role: .cancel) { pendingAddToReadingPointer = nil }
+                    Button("Read Again") { startNewSessionForCompletionBook() }
+                    Button("Done Reading", role: .destructive) { removeCompletionBookFromReading() }
+                    Button("Stay in Session", role: .cancel) { }
                 } message: {
-                    Text("That was the last chapter. A full reading of this book will only count toward your times-read total if you start a reading session.")
+                    Text("You've read every chapter this session. What next?")
                 }
             }
         }

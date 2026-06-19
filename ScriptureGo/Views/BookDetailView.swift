@@ -15,6 +15,7 @@ struct BookDetailView: View {
     @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
     @Query private var currentlyReading: [CurrentlyReading]
     @Query private var completions: [BookCompletion]
+    @Query private var records: [ReadingRecord]
 
     let book: Book
 
@@ -33,7 +34,13 @@ struct BookDetailView: View {
     // Reading session state
     @State private var showingCompletionAlert = false
     @State private var showingAddToReadingAlert = false
-    @State private var pendingAddToReadingChapter: Int?
+    @State private var pendingAddToReadingRecord: ReadingRecord?
+
+    init(book: Book) {
+        self.book = book
+        let key = book.canonicalKey
+        _records = Query(filter: #Predicate<ReadingRecord> { $0.canonicalKey == key })
+    }
 
     private var theme: Theme { themeManager.current }
 
@@ -103,7 +110,7 @@ struct BookDetailView: View {
         // isn't currently being read.
         .alert("Add \(book.name) to Currently Reading?", isPresented: $showingAddToReadingAlert) {
             Button("Add to Currently Reading") { confirmAddToReading() }
-            Button("Not Now", role: .cancel) { pendingAddToReadingChapter = nil }
+            Button("Not Now", role: .cancel) { pendingAddToReadingRecord = nil }
         } message: {
             Text("This chapter has been logged. A full reading of \(book.name) will only count if you start a reading session.")
         }
@@ -451,9 +458,12 @@ struct BookDetailView: View {
         readingSession != nil
     }
 
-    /// Chapters read during the active session (empty when not reading).
+    /// Chapters covered this session: any chapter with a logged read dated at
+    /// or after the session started. Derived live from `records`, so editing
+    /// or deleting a read automatically updates this (and the checkmarks).
     private var sessionChapters: Set<Int> {
-        Set(readingSession?.sessionChapters ?? [])
+        guard let session = readingSession else { return [] }
+        return Set(records.filter { $0.date >= session.addedAt }.map { $0.chapter })
     }
 
     /// Whether the current session has been completed and acknowledged.
@@ -463,7 +473,7 @@ struct BookDetailView: View {
 
     /// How many times this book has been read cover-to-cover.
     private var timesRead: Int {
-        completions.first { $0.canonicalKey == book.canonicalKey }?.count ?? 0
+        completions.filter { $0.canonicalKey == book.canonicalKey }.count
     }
 
     private func toggleCurrentlyReading() {
@@ -474,10 +484,11 @@ struct BookDetailView: View {
         }
     }
 
-    /// Begin a fresh session for an already-current book (Read Again).
+    /// Begin a fresh session for an already-current book (Read Again). Resets
+    /// the session start so earlier reads no longer count toward it.
     private func startNewSession() {
         guard let session = readingSession else { return }
-        session.sessionChapters = []
+        session.addedAt = .now
         session.completed = false
     }
 
@@ -487,39 +498,55 @@ struct BookDetailView: View {
         }
     }
 
-    /// Starts a session for a book that wasn't being read, seeding it with the
-    /// chapter that was just logged. Only used for multi-chapter books, so a
-    /// single chapter can never complete the book on its own.
+    /// Starts a session for a book that wasn't being read, anchored to the
+    /// chapter that was just logged so that read counts toward it. Only
+    /// offered for multi-chapter books, so a single chapter can never
+    /// complete the book on its own.
     private func confirmAddToReading() {
-        guard let chapter = pendingAddToReadingChapter else { return }
+        guard let record = pendingAddToReadingRecord else { return }
         let session = CurrentlyReading(canonicalKey: book.canonicalKey)
-        session.markSessionRead(chapter)
+        session.addedAt = record.date
         modelContext.insert(session)
-        pendingAddToReadingChapter = nil
+        pendingAddToReadingRecord = nil
+    }
+
+    /// True once every chapter 1...book.chapters has a record dated at/after
+    /// `session.addedAt`, treating `justLogged` as already present even
+    /// though the @Query feeding `records` may not have caught up to it yet.
+    private func sessionCoversAllChapters(session: CurrentlyReading, includingJustLogged justLogged: ReadingRecord) -> Bool {
+        var chapters = Set(records.filter { $0.date >= session.addedAt }.map { $0.chapter })
+        chapters.insert(justLogged.chapter)
+        return chapters.isSuperset(of: 1...book.chapters)
+    }
+
+    /// For each chapter 1...book.chapters, the id of the earliest record (at
+    /// or after the session start) that satisfied it — the reads this
+    /// completion depends on. If any of them is later deleted, the
+    /// completion they produced should be revoked.
+    private func contributingRecordIDs(session: CurrentlyReading, justLogged: ReadingRecord) -> [UUID] {
+        var earliestByChapter: [Int: ReadingRecord] = [:]
+        for record in records + [justLogged] where record.date >= session.addedAt {
+            if let existing = earliestByChapter[record.chapter] {
+                if record.date < existing.date { earliestByChapter[record.chapter] = record }
+            } else {
+                earliestByChapter[record.chapter] = record
+            }
+        }
+        return (1...book.chapters).compactMap { earliestByChapter[$0]?.id }
     }
 
     /// Records a chapter read this session. Returns true if this read just
     /// completed the book cover-to-cover (so the caller can show the
     /// completion prompt instead of the normal confirmation).
     @discardableResult
-    private func recordSessionRead(_ chapter: Int) -> Bool {
+    private func recordSessionRead(_ record: ReadingRecord) -> Bool {
         guard let session = readingSession, !session.completed else { return false }
-        session.markSessionRead(chapter)
+        guard sessionCoversAllChapters(session: session, includingJustLogged: record) else { return false }
 
-        if session.sessionReadCount(totalChapters: book.chapters) >= book.chapters {
-            session.completed = true
-            incrementCompletionCount()
-            return true
-        }
-        return false
-    }
-
-    private func incrementCompletionCount() {
-        if let existing = completions.first(where: { $0.canonicalKey == book.canonicalKey }) {
-            existing.count += 1
-        } else {
-            modelContext.insert(BookCompletion(canonicalKey: book.canonicalKey, count: 1))
-        }
+        session.completed = true
+        let ids = contributingRecordIDs(session: session, justLogged: record)
+        modelContext.insert(BookCompletion(canonicalKey: book.canonicalKey, contributingRecordIDs: ids))
+        return true
     }
 
     // MARK: - Custom groups
@@ -548,18 +575,18 @@ struct BookDetailView: View {
         if isCurrentlyReading {
             // Track session progress. If this read finished the book, show the
             // completion prompt instead of the usual confirmation.
-            if recordSessionRead(chapter) {
+            if recordSessionRead(record) {
                 showingCompletionAlert = true
                 return
             }
         } else if book.chapters == 1 {
             // A single-chapter book is finished outright by this one read, so
             // there's no session to start — just record the completion.
-            incrementCompletionCount()
+            modelContext.insert(BookCompletion(canonicalKey: book.canonicalKey, contributingRecordIDs: [record.id]))
         } else {
             // Not currently reading a multi-chapter book: offer to start a
             // session so future reads count toward it.
-            pendingAddToReadingChapter = chapter
+            pendingAddToReadingRecord = record
             showingAddToReadingAlert = true
             return
         }
@@ -694,17 +721,20 @@ private struct BookReadingLog: View {
     let theme: Theme
 
     @Query private var records: [ReadingRecord]
+    @Query private var completions: [BookCompletion]
 
     init(book: Book, theme: Theme) {
         self.book = book
         self.theme = theme
         let key = book.canonicalKey
         _records = Query(filter: #Predicate<ReadingRecord> { $0.canonicalKey == key })
+        _completions = Query(filter: #Predicate<BookCompletion> { $0.canonicalKey == key })
     }
 
     var body: some View {
         ReadingLogView(
             records: records,
+            completions: completions,
             bookName: { _ in book.name },
             theme: theme
         )

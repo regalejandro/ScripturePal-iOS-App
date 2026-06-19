@@ -124,6 +124,7 @@ struct SettingsView: View {
                     .alert("Clear Reading History?", isPresented: $showingClearAlert) {
                         Button("Clear", role: .destructive) {
                             try? modelContext.delete(model: ReadingRecord.self)
+                            try? modelContext.delete(model: BookCompletion.self)
                         }
                         Button("Cancel", role: .cancel) { }
                     } message: {
