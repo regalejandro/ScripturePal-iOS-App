@@ -90,6 +90,7 @@ struct LibraryView: View {
             modelContext.delete(existing)
         } else {
             modelContext.insert(CurrentlyReading(canonicalKey: key))
+            Haptics.addedToCurrentlyReading()
         }
     }
 

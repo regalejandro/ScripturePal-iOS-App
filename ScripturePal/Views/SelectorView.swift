@@ -165,6 +165,7 @@ struct SelectorView: View {
     private func logChapterRead(_ pointer: ChapterPointer) {
         let record = ReadingRecord(canonicalKey: pointer.canonicalKey, chapter: pointer.chapter)
         modelContext.insert(record)
+        Haptics.chapterLogged()
 
         guard let selectedBook = book(for: pointer) else { return }
 

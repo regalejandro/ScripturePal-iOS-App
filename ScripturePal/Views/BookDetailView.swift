@@ -23,8 +23,6 @@ struct BookDetailView: View {
     @State private var selectedChapter: Int?
     @State private var showingDatePicker = false
     @State private var pickedDate = Date()
-    @State private var showingReadAlert = false
-    @State private var logConfirmationMessage = ""
 
     // Group management state
     @State private var showingNewGroup = false
@@ -93,10 +91,6 @@ struct BookDetailView: View {
         // Step 2 (optional): pick a custom date.
         .sheet(isPresented: $showingDatePicker) {
             datePickerSheet
-        }
-        // Step 3: confirmation, matching the app's existing alert.
-        .alert(logConfirmationMessage, isPresented: $showingReadAlert) {
-            Button("OK", role: .cancel) { }
         }
         // Cover-to-cover completion of the current reading session.
         .alert("You've finished \(book.name)!", isPresented: $showingCompletionAlert) {
@@ -481,6 +475,7 @@ struct BookDetailView: View {
             modelContext.delete(existing)
         } else {
             modelContext.insert(CurrentlyReading(canonicalKey: book.canonicalKey))
+            Haptics.addedToCurrentlyReading()
         }
     }
 
@@ -508,6 +503,7 @@ struct BookDetailView: View {
         session.addedAt = record.date
         modelContext.insert(session)
         pendingAddToReadingRecord = nil
+        Haptics.addedToCurrentlyReading()
     }
 
     /// True once every chapter 1...book.chapters has a record dated at/after
@@ -571,6 +567,7 @@ struct BookDetailView: View {
     private func logReading(chapter: Int, date: Date) {
         let record = ReadingRecord(canonicalKey: book.canonicalKey, chapter: chapter, date: date)
         modelContext.insert(record)
+        Haptics.chapterLogged()
 
         if isCurrentlyReading {
             // Track session progress. If this read finished the book, show the
@@ -588,18 +585,7 @@ struct BookDetailView: View {
             // session so future reads count toward it.
             pendingAddToReadingRecord = record
             showingAddToReadingAlert = true
-            return
         }
-
-        if Calendar.current.isDateInToday(date) {
-            logConfirmationMessage =
-                "Reading of \(book.name) \(chapter) has been logged for today's date."
-        } else {
-            let formatted = date.formatted(date: .long, time: .omitted)
-            logConfirmationMessage =
-                "Reading of \(book.name) \(chapter) has been logged for \(formatted)."
-        }
-        showingReadAlert = true
     }
 }
 
