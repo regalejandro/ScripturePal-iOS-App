@@ -11,6 +11,7 @@ struct ContentView: View {
 
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.colorScheme) private var colorScheme
+    @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
 
     @State private var selection = 0
     @State private var reveal: RevealItem?
@@ -60,6 +61,15 @@ struct ContentView: View {
         }
         .onChange(of: colorScheme) {
             themeManager.apply(systemScheme: colorScheme)
+        }
+        // Shown once on first launch; OnboardingView flips the same
+        // AppStorage flag when finished, which dismisses this automatically.
+        .fullScreenCover(isPresented: Binding(
+            get: { !hasCompletedOnboarding },
+            set: { isShowing in hasCompletedOnboarding = !isShowing }
+        )) {
+            OnboardingView()
+                .environmentObject(themeManager)
         }
     }
 }
