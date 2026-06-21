@@ -1,1441 +1,5 @@
 {
   "translations": {
-    "Douay-Rheims": {
-      "tradition": "Catholic",
-      "books": [
-        {
-          "id": 1,
-          "name": "Genesis",
-          "chapters": 50,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "genesis"
-        },
-        {
-          "id": 2,
-          "name": "Exodus",
-          "chapters": 40,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "exodus"
-        },
-        {
-          "id": 3,
-          "name": "Leviticus",
-          "chapters": 27,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "leviticus"
-        },
-        {
-          "id": 4,
-          "name": "Numbers",
-          "chapters": 36,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "numbers"
-        },
-        {
-          "id": 5,
-          "name": "Deuteronomy",
-          "chapters": 34,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "deuteronomy"
-        },
-        {
-          "id": 6,
-          "name": "Joshua",
-          "chapters": 24,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "joshua"
-        },
-        {
-          "id": 7,
-          "name": "Judges",
-          "chapters": 21,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "judges"
-        },
-        {
-          "id": 8,
-          "name": "Ruth",
-          "chapters": 4,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "ruth"
-        },
-        {
-          "id": 9,
-          "name": "1 Kings",
-          "chapters": 31,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "1-samuel"
-        },
-        {
-          "id": 10,
-          "name": "2 Kings",
-          "chapters": 24,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "2-samuel"
-        },
-        {
-          "id": 11,
-          "name": "3 Kings",
-          "chapters": 22,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "1-kings"
-        },
-        {
-          "id": 12,
-          "name": "4 Kings",
-          "chapters": 25,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "2-kings"
-        },
-        {
-          "id": 13,
-          "name": "1 Paralipomenon",
-          "chapters": 29,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "1-chronicles"
-        },
-        {
-          "id": 14,
-          "name": "2 Paralipomenon",
-          "chapters": 36,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "2-chronicles"
-        },
-        {
-          "id": 15,
-          "name": "Ezra",
-          "chapters": 10,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "ezra"
-        },
-        {
-          "id": 16,
-          "name": "Nehemias",
-          "chapters": 13,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "nehemiah"
-        },
-        {
-          "id": 17,
-          "name": "Tobias",
-          "chapters": 14,
-          "groups": [
-            "Deuterocanon"
-          ],
-          "section": "OT",
-          "canonicalKey": "tobit"
-        },
-        {
-          "id": 18,
-          "name": "Judith",
-          "chapters": 16,
-          "groups": [
-            "Deuterocanon"
-          ],
-          "section": "OT",
-          "canonicalKey": "judith"
-        },
-        {
-          "id": 19,
-          "name": "Esther",
-          "chapters": 16,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "esther"
-        },
-        {
-          "id": 20,
-          "name": "Job",
-          "chapters": 42,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "job"
-        },
-        {
-          "id": 21,
-          "name": "Psalms",
-          "chapters": 150,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "psalms"
-        },
-        {
-          "id": 22,
-          "name": "Proverbs",
-          "chapters": 31,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "proverbs"
-        },
-        {
-          "id": 23,
-          "name": "Ecclesiastes",
-          "chapters": 12,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "ecclesiastes"
-        },
-        {
-          "id": 24,
-          "name": "Canticle of Canticles",
-          "chapters": 8,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "song-of-songs"
-        },
-        {
-          "id": 25,
-          "name": "Wisdom",
-          "chapters": 19,
-          "groups": [
-            "Deuterocanon",
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "wisdom"
-        },
-        {
-          "id": 26,
-          "name": "Ecclesiasticus",
-          "chapters": 51,
-          "groups": [
-            "Deuterocanon",
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "sirach"
-        },
-        {
-          "id": 27,
-          "name": "Isaias",
-          "chapters": 66,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "isaiah"
-        },
-        {
-          "id": 28,
-          "name": "Jeremias",
-          "chapters": 52,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "jeremiah"
-        },
-        {
-          "id": 29,
-          "name": "Lamentations",
-          "chapters": 5,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "lamentations"
-        },
-        {
-          "id": 30,
-          "name": "Baruch",
-          "chapters": 6,
-          "groups": [
-            "Deuterocanon",
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "baruch"
-        },
-        {
-          "id": 31,
-          "name": "Ezechiel",
-          "chapters": 48,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "ezekiel"
-        },
-        {
-          "id": 32,
-          "name": "Daniel",
-          "chapters": 14,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "daniel"
-        },
-        {
-          "id": 33,
-          "name": "Osee",
-          "chapters": 14,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "hosea"
-        },
-        {
-          "id": 34,
-          "name": "Joel",
-          "chapters": 3,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "joel"
-        },
-        {
-          "id": 35,
-          "name": "Amos",
-          "chapters": 9,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "amos"
-        },
-        {
-          "id": 36,
-          "name": "Abdias",
-          "chapters": 1,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "obadiah"
-        },
-        {
-          "id": 37,
-          "name": "Jonas",
-          "chapters": 4,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "jonah"
-        },
-        {
-          "id": 38,
-          "name": "Micheas",
-          "chapters": 7,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "micah"
-        },
-        {
-          "id": 39,
-          "name": "Nahum",
-          "chapters": 3,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "nahum"
-        },
-        {
-          "id": 40,
-          "name": "Habacuc",
-          "chapters": 3,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "habakkuk"
-        },
-        {
-          "id": 41,
-          "name": "Sophonias",
-          "chapters": 3,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "zephaniah"
-        },
-        {
-          "id": 42,
-          "name": "Aggeus",
-          "chapters": 2,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "haggai"
-        },
-        {
-          "id": 43,
-          "name": "Zacharias",
-          "chapters": 14,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "zechariah"
-        },
-        {
-          "id": 44,
-          "name": "Malachias",
-          "chapters": 4,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "malachi"
-        },
-        {
-          "id": 45,
-          "name": "Matthew",
-          "chapters": 28,
-          "groups": [
-            "Gospels"
-          ],
-          "section": "NT",
-          "canonicalKey": "matthew"
-        },
-        {
-          "id": 46,
-          "name": "Mark",
-          "chapters": 16,
-          "groups": [
-            "Gospels"
-          ],
-          "section": "NT",
-          "canonicalKey": "mark"
-        },
-        {
-          "id": 47,
-          "name": "Luke",
-          "chapters": 24,
-          "groups": [
-            "Gospels"
-          ],
-          "section": "NT",
-          "canonicalKey": "luke"
-        },
-        {
-          "id": 48,
-          "name": "John",
-          "chapters": 21,
-          "groups": [
-            "Gospels"
-          ],
-          "section": "NT",
-          "canonicalKey": "john"
-        },
-        {
-          "id": 49,
-          "name": "Acts",
-          "chapters": 28,
-          "groups": [
-            "Historical"
-          ],
-          "section": "NT",
-          "canonicalKey": "acts"
-        },
-        {
-          "id": 50,
-          "name": "Romans",
-          "chapters": 16,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "romans"
-        },
-        {
-          "id": 51,
-          "name": "1 Corinthians",
-          "chapters": 16,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-corinthians"
-        },
-        {
-          "id": 52,
-          "name": "2 Corinthians",
-          "chapters": 13,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-corinthians"
-        },
-        {
-          "id": 53,
-          "name": "Galatians",
-          "chapters": 6,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "galatians"
-        },
-        {
-          "id": 54,
-          "name": "Ephesians",
-          "chapters": 6,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "ephesians"
-        },
-        {
-          "id": 55,
-          "name": "Philippians",
-          "chapters": 4,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "philippians"
-        },
-        {
-          "id": 56,
-          "name": "Colossians",
-          "chapters": 4,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "colossians"
-        },
-        {
-          "id": 57,
-          "name": "1 Thessalonians",
-          "chapters": 5,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-thessalonians"
-        },
-        {
-          "id": 58,
-          "name": "2 Thessalonians",
-          "chapters": 3,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-thessalonians"
-        },
-        {
-          "id": 59,
-          "name": "1 Timothy",
-          "chapters": 6,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-timothy"
-        },
-        {
-          "id": 60,
-          "name": "2 Timothy",
-          "chapters": 4,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-timothy"
-        },
-        {
-          "id": 61,
-          "name": "Titus",
-          "chapters": 3,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "titus"
-        },
-        {
-          "id": 62,
-          "name": "Philemon",
-          "chapters": 1,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "philemon"
-        },
-        {
-          "id": 63,
-          "name": "Hebrews",
-          "chapters": 13,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "hebrews"
-        },
-        {
-          "id": 64,
-          "name": "James",
-          "chapters": 5,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "james"
-        },
-        {
-          "id": 65,
-          "name": "1 Peter",
-          "chapters": 5,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-peter"
-        },
-        {
-          "id": 66,
-          "name": "2 Peter",
-          "chapters": 3,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-peter"
-        },
-        {
-          "id": 67,
-          "name": "1 John",
-          "chapters": 5,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-john"
-        },
-        {
-          "id": 68,
-          "name": "2 John",
-          "chapters": 1,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-john"
-        },
-        {
-          "id": 69,
-          "name": "3 John",
-          "chapters": 1,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "3-john"
-        },
-        {
-          "id": 70,
-          "name": "Jude",
-          "chapters": 1,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "jude"
-        },
-        {
-          "id": 71,
-          "name": "Apocalypse",
-          "chapters": 22,
-          "groups": [
-            "Prophecy"
-          ],
-          "section": "NT",
-          "canonicalKey": "revelation"
-        }
-      ]
-    },
-    "NABRE": {
-      "tradition": "Catholic",
-      "books": [
-        {
-          "id": 1,
-          "name": "Genesis",
-          "chapters": 50,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "genesis"
-        },
-        {
-          "id": 2,
-          "name": "Exodus",
-          "chapters": 40,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "exodus"
-        },
-        {
-          "id": 3,
-          "name": "Leviticus",
-          "chapters": 27,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "leviticus"
-        },
-        {
-          "id": 4,
-          "name": "Numbers",
-          "chapters": 36,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "numbers"
-        },
-        {
-          "id": 5,
-          "name": "Deuteronomy",
-          "chapters": 34,
-          "groups": [
-            "Torah"
-          ],
-          "section": "OT",
-          "canonicalKey": "deuteronomy"
-        },
-        {
-          "id": 6,
-          "name": "Joshua",
-          "chapters": 24,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "joshua"
-        },
-        {
-          "id": 7,
-          "name": "Judges",
-          "chapters": 21,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "judges"
-        },
-        {
-          "id": 8,
-          "name": "Ruth",
-          "chapters": 4,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "ruth"
-        },
-        {
-          "id": 9,
-          "name": "1 Samuel",
-          "chapters": 31,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "1-samuel"
-        },
-        {
-          "id": 10,
-          "name": "2 Samuel",
-          "chapters": 24,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "2-samuel"
-        },
-        {
-          "id": 11,
-          "name": "1 Kings",
-          "chapters": 22,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "1-kings"
-        },
-        {
-          "id": 12,
-          "name": "2 Kings",
-          "chapters": 25,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "2-kings"
-        },
-        {
-          "id": 13,
-          "name": "1 Chronicles",
-          "chapters": 29,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "1-chronicles"
-        },
-        {
-          "id": 14,
-          "name": "2 Chronicles",
-          "chapters": 36,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "2-chronicles"
-        },
-        {
-          "id": 15,
-          "name": "Ezra",
-          "chapters": 10,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "ezra"
-        },
-        {
-          "id": 16,
-          "name": "Nehemiah",
-          "chapters": 13,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "nehemiah"
-        },
-        {
-          "id": 17,
-          "name": "Tobit",
-          "chapters": 14,
-          "groups": [
-            "Deuterocanon"
-          ],
-          "section": "OT",
-          "canonicalKey": "tobit"
-        },
-        {
-          "id": 18,
-          "name": "Judith",
-          "chapters": 16,
-          "groups": [
-            "Deuterocanon"
-          ],
-          "section": "OT",
-          "canonicalKey": "judith"
-        },
-        {
-          "id": 19,
-          "name": "Esther",
-          "chapters": 16,
-          "groups": [
-            "Historical"
-          ],
-          "section": "OT",
-          "canonicalKey": "esther"
-        },
-        {
-          "id": 20,
-          "name": "Job",
-          "chapters": 42,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "job"
-        },
-        {
-          "id": 21,
-          "name": "Psalms",
-          "chapters": 150,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "psalms"
-        },
-        {
-          "id": 22,
-          "name": "Proverbs",
-          "chapters": 31,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "proverbs"
-        },
-        {
-          "id": 23,
-          "name": "Ecclesiastes",
-          "chapters": 12,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "ecclesiastes"
-        },
-        {
-          "id": 24,
-          "name": "Song of Songs",
-          "chapters": 8,
-          "groups": [
-            "Wisdom"
-          ],
-          "section": "OT",
-          "canonicalKey": "song-of-songs"
-        },
-        {
-          "id": 25,
-          "name": "Wisdom",
-          "chapters": 19,
-          "groups": [
-            "Wisdom",
-            "Deuterocanon"
-          ],
-          "section": "OT",
-          "canonicalKey": "wisdom"
-        },
-        {
-          "id": 26,
-          "name": "Sirach",
-          "chapters": 51,
-          "groups": [
-            "Wisdom",
-            "Deuterocanon"
-          ],
-          "section": "OT",
-          "canonicalKey": "sirach"
-        },
-        {
-          "id": 27,
-          "name": "Isaiah",
-          "chapters": 66,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "isaiah"
-        },
-        {
-          "id": 28,
-          "name": "Jeremiah",
-          "chapters": 52,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "jeremiah"
-        },
-        {
-          "id": 29,
-          "name": "Lamentations",
-          "chapters": 5,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "lamentations"
-        },
-        {
-          "id": 30,
-          "name": "Baruch",
-          "chapters": 6,
-          "groups": [
-            "Prophets",
-            "Deuterocanon"
-          ],
-          "section": "OT",
-          "canonicalKey": "baruch"
-        },
-        {
-          "id": 31,
-          "name": "Ezekiel",
-          "chapters": 48,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "ezekiel"
-        },
-        {
-          "id": 32,
-          "name": "Daniel",
-          "chapters": 14,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "daniel"
-        },
-        {
-          "id": 33,
-          "name": "Hosea",
-          "chapters": 14,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "hosea"
-        },
-        {
-          "id": 34,
-          "name": "Joel",
-          "chapters": 3,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "joel"
-        },
-        {
-          "id": 35,
-          "name": "Amos",
-          "chapters": 9,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "amos"
-        },
-        {
-          "id": 36,
-          "name": "Obadiah",
-          "chapters": 1,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "obadiah"
-        },
-        {
-          "id": 37,
-          "name": "Jonah",
-          "chapters": 4,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "jonah"
-        },
-        {
-          "id": 38,
-          "name": "Micah",
-          "chapters": 7,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "micah"
-        },
-        {
-          "id": 39,
-          "name": "Nahum",
-          "chapters": 3,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "nahum"
-        },
-        {
-          "id": 40,
-          "name": "Habakkuk",
-          "chapters": 3,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "habakkuk"
-        },
-        {
-          "id": 41,
-          "name": "Zephaniah",
-          "chapters": 3,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "zephaniah"
-        },
-        {
-          "id": 42,
-          "name": "Haggai",
-          "chapters": 2,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "haggai"
-        },
-        {
-          "id": 43,
-          "name": "Zechariah",
-          "chapters": 14,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "zechariah"
-        },
-        {
-          "id": 44,
-          "name": "Malachi",
-          "chapters": 4,
-          "groups": [
-            "Prophets"
-          ],
-          "section": "OT",
-          "canonicalKey": "malachi"
-        },
-        {
-          "id": 45,
-          "name": "Matthew",
-          "chapters": 28,
-          "groups": [
-            "Gospels"
-          ],
-          "section": "NT",
-          "canonicalKey": "matthew"
-        },
-        {
-          "id": 46,
-          "name": "Mark",
-          "chapters": 16,
-          "groups": [
-            "Gospels"
-          ],
-          "section": "NT",
-          "canonicalKey": "mark"
-        },
-        {
-          "id": 47,
-          "name": "Luke",
-          "chapters": 24,
-          "groups": [
-            "Gospels"
-          ],
-          "section": "NT",
-          "canonicalKey": "luke"
-        },
-        {
-          "id": 48,
-          "name": "John",
-          "chapters": 21,
-          "groups": [
-            "Gospels"
-          ],
-          "section": "NT",
-          "canonicalKey": "john"
-        },
-        {
-          "id": 49,
-          "name": "Acts",
-          "chapters": 28,
-          "groups": [
-            "Historical"
-          ],
-          "section": "NT",
-          "canonicalKey": "acts"
-        },
-        {
-          "id": 50,
-          "name": "Romans",
-          "chapters": 16,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "romans"
-        },
-        {
-          "id": 51,
-          "name": "1 Corinthians",
-          "chapters": 16,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-corinthians"
-        },
-        {
-          "id": 52,
-          "name": "2 Corinthians",
-          "chapters": 13,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-corinthians"
-        },
-        {
-          "id": 53,
-          "name": "Galatians",
-          "chapters": 6,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "galatians"
-        },
-        {
-          "id": 54,
-          "name": "Ephesians",
-          "chapters": 6,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "ephesians"
-        },
-        {
-          "id": 55,
-          "name": "Philippians",
-          "chapters": 4,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "philippians"
-        },
-        {
-          "id": 56,
-          "name": "Colossians",
-          "chapters": 4,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "colossians"
-        },
-        {
-          "id": 57,
-          "name": "1 Thessalonians",
-          "chapters": 5,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-thessalonians"
-        },
-        {
-          "id": 58,
-          "name": "2 Thessalonians",
-          "chapters": 3,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-thessalonians"
-        },
-        {
-          "id": 59,
-          "name": "1 Timothy",
-          "chapters": 6,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-timothy"
-        },
-        {
-          "id": 60,
-          "name": "2 Timothy",
-          "chapters": 4,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-timothy"
-        },
-        {
-          "id": 61,
-          "name": "Titus",
-          "chapters": 3,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "titus"
-        },
-        {
-          "id": 62,
-          "name": "Philemon",
-          "chapters": 1,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "philemon"
-        },
-        {
-          "id": 63,
-          "name": "Hebrews",
-          "chapters": 13,
-          "groups": [
-            "Pauline Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "hebrews"
-        },
-        {
-          "id": 64,
-          "name": "James",
-          "chapters": 5,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "james"
-        },
-        {
-          "id": 65,
-          "name": "1 Peter",
-          "chapters": 5,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-peter"
-        },
-        {
-          "id": 66,
-          "name": "2 Peter",
-          "chapters": 3,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-peter"
-        },
-        {
-          "id": 67,
-          "name": "1 John",
-          "chapters": 5,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "1-john"
-        },
-        {
-          "id": 68,
-          "name": "2 John",
-          "chapters": 1,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "2-john"
-        },
-        {
-          "id": 69,
-          "name": "3 John",
-          "chapters": 1,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "3-john"
-        },
-        {
-          "id": 70,
-          "name": "Jude",
-          "chapters": 1,
-          "groups": [
-            "Catholic Epistles"
-          ],
-          "section": "NT",
-          "canonicalKey": "jude"
-        },
-        {
-          "id": 71,
-          "name": "Revelation",
-          "chapters": 22,
-          "groups": [
-            "Prophecy"
-          ],
-          "section": "NT",
-          "canonicalKey": "revelation"
-        }
-      ]
-    },
     "RSVCE": {
       "tradition": "Catholic",
       "books": [
@@ -3621,8 +2185,8 @@
         }
       ]
     },
-    "EOB": {
-      "tradition": "Orthodox",
+    "Douay-Rheims/Knox": {
+      "tradition": "Catholic",
       "books": [
         {
           "id": 1,
@@ -3706,7 +2270,7 @@
         },
         {
           "id": 9,
-          "name": "1 Kingdoms",
+          "name": "1 Kings",
           "chapters": 31,
           "groups": [
             "Historical"
@@ -3716,7 +2280,7 @@
         },
         {
           "id": 10,
-          "name": "2 Kingdoms",
+          "name": "2 Kings",
           "chapters": 24,
           "groups": [
             "Historical"
@@ -3726,7 +2290,7 @@
         },
         {
           "id": 11,
-          "name": "3 Kingdoms",
+          "name": "3 Kings",
           "chapters": 22,
           "groups": [
             "Historical"
@@ -3736,7 +2300,725 @@
         },
         {
           "id": 12,
-          "name": "4 Kingdoms",
+          "name": "4 Kings",
+          "chapters": 25,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-kings"
+        },
+        {
+          "id": 13,
+          "name": "1 Paralipomenon",
+          "chapters": 29,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-chronicles"
+        },
+        {
+          "id": 14,
+          "name": "2 Paralipomenon",
+          "chapters": 36,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-chronicles"
+        },
+        {
+          "id": 15,
+          "name": "Ezra",
+          "chapters": 10,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "ezra"
+        },
+        {
+          "id": 16,
+          "name": "Nehemias",
+          "chapters": 13,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "nehemiah"
+        },
+        {
+          "id": 17,
+          "name": "Tobias",
+          "chapters": 14,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "tobit"
+        },
+        {
+          "id": 18,
+          "name": "Judith",
+          "chapters": 16,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "judith"
+        },
+        {
+          "id": 19,
+          "name": "Esther",
+          "chapters": 16,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "esther"
+        },
+        {
+          "id": 20,
+          "name": "Job",
+          "chapters": 42,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "job"
+        },
+        {
+          "id": 21,
+          "name": "Psalms",
+          "chapters": 150,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "psalms"
+        },
+        {
+          "id": 22,
+          "name": "Proverbs",
+          "chapters": 31,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "proverbs"
+        },
+        {
+          "id": 23,
+          "name": "Ecclesiastes",
+          "chapters": 12,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "ecclesiastes"
+        },
+        {
+          "id": 24,
+          "name": "Canticle of Canticles",
+          "chapters": 8,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "song-of-songs"
+        },
+        {
+          "id": 25,
+          "name": "Wisdom",
+          "chapters": 19,
+          "groups": [
+            "Deuterocanon",
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "wisdom"
+        },
+        {
+          "id": 26,
+          "name": "Ecclesiasticus",
+          "chapters": 51,
+          "groups": [
+            "Deuterocanon",
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "sirach"
+        },
+        {
+          "id": 27,
+          "name": "Isaias",
+          "chapters": 66,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "isaiah"
+        },
+        {
+          "id": 28,
+          "name": "Jeremias",
+          "chapters": 52,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "jeremiah"
+        },
+        {
+          "id": 29,
+          "name": "Lamentations",
+          "chapters": 5,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "lamentations"
+        },
+        {
+          "id": 30,
+          "name": "Baruch",
+          "chapters": 6,
+          "groups": [
+            "Deuterocanon",
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "baruch"
+        },
+        {
+          "id": 31,
+          "name": "Ezechiel",
+          "chapters": 48,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "ezekiel"
+        },
+        {
+          "id": 32,
+          "name": "Daniel",
+          "chapters": 14,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "daniel"
+        },
+        {
+          "id": 33,
+          "name": "Osee",
+          "chapters": 14,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "hosea"
+        },
+        {
+          "id": 34,
+          "name": "Joel",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "joel"
+        },
+        {
+          "id": 35,
+          "name": "Amos",
+          "chapters": 9,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "amos"
+        },
+        {
+          "id": 36,
+          "name": "Abdias",
+          "chapters": 1,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "obadiah"
+        },
+        {
+          "id": 37,
+          "name": "Jonas",
+          "chapters": 4,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "jonah"
+        },
+        {
+          "id": 38,
+          "name": "Micheas",
+          "chapters": 7,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "micah"
+        },
+        {
+          "id": 39,
+          "name": "Nahum",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "nahum"
+        },
+        {
+          "id": 40,
+          "name": "Habacuc",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "habakkuk"
+        },
+        {
+          "id": 41,
+          "name": "Sophonias",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "zephaniah"
+        },
+        {
+          "id": 42,
+          "name": "Aggeus",
+          "chapters": 2,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "haggai"
+        },
+        {
+          "id": 43,
+          "name": "Zacharias",
+          "chapters": 14,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "zechariah"
+        },
+        {
+          "id": 44,
+          "name": "Malachias",
+          "chapters": 4,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "malachi"
+        },
+        {
+          "id": 45,
+          "name": "Matthew",
+          "chapters": 28,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "matthew"
+        },
+        {
+          "id": 46,
+          "name": "Mark",
+          "chapters": 16,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "mark"
+        },
+        {
+          "id": 47,
+          "name": "Luke",
+          "chapters": 24,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "luke"
+        },
+        {
+          "id": 48,
+          "name": "John",
+          "chapters": 21,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "john"
+        },
+        {
+          "id": 49,
+          "name": "Acts",
+          "chapters": 28,
+          "groups": [
+            "Historical"
+          ],
+          "section": "NT",
+          "canonicalKey": "acts"
+        },
+        {
+          "id": 50,
+          "name": "Romans",
+          "chapters": 16,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "romans"
+        },
+        {
+          "id": 51,
+          "name": "1 Corinthians",
+          "chapters": 16,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-corinthians"
+        },
+        {
+          "id": 52,
+          "name": "2 Corinthians",
+          "chapters": 13,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-corinthians"
+        },
+        {
+          "id": 53,
+          "name": "Galatians",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "galatians"
+        },
+        {
+          "id": 54,
+          "name": "Ephesians",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "ephesians"
+        },
+        {
+          "id": 55,
+          "name": "Philippians",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "philippians"
+        },
+        {
+          "id": 56,
+          "name": "Colossians",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "colossians"
+        },
+        {
+          "id": 57,
+          "name": "1 Thessalonians",
+          "chapters": 5,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-thessalonians"
+        },
+        {
+          "id": 58,
+          "name": "2 Thessalonians",
+          "chapters": 3,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-thessalonians"
+        },
+        {
+          "id": 59,
+          "name": "1 Timothy",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-timothy"
+        },
+        {
+          "id": 60,
+          "name": "2 Timothy",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-timothy"
+        },
+        {
+          "id": 61,
+          "name": "Titus",
+          "chapters": 3,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "titus"
+        },
+        {
+          "id": 62,
+          "name": "Philemon",
+          "chapters": 1,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "philemon"
+        },
+        {
+          "id": 63,
+          "name": "Hebrews",
+          "chapters": 13,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "hebrews"
+        },
+        {
+          "id": 64,
+          "name": "James",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "james"
+        },
+        {
+          "id": 65,
+          "name": "1 Peter",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-peter"
+        },
+        {
+          "id": 66,
+          "name": "2 Peter",
+          "chapters": 3,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-peter"
+        },
+        {
+          "id": 67,
+          "name": "1 John",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-john"
+        },
+        {
+          "id": 68,
+          "name": "2 John",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-john"
+        },
+        {
+          "id": 69,
+          "name": "3 John",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "3-john"
+        },
+        {
+          "id": 70,
+          "name": "Jude",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "jude"
+        },
+        {
+          "id": 71,
+          "name": "Apocalypse",
+          "chapters": 22,
+          "groups": [
+            "Prophecy"
+          ],
+          "section": "NT",
+          "canonicalKey": "revelation"
+        }
+      ]
+    },
+    "NABRE/NRSV-CE": {
+      "tradition": "Catholic",
+      "books": [
+        {
+          "id": 1,
+          "name": "Genesis",
+          "chapters": 50,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "genesis"
+        },
+        {
+          "id": 2,
+          "name": "Exodus",
+          "chapters": 40,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "exodus"
+        },
+        {
+          "id": 3,
+          "name": "Leviticus",
+          "chapters": 27,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "leviticus"
+        },
+        {
+          "id": 4,
+          "name": "Numbers",
+          "chapters": 36,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "numbers"
+        },
+        {
+          "id": 5,
+          "name": "Deuteronomy",
+          "chapters": 34,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "deuteronomy"
+        },
+        {
+          "id": 6,
+          "name": "Joshua",
+          "chapters": 24,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "joshua"
+        },
+        {
+          "id": 7,
+          "name": "Judges",
+          "chapters": 21,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "judges"
+        },
+        {
+          "id": 8,
+          "name": "Ruth",
+          "chapters": 4,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "ruth"
+        },
+        {
+          "id": 9,
+          "name": "1 Samuel",
+          "chapters": 31,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-samuel"
+        },
+        {
+          "id": 10,
+          "name": "2 Samuel",
+          "chapters": 24,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-samuel"
+        },
+        {
+          "id": 11,
+          "name": "1 Kings",
+          "chapters": 22,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-kings"
+        },
+        {
+          "id": 12,
+          "name": "2 Kings",
           "chapters": 25,
           "groups": [
             "Historical"
@@ -3809,7 +3091,7 @@
           "name": "Esther",
           "chapters": 16,
           "groups": [
-            "Deuterocanon"
+            "Historical"
           ],
           "section": "OT",
           "canonicalKey": "esther"
@@ -3827,7 +3109,7 @@
         {
           "id": 21,
           "name": "Psalms",
-          "chapters": 151,
+          "chapters": 150,
           "groups": [
             "Wisdom"
           ],
@@ -3866,7 +3148,7 @@
         },
         {
           "id": 25,
-          "name": "Wisdom of Solomon",
+          "name": "Wisdom",
           "chapters": 19,
           "groups": [
             "Wisdom",
@@ -3942,8 +3224,7 @@
           "name": "Daniel",
           "chapters": 14,
           "groups": [
-            "Prophets",
-            "Deuterocanon"
+            "Prophets"
           ],
           "section": "OT",
           "canonicalKey": "daniel"
@@ -4330,6 +3611,1494 @@
         },
         {
           "id": 71,
+          "name": "Revelation",
+          "chapters": 22,
+          "groups": [
+            "Prophecy"
+          ],
+          "section": "NT",
+          "canonicalKey": "revelation"
+        }
+      ]
+    },
+    "Jerusalem Bible/RNJB": {
+      "tradition": "Catholic",
+      "books": [
+        {
+          "id": 1,
+          "name": "Genesis",
+          "chapters": 50,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "genesis"
+        },
+        {
+          "id": 2,
+          "name": "Exodus",
+          "chapters": 40,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "exodus"
+        },
+        {
+          "id": 3,
+          "name": "Leviticus",
+          "chapters": 27,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "leviticus"
+        },
+        {
+          "id": 4,
+          "name": "Numbers",
+          "chapters": 36,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "numbers"
+        },
+        {
+          "id": 5,
+          "name": "Deuteronomy",
+          "chapters": 34,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "deuteronomy"
+        },
+        {
+          "id": 6,
+          "name": "Joshua",
+          "chapters": 24,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "joshua"
+        },
+        {
+          "id": 7,
+          "name": "Judges",
+          "chapters": 21,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "judges"
+        },
+        {
+          "id": 8,
+          "name": "Ruth",
+          "chapters": 4,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "ruth"
+        },
+        {
+          "id": 9,
+          "name": "1 Samuel",
+          "chapters": 31,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-samuel"
+        },
+        {
+          "id": 10,
+          "name": "2 Samuel",
+          "chapters": 24,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-samuel"
+        },
+        {
+          "id": 11,
+          "name": "1 Kings",
+          "chapters": 22,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-kings"
+        },
+        {
+          "id": 12,
+          "name": "2 Kings",
+          "chapters": 25,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-kings"
+        },
+        {
+          "id": 13,
+          "name": "1 Chronicles",
+          "chapters": 29,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-chronicles"
+        },
+        {
+          "id": 14,
+          "name": "2 Chronicles",
+          "chapters": 36,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-chronicles"
+        },
+        {
+          "id": 15,
+          "name": "Ezra",
+          "chapters": 10,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "ezra"
+        },
+        {
+          "id": 16,
+          "name": "Nehemiah",
+          "chapters": 13,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "nehemiah"
+        },
+        {
+          "id": 17,
+          "name": "Tobit",
+          "chapters": 14,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "tobit"
+        },
+        {
+          "id": 18,
+          "name": "Judith",
+          "chapters": 16,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "judith"
+        },
+        {
+          "id": 19,
+          "name": "Esther",
+          "chapters": 16,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "esther"
+        },
+        {
+          "id": 20,
+          "name": "Job",
+          "chapters": 42,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "job"
+        },
+        {
+          "id": 21,
+          "name": "Psalms",
+          "chapters": 150,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "psalms"
+        },
+        {
+          "id": 22,
+          "name": "Proverbs",
+          "chapters": 31,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "proverbs"
+        },
+        {
+          "id": 23,
+          "name": "Ecclesiastes",
+          "chapters": 12,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "ecclesiastes"
+        },
+        {
+          "id": 24,
+          "name": "Song of Songs",
+          "chapters": 8,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "song-of-songs"
+        },
+        {
+          "id": 25,
+          "name": "Wisdom",
+          "chapters": 19,
+          "groups": [
+            "Wisdom",
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "wisdom"
+        },
+        {
+          "id": 26,
+          "name": "Ecclesiasticus",
+          "chapters": 51,
+          "groups": [
+            "Wisdom",
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "sirach"
+        },
+        {
+          "id": 27,
+          "name": "Isaiah",
+          "chapters": 66,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "isaiah"
+        },
+        {
+          "id": 28,
+          "name": "Jeremiah",
+          "chapters": 52,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "jeremiah"
+        },
+        {
+          "id": 29,
+          "name": "Lamentations",
+          "chapters": 5,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "lamentations"
+        },
+        {
+          "id": 30,
+          "name": "Baruch",
+          "chapters": 6,
+          "groups": [
+            "Prophets",
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "baruch"
+        },
+        {
+          "id": 31,
+          "name": "Ezekiel",
+          "chapters": 48,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "ezekiel"
+        },
+        {
+          "id": 32,
+          "name": "Daniel",
+          "chapters": 14,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "daniel"
+        },
+        {
+          "id": 33,
+          "name": "Hosea",
+          "chapters": 14,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "hosea"
+        },
+        {
+          "id": 34,
+          "name": "Joel",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "joel"
+        },
+        {
+          "id": 35,
+          "name": "Amos",
+          "chapters": 9,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "amos"
+        },
+        {
+          "id": 36,
+          "name": "Obadiah",
+          "chapters": 1,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "obadiah"
+        },
+        {
+          "id": 37,
+          "name": "Jonah",
+          "chapters": 4,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "jonah"
+        },
+        {
+          "id": 38,
+          "name": "Micah",
+          "chapters": 7,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "micah"
+        },
+        {
+          "id": 39,
+          "name": "Nahum",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "nahum"
+        },
+        {
+          "id": 40,
+          "name": "Habakkuk",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "habakkuk"
+        },
+        {
+          "id": 41,
+          "name": "Zephaniah",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "zephaniah"
+        },
+        {
+          "id": 42,
+          "name": "Haggai",
+          "chapters": 2,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "haggai"
+        },
+        {
+          "id": 43,
+          "name": "Zechariah",
+          "chapters": 14,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "zechariah"
+        },
+        {
+          "id": 44,
+          "name": "Malachi",
+          "chapters": 4,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "malachi"
+        },
+        {
+          "id": 45,
+          "name": "Matthew",
+          "chapters": 28,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "matthew"
+        },
+        {
+          "id": 46,
+          "name": "Mark",
+          "chapters": 16,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "mark"
+        },
+        {
+          "id": 47,
+          "name": "Luke",
+          "chapters": 24,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "luke"
+        },
+        {
+          "id": 48,
+          "name": "John",
+          "chapters": 21,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "john"
+        },
+        {
+          "id": 49,
+          "name": "Acts",
+          "chapters": 28,
+          "groups": [
+            "Historical"
+          ],
+          "section": "NT",
+          "canonicalKey": "acts"
+        },
+        {
+          "id": 50,
+          "name": "Romans",
+          "chapters": 16,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "romans"
+        },
+        {
+          "id": 51,
+          "name": "1 Corinthians",
+          "chapters": 16,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-corinthians"
+        },
+        {
+          "id": 52,
+          "name": "2 Corinthians",
+          "chapters": 13,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-corinthians"
+        },
+        {
+          "id": 53,
+          "name": "Galatians",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "galatians"
+        },
+        {
+          "id": 54,
+          "name": "Ephesians",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "ephesians"
+        },
+        {
+          "id": 55,
+          "name": "Philippians",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "philippians"
+        },
+        {
+          "id": 56,
+          "name": "Colossians",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "colossians"
+        },
+        {
+          "id": 57,
+          "name": "1 Thessalonians",
+          "chapters": 5,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-thessalonians"
+        },
+        {
+          "id": 58,
+          "name": "2 Thessalonians",
+          "chapters": 3,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-thessalonians"
+        },
+        {
+          "id": 59,
+          "name": "1 Timothy",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-timothy"
+        },
+        {
+          "id": 60,
+          "name": "2 Timothy",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-timothy"
+        },
+        {
+          "id": 61,
+          "name": "Titus",
+          "chapters": 3,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "titus"
+        },
+        {
+          "id": 62,
+          "name": "Philemon",
+          "chapters": 1,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "philemon"
+        },
+        {
+          "id": 63,
+          "name": "Hebrews",
+          "chapters": 13,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "hebrews"
+        },
+        {
+          "id": 64,
+          "name": "James",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "james"
+        },
+        {
+          "id": 65,
+          "name": "1 Peter",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-peter"
+        },
+        {
+          "id": 66,
+          "name": "2 Peter",
+          "chapters": 3,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-peter"
+        },
+        {
+          "id": 67,
+          "name": "1 John",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-john"
+        },
+        {
+          "id": 68,
+          "name": "2 John",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-john"
+        },
+        {
+          "id": 69,
+          "name": "3 John",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "3-john"
+        },
+        {
+          "id": 70,
+          "name": "Jude",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "jude"
+        },
+        {
+          "id": 71,
+          "name": "Revelation",
+          "chapters": 22,
+          "groups": [
+            "Prophecy"
+          ],
+          "section": "NT",
+          "canonicalKey": "revelation"
+        }
+      ]
+    },
+    "NETS": {
+      "tradition": "Orthodox",
+      "books": [
+        {
+          "id": 1,
+          "name": "Genesis",
+          "chapters": 50,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "genesis"
+        },
+        {
+          "id": 2,
+          "name": "Exodus",
+          "chapters": 40,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "exodus"
+        },
+        {
+          "id": 3,
+          "name": "Leuitikon",
+          "chapters": 27,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "leviticus"
+        },
+        {
+          "id": 4,
+          "name": "Numbers",
+          "chapters": 36,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "numbers"
+        },
+        {
+          "id": 5,
+          "name": "Deuteronomion",
+          "chapters": 34,
+          "groups": [
+            "Torah"
+          ],
+          "section": "OT",
+          "canonicalKey": "deuteronomy"
+        },
+        {
+          "id": 6,
+          "name": "Iesous",
+          "chapters": 24,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "joshua"
+        },
+        {
+          "id": 7,
+          "name": "Judges",
+          "chapters": 21,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "judges"
+        },
+        {
+          "id": 8,
+          "name": "Routh",
+          "chapters": 4,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "ruth"
+        },
+        {
+          "id": 9,
+          "name": "1 Reigns",
+          "chapters": 31,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-samuel"
+        },
+        {
+          "id": 10,
+          "name": "2 Reigns",
+          "chapters": 24,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-samuel"
+        },
+        {
+          "id": 11,
+          "name": "3 Reigns",
+          "chapters": 22,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-kings"
+        },
+        {
+          "id": 12,
+          "name": "4 Reigns",
+          "chapters": 25,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-kings"
+        },
+        {
+          "id": 13,
+          "name": "1 Supplements",
+          "chapters": 29,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-chronicles"
+        },
+        {
+          "id": 14,
+          "name": "2 Supplements",
+          "chapters": 36,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-chronicles"
+        },
+        {
+          "id": 15,
+          "name": "1 Esdras",
+          "chapters": 9,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-esdras"
+        },
+        {
+          "id": 16,
+          "name": "Ezra",
+          "chapters": 10,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "ezra"
+        },
+        {
+          "id": 17,
+          "name": "Nehemiah",
+          "chapters": 13,
+          "groups": [
+            "Historical"
+          ],
+          "section": "OT",
+          "canonicalKey": "nehemiah"
+        },
+        {
+          "id": 18,
+          "name": "Esther",
+          "chapters": 16,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "esther"
+        },
+        {
+          "id": 19,
+          "name": "Ioudith",
+          "chapters": 16,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "judith"
+        },
+        {
+          "id": 20,
+          "name": "Tobit",
+          "chapters": 14,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "tobit"
+        },
+        {
+          "id": 21,
+          "name": "1 Makkabees",
+          "chapters": 16,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "1-maccabees"
+        },
+        {
+          "id": 22,
+          "name": "2 Makkabees",
+          "chapters": 15,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "2-maccabees"
+        },
+        {
+          "id": 23,
+          "name": "3 Makkabees",
+          "chapters": 7,
+          "groups": [
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "3-maccabees"
+        },
+        {
+          "id": 24,
+          "name": "Iob",
+          "chapters": 42,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "job"
+        },
+        {
+          "id": 25,
+          "name": "Psalms",
+          "chapters": 151,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "psalms"
+        },
+        {
+          "id": 26,
+          "name": "Proverbs",
+          "chapters": 31,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "proverbs"
+        },
+        {
+          "id": 27,
+          "name": "Ecclesiast",
+          "chapters": 12,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "ecclesiastes"
+        },
+        {
+          "id": 28,
+          "name": "Song of Songs",
+          "chapters": 8,
+          "groups": [
+            "Wisdom"
+          ],
+          "section": "OT",
+          "canonicalKey": "song-of-songs"
+        },
+        {
+          "id": 29,
+          "name": "Wisdom of Salomon",
+          "chapters": 19,
+          "groups": [
+            "Wisdom",
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "wisdom"
+        },
+        {
+          "id": 30,
+          "name": "Sirach",
+          "chapters": 51,
+          "groups": [
+            "Wisdom",
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "sirach"
+        },
+        {
+          "id": 31,
+          "name": "Hosea",
+          "chapters": 14,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "hosea"
+        },
+        {
+          "id": 32,
+          "name": "Amos",
+          "chapters": 9,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "amos"
+        },
+        {
+          "id": 33,
+          "name": "Micah",
+          "chapters": 7,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "micah"
+        },
+        {
+          "id": 34,
+          "name": "Joel",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "joel"
+        },
+        {
+          "id": 35,
+          "name": "Obadiah",
+          "chapters": 1,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "obadiah"
+        },
+        {
+          "id": 36,
+          "name": "Jonah",
+          "chapters": 4,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "jonah"
+        },
+        {
+          "id": 37,
+          "name": "Nahum",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "nahum"
+        },
+        {
+          "id": 38,
+          "name": "Habakkuk",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "habakkuk"
+        },
+        {
+          "id": 39,
+          "name": "Zephaniah",
+          "chapters": 3,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "zephaniah"
+        },
+        {
+          "id": 40,
+          "name": "Haggai",
+          "chapters": 2,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "haggai"
+        },
+        {
+          "id": 41,
+          "name": "Zechariah",
+          "chapters": 14,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "zechariah"
+        },
+        {
+          "id": 42,
+          "name": "Malachi",
+          "chapters": 4,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "malachi"
+        },
+        {
+          "id": 43,
+          "name": "Esaias",
+          "chapters": 66,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "isaiah"
+        },
+        {
+          "id": 44,
+          "name": "Ieremias",
+          "chapters": 52,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "jeremiah"
+        },
+        {
+          "id": 45,
+          "name": "Barouch",
+          "chapters": 5,
+          "groups": [
+            "Prophets",
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "baruch"
+        },
+        {
+          "id": 46,
+          "name": "Letter of Ieremias",
+          "chapters": 1,
+          "groups": [
+            "Prophets",
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "letter-of-jeremiah"
+        },
+        {
+          "id": 47,
+          "name": "Lamentations",
+          "chapters": 5,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "lamentations"
+        },
+        {
+          "id": 48,
+          "name": "Iezekiel",
+          "chapters": 48,
+          "groups": [
+            "Prophets"
+          ],
+          "section": "OT",
+          "canonicalKey": "ezekiel"
+        },
+        {
+          "id": 49,
+          "name": "Daniel",
+          "chapters": 14,
+          "groups": [
+            "Prophets",
+            "Deuterocanon"
+          ],
+          "section": "OT",
+          "canonicalKey": "daniel"
+        },
+        {
+          "id": 50,
+          "name": "Matthew",
+          "chapters": 28,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "matthew"
+        },
+        {
+          "id": 51,
+          "name": "Mark",
+          "chapters": 16,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "mark"
+        },
+        {
+          "id": 52,
+          "name": "Luke",
+          "chapters": 24,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "luke"
+        },
+        {
+          "id": 53,
+          "name": "John",
+          "chapters": 21,
+          "groups": [
+            "Gospels"
+          ],
+          "section": "NT",
+          "canonicalKey": "john"
+        },
+        {
+          "id": 54,
+          "name": "Acts",
+          "chapters": 28,
+          "groups": [
+            "Historical"
+          ],
+          "section": "NT",
+          "canonicalKey": "acts"
+        },
+        {
+          "id": 55,
+          "name": "Romans",
+          "chapters": 16,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "romans"
+        },
+        {
+          "id": 56,
+          "name": "1 Corinthians",
+          "chapters": 16,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-corinthians"
+        },
+        {
+          "id": 57,
+          "name": "2 Corinthians",
+          "chapters": 13,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-corinthians"
+        },
+        {
+          "id": 58,
+          "name": "Galatians",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "galatians"
+        },
+        {
+          "id": 59,
+          "name": "Ephesians",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "ephesians"
+        },
+        {
+          "id": 60,
+          "name": "Philippians",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "philippians"
+        },
+        {
+          "id": 61,
+          "name": "Colossians",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "colossians"
+        },
+        {
+          "id": 62,
+          "name": "1 Thessalonians",
+          "chapters": 5,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-thessalonians"
+        },
+        {
+          "id": 63,
+          "name": "2 Thessalonians",
+          "chapters": 3,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-thessalonians"
+        },
+        {
+          "id": 64,
+          "name": "1 Timothy",
+          "chapters": 6,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-timothy"
+        },
+        {
+          "id": 65,
+          "name": "2 Timothy",
+          "chapters": 4,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-timothy"
+        },
+        {
+          "id": 66,
+          "name": "Titus",
+          "chapters": 3,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "titus"
+        },
+        {
+          "id": 67,
+          "name": "Philemon",
+          "chapters": 1,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "philemon"
+        },
+        {
+          "id": 68,
+          "name": "Hebrews",
+          "chapters": 13,
+          "groups": [
+            "Pauline Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "hebrews"
+        },
+        {
+          "id": 69,
+          "name": "James",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "james"
+        },
+        {
+          "id": 70,
+          "name": "1 Peter",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-peter"
+        },
+        {
+          "id": 71,
+          "name": "2 Peter",
+          "chapters": 3,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-peter"
+        },
+        {
+          "id": 72,
+          "name": "1 John",
+          "chapters": 5,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "1-john"
+        },
+        {
+          "id": 73,
+          "name": "2 John",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "2-john"
+        },
+        {
+          "id": 74,
+          "name": "3 John",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "3-john"
+        },
+        {
+          "id": 75,
+          "name": "Jude",
+          "chapters": 1,
+          "groups": [
+            "Catholic Epistles"
+          ],
+          "section": "NT",
+          "canonicalKey": "jude"
+        },
+        {
+          "id": 76,
           "name": "Revelation",
           "chapters": 22,
           "groups": [

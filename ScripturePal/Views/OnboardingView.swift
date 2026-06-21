@@ -17,7 +17,7 @@ struct OnboardingView: View {
 
     @AppStorage("hasCompletedOnboarding") private var hasCompletedOnboarding = false
     @AppStorage("selectedTradition") private var selectedTradition = "Catholic"
-    @AppStorage("selectedTranslation") private var selectedTranslation = "Douay-Rheims"
+    @AppStorage("selectedTranslation") private var selectedTranslation = "Douay-Rheims/Knox"
 
     @StateObject private var bible = BibleManager()
     @State private var pageIndex = 0
@@ -29,7 +29,7 @@ struct OnboardingView: View {
     }
 
     private var categorizedTranslations: [String: [String]] {
-        let all = bible.data?.translations.keys.sorted() ?? []
+        let all = bible.sortedTranslationNames(bible.data.map { Array($0.translations.keys) } ?? [])
         return Dictionary(grouping: all, by: { bible.tradition(of: $0) })
     }
 

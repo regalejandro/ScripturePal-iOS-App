@@ -13,7 +13,7 @@ struct StatsView: View {
 
     @Query private var records: [ReadingRecord]
     @EnvironmentObject var themeManager: ThemeManager
-    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
+    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims/Knox"
     @StateObject private var bible = BibleManager()
 
     // Grid dimensions

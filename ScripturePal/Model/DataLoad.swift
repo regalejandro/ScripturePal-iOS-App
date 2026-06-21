@@ -37,7 +37,35 @@ class BibleManager: ObservableObject {
     func tradition(of translationID: String) -> String {
         data?.translations[translationID]?.tradition ?? "Other"
     }
-    
+
+    /// Manual display-order ranking, since "most standard" isn't always
+    /// not listed here just falls back to alphabetical order, after the
+    /// ranked ones.
+    private static let translationDisplayOrder: [String: Int] = [
+        "Douay-Rheims/Knox": 0,
+        "NABRE/NRSV-CE": 1,
+        "RSVCE": 2,
+        "Jerusalem Bible/RNJB": 3,
+        "Standard Protestant Canon": 0,
+        "OSB": 0,
+        "NETS": 1
+    ]
+
+    /// Sorts translation names for display: ranked ones in their preferred
+    /// order, then any unranked ones alphabetically.
+    func sortedTranslationNames(_ names: [String]) -> [String] {
+        names.sorted { a, b in
+            let rankA = Self.translationDisplayOrder[a]
+            let rankB = Self.translationDisplayOrder[b]
+            switch (rankA, rankB) {
+            case let (rankA?, rankB?): return rankA < rankB
+            case (.some, nil): return true
+            case (nil, .some): return false
+            case (nil, nil): return a < b
+            }
+        }
+    }
+
     func randomChapter(
         for translation: String,
         selectedGroups: [String],

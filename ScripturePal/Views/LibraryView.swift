@@ -13,7 +13,7 @@ import UIKit
 
 struct LibraryView: View {
 
-    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
+    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims/Knox"
     @AppStorage("libraryTileSize") private var tileSizeRaw = LibraryTileSize.medium.rawValue
 
     @StateObject var bible = BibleManager()

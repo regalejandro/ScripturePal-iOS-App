@@ -12,7 +12,7 @@ import SwiftData
 
 struct GroupManagerView: View {
 
-    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
+    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims/Knox"
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var themeManager: ThemeManager
     @StateObject private var bible = BibleManager()

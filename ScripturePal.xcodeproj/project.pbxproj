@@ -35,16 +35,6 @@
 			path = ScripturePal;
 			sourceTree = "<group>";
 		};
-		982867972ECBF6C2001DB555 /* ScripturePalTests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ScripturePalTests;
-			sourceTree = "<group>";
-		};
-		982867A12ECBF6C2001DB555 /* ScripturePalUITests */ = {
-			isa = PBXFileSystemSynchronizedRootGroup;
-			path = ScripturePalUITests;
-			sourceTree = "<group>";
-		};
 /* End PBXFileSystemSynchronizedRootGroup section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -76,8 +66,6 @@
 			isa = PBXGroup;
 			children = (
 				982867892ECBF6BF001DB555 /* ScripturePal */,
-				982867972ECBF6C2001DB555 /* ScripturePalTests */,
-				982867A12ECBF6C2001DB555 /* ScripturePalUITests */,
 				982867882ECBF6BF001DB555 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -130,9 +118,6 @@
 			dependencies = (
 				982867962ECBF6C2001DB555 /* PBXTargetDependency */,
 			);
-			fileSystemSynchronizedGroups = (
-				982867972ECBF6C2001DB555 /* ScripturePalTests */,
-			);
 			name = ScripturePalTests;
 			packageProductDependencies = (
 			);
@@ -152,9 +137,6 @@
 			);
 			dependencies = (
 				982867A02ECBF6C2001DB555 /* PBXTargetDependency */,
-			);
-			fileSystemSynchronizedGroups = (
-				982867A12ECBF6C2001DB555 /* ScripturePalUITests */,
 			);
 			name = ScripturePalUITests;
 			packageProductDependencies = (
@@ -403,6 +385,8 @@
 				DEVELOPMENT_TEAM = C8NU5AF5TR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ScripturePal;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;
@@ -437,6 +421,8 @@
 				DEVELOPMENT_TEAM = C8NU5AF5TR;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_CFBundleDisplayName = ScripturePal;
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.utilities";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchStoryboardName = LaunchScreen;

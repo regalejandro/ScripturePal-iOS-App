@@ -14,7 +14,7 @@ struct HistoricalStatsView: View {
     @Query private var records: [ReadingRecord]
     @Query private var completions: [BookCompletion]
     @EnvironmentObject var themeManager: ThemeManager
-    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
+    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims/Knox"
     @StateObject private var bible = BibleManager()
 
     /// iPad shows the title inside the (margined) content so it lines up with it.

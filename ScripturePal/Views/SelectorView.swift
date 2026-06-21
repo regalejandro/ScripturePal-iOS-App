@@ -28,7 +28,7 @@ struct SelectorView: View {
     /// Called when a chapter is chosen, so the app root can present the reveal.
     var onReveal: (ChapterPointer, String) -> Void = { _, _ in }
 
-    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
+    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims/Knox"
     @AppStorage("selectedGroupsData") private var selectedGroupsData: Data = Data("[]".utf8)
     @AppStorage("selectedCustomGroupsData") private var selectedCustomGroupsData: Data = Data("[]".utf8)
     @AppStorage("groupMode") var groupMode: String = "all"

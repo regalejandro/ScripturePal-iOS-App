@@ -10,7 +10,7 @@ import SwiftData
 
 struct SettingsView: View {
     @AppStorage("selectedTradition") var selectedTradition = "Catholic"
-    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims"
+    @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims/Knox"
     @AppStorage("selectedTheme") var selectedTheme = "parchment"
     @StateObject var bible = BibleManager()
 
@@ -22,11 +22,11 @@ struct SettingsView: View {
     @State private var showingClearAlert = false
     
     var availableTranslations: [String] {
-        bible.data?.translations.keys.sorted() ?? []
+        bible.sortedTranslationNames(bible.data.map { Array($0.translations.keys) } ?? [])
     }
-    
+
     var categorizedTranslations: [String: [String]] {
-        let all = bible.data?.translations.keys.sorted() ?? []
+        let all = bible.sortedTranslationNames(bible.data.map { Array($0.translations.keys) } ?? [])
 
         return Dictionary(
             grouping: all,
