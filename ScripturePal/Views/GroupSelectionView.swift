@@ -20,7 +20,7 @@ struct GroupSelectionView: View {
 
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
+    @Query(sort: [SortDescriptor(\CustomGroup.sortOrder), SortDescriptor(\CustomGroup.createdAt)]) private var customGroups: [CustomGroup]
     @Query private var currentlyReading: [CurrentlyReading]
 
     let allGroups: [String]

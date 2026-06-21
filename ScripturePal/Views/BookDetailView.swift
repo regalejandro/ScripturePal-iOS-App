@@ -12,7 +12,7 @@ struct BookDetailView: View {
 
     @Environment(\.modelContext) private var modelContext
     @EnvironmentObject var themeManager: ThemeManager
-    @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
+    @Query(sort: [SortDescriptor(\CustomGroup.sortOrder), SortDescriptor(\CustomGroup.createdAt)]) private var customGroups: [CustomGroup]
     @Query private var currentlyReading: [CurrentlyReading]
     @Query private var completions: [BookCompletion]
     @Query private var records: [ReadingRecord]

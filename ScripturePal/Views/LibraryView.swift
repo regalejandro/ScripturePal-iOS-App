@@ -19,7 +19,7 @@ struct LibraryView: View {
     @StateObject var bible = BibleManager()
     @EnvironmentObject var themeManager: ThemeManager
     @Environment(\.modelContext) private var modelContext
-    @Query(sort: \CustomGroup.createdAt) private var customGroups: [CustomGroup]
+    @Query(sort: [SortDescriptor(\CustomGroup.sortOrder), SortDescriptor(\CustomGroup.createdAt)]) private var customGroups: [CustomGroup]
     @Query private var currentlyReading: [CurrentlyReading]
 
     @State private var searchText = ""

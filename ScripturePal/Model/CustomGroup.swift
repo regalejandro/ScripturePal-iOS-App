@@ -22,14 +22,21 @@ final class CustomGroup {
     /// Canonical book keys that belong to this group.
     var bookKeys: [String]
 
-    /// Creation timestamp, used to keep listing order stable.
+    /// Creation timestamp. Used as a tiebreaker for groups that share the
+    /// same sortOrder (e.g. existing groups right after this field was
+    /// introduced), so ordering stays stable until the user reorders them.
     var createdAt: Date
+
+    /// User-controlled display order (lower sorts first). Defaults to 0 for
+    /// migration; GroupManagerView assigns fresh values on create/reorder.
+    var sortOrder: Int = 0
 
     init(name: String, bookKeys: [String] = []) {
         self.uuid = UUID()
         self.name = name
         self.bookKeys = bookKeys
         self.createdAt = .now
+        self.sortOrder = 0
     }
 
     func contains(_ canonicalKey: String) -> Bool {
