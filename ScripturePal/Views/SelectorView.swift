@@ -220,6 +220,9 @@ struct SelectorView: View {
     /// iPad shows the title inside the (margined) content so it lines up with it.
     private var isPad: Bool { UIDevice.current.userInterfaceIdiom == .pad }
 
+    /// iPad has more room, so the recents list can show a couple more entries.
+    private var maxRecentSelections: Int { isPad ? 5 : 3 }
+
     var body: some View {
         NavigationStack {
             ZStack {
@@ -334,7 +337,7 @@ struct SelectorView: View {
                                     markedAsRead = false
                                     var updated = recentSelections
                                     updated.insert(RecentSelection(pointer: result, translation: selectedTranslation), at: 0)
-                                    if updated.count > 3 { updated.removeLast() }
+                                    if updated.count > maxRecentSelections { updated.removeLast() }
                                     saveSelections(updated)
                                 }
                                 onReveal(result, selectedTranslation)

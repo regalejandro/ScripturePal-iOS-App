@@ -55,60 +55,67 @@ struct OnboardingView: View {
     }
 
     var body: some View {
-        VStack(spacing: 0) {
-            Group {
-                switch steps[clampedIndex] {
-                case .welcome:
-                    WelcomePage(theme: theme)
-                case .features:
-                    FeaturesPage(theme: theme)
-                case .tradition:
-                    TraditionPage(selectedTradition: $selectedTradition, theme: theme)
-                case .translation:
-                    TranslationPage(
-                        selectedTranslation: $selectedTranslation,
-                        options: categorizedTranslations[selectedTradition] ?? [],
-                        theme: theme
-                    )
-                case .theme:
-                    ThemePage(themeManager: themeManager, colorScheme: colorScheme)
+        ZStack {
+            theme.background.ignoresSafeArea()
+
+            // Capped width + centered, same margin convention as the rest
+            // of the app's iPad layouts (Stats, Library, BookDetail).
+            VStack(spacing: 0) {
+                Group {
+                    switch steps[clampedIndex] {
+                    case .welcome:
+                        WelcomePage(theme: theme)
+                    case .features:
+                        FeaturesPage(theme: theme)
+                    case .tradition:
+                        TraditionPage(selectedTradition: $selectedTradition, theme: theme)
+                    case .translation:
+                        TranslationPage(
+                            selectedTranslation: $selectedTranslation,
+                            options: categorizedTranslations[selectedTradition] ?? [],
+                            theme: theme
+                        )
+                    case .theme:
+                        ThemePage(themeManager: themeManager, colorScheme: colorScheme)
+                    }
                 }
+                .padding(.horizontal, 28)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .transition(.opacity)
+                .id(clampedIndex)
+
+                // Page dots.
+                HStack(spacing: 6) {
+                    ForEach(steps.indices, id: \.self) { i in
+                        Capsule()
+                            .fill(i == clampedIndex ? theme.primary : theme.secondary.opacity(0.5))
+                            .frame(width: i == clampedIndex ? 18 : 6, height: 6)
+                    }
+                }
+                .animation(.easeInOut(duration: 0.2), value: clampedIndex)
+                .padding(.bottom, 18)
+
+                // Navigation.
+                HStack {
+                    if clampedIndex > 0 {
+                        Button("Back") { goBack() }
+                            .font(.subheadline.weight(.medium))
+                            .foregroundColor(theme.textSecondary)
+                    }
+                    Spacer()
+                    Button(isLastStep ? "Get Started" : "Next") { goNext() }
+                        .font(.subheadline.weight(.semibold))
+                        .frame(minWidth: 100)
+                        .padding(.vertical, 10)
+                        .buttonStyle(.glassProminent)
+                        .tint(theme.primary)
+                }
+                .padding(.horizontal, 28)
+                .padding(.bottom, 24)
             }
-            .padding(.horizontal, 28)
+            .frame(maxWidth: 640)
             .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .transition(.opacity)
-            .id(clampedIndex)
-
-            // Page dots.
-            HStack(spacing: 6) {
-                ForEach(steps.indices, id: \.self) { i in
-                    Capsule()
-                        .fill(i == clampedIndex ? theme.primary : theme.secondary.opacity(0.5))
-                        .frame(width: i == clampedIndex ? 18 : 6, height: 6)
-                }
-            }
-            .animation(.easeInOut(duration: 0.2), value: clampedIndex)
-            .padding(.bottom, 18)
-
-            // Navigation.
-            HStack {
-                if clampedIndex > 0 {
-                    Button("Back") { goBack() }
-                        .font(.subheadline.weight(.medium))
-                        .foregroundColor(theme.textSecondary)
-                }
-                Spacer()
-                Button(isLastStep ? "Get Started" : "Next") { goNext() }
-                    .font(.subheadline.weight(.semibold))
-                    .frame(minWidth: 100)
-                    .padding(.vertical, 10)
-                    .buttonStyle(.glassProminent)
-                    .tint(theme.primary)
-            }
-            .padding(.horizontal, 28)
-            .padding(.bottom, 24)
         }
-        .background(theme.background.ignoresSafeArea())
         .animation(.easeInOut(duration: 0.25), value: clampedIndex)
         // Keep the translation in sync with whichever tradition is active,
         // same snap-to-first behavior as Settings.
