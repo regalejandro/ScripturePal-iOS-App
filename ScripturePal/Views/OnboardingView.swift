@@ -107,8 +107,7 @@ struct OnboardingView: View {
                         .font(.subheadline.weight(.semibold))
                         .frame(minWidth: 100)
                         .padding(.vertical, 10)
-                        .buttonStyle(.glassProminent)
-                        .tint(theme.primary)
+                        .glassProminentOrFallback(tint: theme.primary)
                 }
                 .padding(.horizontal, 28)
                 .padding(.bottom, 24)

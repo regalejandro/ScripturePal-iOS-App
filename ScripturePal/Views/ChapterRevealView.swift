@@ -62,8 +62,7 @@ struct ChapterRevealView: View {
                             .frame(maxWidth: .infinity)
                             .frame(height: 50)
                     }
-                    .buttonStyle(.glassProminent)
-                    .tint(themeManager.current.primary)
+                    .glassProminentOrFallback(tint: themeManager.current.primary)
                     .padding(.top, 30)
                     .padding(.horizontal, 40)
                     .transition(.move(edge: .bottom).combined(with: .opacity))

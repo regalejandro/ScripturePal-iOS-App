@@ -349,10 +349,9 @@ struct SelectorView: View {
                                 .frame(height: 50)
                             
                         }
-                        .buttonStyle(.glassProminent)
-                        .tint(themeManager.current.primary)
-                        
-                        
+                        .glassProminentOrFallback(tint: themeManager.current.primary)
+
+
                         // Customization Button
                         Button {
                             showingGroupSelector = true
@@ -361,7 +360,7 @@ struct SelectorView: View {
                                 .font(.title.bold())
                                 .frame(width: 62, height: 62)
                         }
-                        .glassEffect(in: Circle())
+                        .glassCircleOrFallback()
                         .sheet(isPresented: $showingGroupSelector) {
                             GroupSelectionView(
                                 selectedGroups: selectedGroupsBinding,
