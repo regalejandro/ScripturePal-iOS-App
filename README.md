@@ -4,6 +4,8 @@ An iOS app for daily scripture reading, built end-to-end as a solo project — d
 
 ScripturePal helps users build a consistent reading habit by removing the friction of deciding what to read, while supporting multiple Christian traditions and their respective canons and translations.
 
+[Dowload on the Appstore!](https://apps.apple.com/us/app/scripturepal/id6782519703)
+
 ## Features
 
 ### Reading
