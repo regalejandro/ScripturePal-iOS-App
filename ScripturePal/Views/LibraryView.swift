@@ -21,10 +21,14 @@ struct LibraryView: View {
     @Environment(\.modelContext) private var modelContext
     @Query(sort: [SortDescriptor(\CustomGroup.sortOrder), SortDescriptor(\CustomGroup.createdAt)]) private var customGroups: [CustomGroup]
     @Query private var currentlyReading: [CurrentlyReading]
+    @Query private var records: [ReadingRecord]
 
     @State private var searchText = ""
     @State private var testamentFilter: TestamentFilter = .all
     @State private var groupFilter: GroupFilter = .all
+    /// Set to a book's key when stopping its reading needs confirmation because
+    /// the session already has logged progress.
+    @State private var pendingStopKey: String?
 
     /// Horizontal inset on both edges of the grid.
     private let horizontalPadding: CGFloat = 16
@@ -87,11 +91,38 @@ struct LibraryView: View {
 
     private func toggleCurrentlyReading(_ key: String) {
         if let existing = currentlyReading.first(where: { $0.canonicalKey == key }) {
-            modelContext.delete(existing)
+            // If the session already has logged progress, confirm before
+            // discarding it — the checkmarks disappear and a cover-to-cover
+            // read won't be possible until every chapter is read again.
+            if !sessionChapters(for: key).isEmpty {
+                pendingStopKey = key
+            } else {
+                modelContext.delete(existing)
+            }
         } else {
             modelContext.insert(CurrentlyReading(canonicalKey: key))
             Haptics.addedToCurrentlyReading()
         }
+    }
+
+    /// Chapters logged at or after the session start for the book with `key`.
+    private func sessionChapters(for key: String) -> Set<Int> {
+        guard let session = currentlyReading.first(where: { $0.canonicalKey == key }) else { return [] }
+        return Set(records.filter { $0.canonicalKey == key && $0.date >= session.addedAt }.map { $0.chapter })
+    }
+
+    /// Display name for the book pending a stop-reading confirmation.
+    private var pendingStopBookName: String {
+        guard let key = pendingStopKey else { return "" }
+        return books.first(where: { $0.canonicalKey == key })?.name ?? "this book"
+    }
+
+    private func confirmStopReading() {
+        if let key = pendingStopKey,
+           let existing = currentlyReading.first(where: { $0.canonicalKey == key }) {
+            modelContext.delete(existing)
+        }
+        pendingStopKey = nil
     }
 
     private func isOldTestament(_ book: Book) -> Bool {
@@ -225,6 +256,19 @@ struct LibraryView: View {
                             .foregroundColor(themeManager.current.primary)
                     }
                 }
+            }
+            // Confirm ending a session that already has logged progress.
+            .alert(
+                "Stop reading \(pendingStopBookName)?",
+                isPresented: Binding(
+                    get: { pendingStopKey != nil },
+                    set: { if !$0 { pendingStopKey = nil } }
+                )
+            ) {
+                Button("Stop Reading", role: .destructive) { confirmStopReading() }
+                Button("Keep Reading", role: .cancel) { pendingStopKey = nil }
+            } message: {
+                Text("All chapter checkmarks for this session will be removed. You won't be able to log a full reading of \(pendingStopBookName) unless you read every chapter again.")
             }
         }
     }

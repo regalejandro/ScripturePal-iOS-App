@@ -33,6 +33,7 @@ struct BookDetailView: View {
     @State private var showingCompletionAlert = false
     @State private var showingAddToReadingAlert = false
     @State private var pendingAddToReadingRecord: ReadingRecord?
+    @State private var showingStopReadingAlert = false
 
     init(book: Book) {
         self.book = book
@@ -107,6 +108,13 @@ struct BookDetailView: View {
             Button("Not Now", role: .cancel) { pendingAddToReadingRecord = nil }
         } message: {
             Text("This chapter has been logged. A full reading of \(book.name) will only count if you start a reading session.")
+        }
+        // Confirm ending a session that already has logged progress.
+        .alert("Stop reading \(book.name)?", isPresented: $showingStopReadingAlert) {
+            Button("Stop Reading", role: .destructive) { removeFromCurrentlyReading() }
+            Button("Keep Reading", role: .cancel) { }
+        } message: {
+            Text("All chapter checkmarks for this session will be removed. You won't be able to log a full reading of \(book.name) unless you read every chapter again.")
         }
         // New custom group (adds this book to it).
         .alert("New Group", isPresented: $showingNewGroup) {
@@ -472,7 +480,14 @@ struct BookDetailView: View {
 
     private func toggleCurrentlyReading() {
         if let existing = readingSession {
-            modelContext.delete(existing)
+            // If the session already has logged progress, confirm before
+            // discarding it — the checkmarks disappear and a cover-to-cover
+            // read won't be possible until every chapter is read again.
+            if !sessionChapters.isEmpty {
+                showingStopReadingAlert = true
+            } else {
+                modelContext.delete(existing)
+            }
         } else {
             modelContext.insert(CurrentlyReading(canonicalKey: book.canonicalKey))
             Haptics.addedToCurrentlyReading()
