@@ -578,10 +578,10 @@ struct BookGridRow: View {
     private func squareColor(for chapter: Int) -> Color {
         switch chapterCounts[chapter] ?? 0 {
         case 0:   return theme.secondary.opacity(0.25)
-        case 1:   return theme.accent.opacity(0.25)
-        case 2:   return theme.accent.opacity(0.45)
-        case 3:   return theme.accent.opacity(0.65)
-        case 4:   return theme.accent.opacity(0.82)
+        case 1:   return theme.accent.opacity(0.35)
+        case 2:   return theme.accent.opacity(0.50)
+        case 3:   return theme.accent.opacity(0.70)
+        case 4:   return theme.accent.opacity(0.85)
         default:  return theme.accent.opacity(1.0)
         }
     }
