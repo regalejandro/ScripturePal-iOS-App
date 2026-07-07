@@ -32,6 +32,14 @@ struct HistoricalStatsView: View {
         Set(records.map { "\($0.canonicalKey)-\($0.chapter)" }).count
     }
 
+    private var booksCompletedAllTime: Int { completions.count }
+
+    /// The most recently completed book, with its completion date.
+    private var mostRecentCompletion: (name: String, date: Date)? {
+        guard let latest = completions.max(by: { $0.completedAt < $1.completedAt }) else { return nil }
+        return (bookName(latest.canonicalKey), latest.completedAt)
+    }
+
     private var allTimeProgressFraction: Double {
         guard totalChaptersInTranslation > 0 else { return 0 }
         return Double(uniqueChaptersAllTime) / Double(totalChaptersInTranslation)
@@ -121,6 +129,12 @@ struct HistoricalStatsView: View {
 
     private func uniqueChapters(for year: Int) -> Int {
         Set(records(for: year).map { "\($0.canonicalKey)-\($0.chapter)" }).count
+    }
+
+    private func booksCompleted(for year: Int) -> Int {
+        completions.filter {
+            Calendar.current.component(.year, from: $0.completedAt) == year
+        }.count
     }
 
     private func progressFraction(for year: Int) -> Double {
@@ -229,9 +243,11 @@ struct HistoricalStatsView: View {
                         totalReads: totalReadsAllTime,
                         uniqueChapters: uniqueChaptersAllTime,
                         totalChapters: totalChaptersInTranslation,
+                        booksCompleted: booksCompletedAllTime,
                         progressFraction: allTimeProgressFraction,
                         bestYear: bestYear,
                         mostReadBook: mostReadBook,
+                        mostRecentCompletion: mostRecentCompletion,
                         yearsActive: activeYears.count,
                         readsByYear: readsByYear,
                         oldTestament: testamentProgress.old,
@@ -253,6 +269,7 @@ struct HistoricalStatsView: View {
                                 totalReads: totalReads(for: year),
                                 uniqueChapters: uniqueChapters(for: year),
                                 totalChapters: totalChaptersInTranslation,
+                                booksCompleted: booksCompleted(for: year),
                                 progressFraction: progressFraction(for: year),
                                 bestMonth: bestMonth(for: year),
                                 readsByMonth: readsByMonth(for: year),

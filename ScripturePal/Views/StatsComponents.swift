@@ -16,6 +16,7 @@ struct YearStatsCard: View {
     let totalReads: Int
     let uniqueChapters: Int
     let totalChapters: Int
+    let booksCompleted: Int
     let progressFraction: Double
     let bestMonth: (name: String, count: Int)?
     let readsByMonth: [Int: Int]
@@ -38,6 +39,10 @@ struct YearStatsCard: View {
                 Divider().frame(height: 36)
                 StatPill(value: "\(uniqueChapters) / \(totalChapters)",
                          label: "Chapters",
+                         theme: theme)
+                Divider().frame(height: 36)
+                StatPill(value: "\(booksCompleted)",
+                         label: "Books Read",
                          theme: theme)
                 Divider().frame(height: 36)
                 StatPill(value: String(format: "%.1f%%", progressFraction * 100),
@@ -106,9 +111,11 @@ struct AllTimeStatsCard: View {
     let totalReads: Int
     let uniqueChapters: Int
     let totalChapters: Int
+    let booksCompleted: Int
     let progressFraction: Double
     let bestYear: (year: Int, count: Int)?
     let mostReadBook: (name: String, count: Int)?
+    let mostRecentCompletion: (name: String, date: Date)?
     let yearsActive: Int
     let readsByYear: [Int: Int]
     let oldTestament: (read: Int, total: Int)
@@ -130,6 +137,10 @@ struct AllTimeStatsCard: View {
                 Divider().frame(height: 36)
                 StatPill(value: "\(uniqueChapters) / \(totalChapters)",
                          label: "Chapters",
+                         theme: theme)
+                Divider().frame(height: 36)
+                StatPill(value: "\(booksCompleted)",
+                         label: "Books Read",
                          theme: theme)
                 Divider().frame(height: 36)
                 StatPill(value: String(format: "%.1f%%", progressFraction * 100),
@@ -165,6 +176,13 @@ struct AllTimeStatsCard: View {
                     HighlightRow(
                         icon: "book.fill",
                         text: "Most read: \(book.name) · \(book.count) chapter\(book.count == 1 ? "" : "s") read",
+                        theme: theme
+                    )
+                }
+                if let recent = mostRecentCompletion {
+                    HighlightRow(
+                        icon: "checkmark.seal.fill",
+                        text: "Most recent book: \(recent.name) · \(recent.date.formatted(date: .abbreviated, time: .omitted))",
                         theme: theme
                     )
                 }

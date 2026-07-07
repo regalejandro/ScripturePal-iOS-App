@@ -12,6 +12,7 @@ import UIKit
 struct StatsView: View {
 
     @Query private var records: [ReadingRecord]
+    @Query private var completions: [BookCompletion]
     @EnvironmentObject var themeManager: ThemeManager
     @AppStorage("selectedTranslation") var selectedTranslation = "Douay-Rheims/Knox"
     @StateObject private var bible = BibleManager()
@@ -60,6 +61,13 @@ struct StatsView: View {
     private var bestMonth: (name: String, count: Int)? {
         guard let top = readsByMonth.max(by: { $0.value < $1.value }), top.value > 0 else { return nil }
         return (Calendar.current.monthSymbols[top.key - 1], top.value)
+    }
+
+    /// Cover-to-cover book completions recorded this year.
+    private var booksCompletedThisYear: Int {
+        completions.filter {
+            Calendar.current.component(.year, from: $0.completedAt) == currentYear
+        }.count
     }
 
     // MARK: - Testament progress (this year)
@@ -235,6 +243,7 @@ struct StatsView: View {
                                 totalReads: totalReadsThisYear,
                                 uniqueChapters: uniqueChaptersThisYear,
                                 totalChapters: totalChaptersInTranslation,
+                                booksCompleted: booksCompletedThisYear,
                                 progressFraction: progressFraction,
                                 bestMonth: bestMonth,
                                 readsByMonth: readsByMonth,
